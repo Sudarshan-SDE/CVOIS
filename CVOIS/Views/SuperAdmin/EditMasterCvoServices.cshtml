@@ -1,0 +1,133 @@
+﻿@model CVOIS.Models.SuperAdmin.SuperAdminViewModel
+
+@{
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+    // var username = Context.Session.GetString("Username");
+}
+
+<div class="text-center mb-3">
+    <h3>Edit Master CVO Services</h3>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditMasterCvoServices">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="MasterCVOServices.sno" class="control-label"></label>
+                <input asp-for="MasterCVOServices.sno" class="form-control" readonly />
+            </div>
+            <div class="form-group">
+                <label asp-for="MasterCVOServices.serviceCode" class="control-label"></label>
+                <input asp-for="MasterCVOServices.serviceCode" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="MasterCVOServices.serviceDesc" class="control-label"></label>
+                <input asp-for="MasterCVOServices.serviceDesc" class="form-control" />
+            </div>
+
+             <div class="d-flex justify-content-between mt-3">
+                <a href="/SuperAdmin/MasterCVOServices" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left"></i> Back to List
+                </a>
+                <button type="button" class="btn btn-success btn_send" onclick="UpdateFeedbackMasterCvoServices()">
+                    <i class="fa fa-save"></i> Update
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    function UpdateFeedbackMasterCvoServices() {
+        let sno = document.getElementById("MasterCVOServices_sno").value;
+        let serviceCode = document.getElementById("MasterCVOServices_serviceCode").value.trim();
+        let serviceDesc = document.getElementById("MasterCVOServices_serviceDesc").value.trim();
+
+        // Collect validation errors
+        let errorMessage = "";
+
+        if (!serviceCode && !serviceDesc) {
+            errorMessage = "All fields are required.";
+        }
+        else if (!serviceCode) {
+            errorMessage = "Please Enter the Service Code.";
+        }
+        else if (!serviceDesc) {
+            errorMessage = "Please Enter the Service Name.";
+        }
+        if (errorMessage) {
+            Swal.fire({
+                icon: 'warning',
+                title: errorMessage,
+                confirmButtonColor: '#d33'
+            });
+            return;
+        }
+
+
+        Swal.fire({
+            title: "Do you want to save the changes?",
+            icon: "question",
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Save",
+            denyButtonText: `Don't save`
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+
+                $('.btn_send').prop('disabled', true).text("Submitting...");
+
+                $.ajax({
+                    type: 'POST',
+                    url: "/SuperAdmin/EditMasterCvoServices",
+                    data: {
+                        'MasterCVOServices.sno': sno,
+                        'MasterCVOServices.serviceCode': serviceCode,
+                        'MasterCVOServices.serviceDesc': serviceDesc
+                    },
+
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Master CVO Services Data Updated successfully.',
+                                confirmButtonColor: '#3085d6'
+                            }).then(() => {
+                                window.location.href = '/SuperAdmin/MasterCvoServices';
+                            });
+                        }
+                        else if (response.duplicate_Update_MasterCvoServices_message) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: response.duplicate_Update_MasterCvoServices_message,
+                                confirmButtonColor: '#f0ad4e'
+                            });
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: response.error_Update_MasterCvoServices_message,
+                                confirmButtonColor: '#d33'
+                            });
+                        }
+                    },
+                    error: function (response) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops!',
+                            text: 'Something went wrong. Please try again.',
+                            confirmButtonColor: '#d33'
+                        });
+                    },
+                    complete: function () {
+                        $('.btn_send').prop('disabled', false).text("Submit");
+                    }
+                });
+            }
+        });
+
+    }
+</script>

@@ -1,0 +1,134 @@
+﻿@model CVOIS.Models.SuperAdmin.SuperAdminViewModel
+
+@{
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+    // var username = Context.Session.GetString("Username");
+}
+
+<div class="text-center mb-3">
+    <h3>Edit Appointing Authority</h3>
+</div>
+
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditAppointingAuthority">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="AppointingAuthority.sno" class="control-label"></label>
+                <input asp-for="AppointingAuthority.sno" class="form-control" readonly />
+            </div>
+            <div class="form-group">
+                <label asp-for="AppointingAuthority.AppointingAuthority_Code" class="control-label"></label>
+                <input asp-for="AppointingAuthority.AppointingAuthority_Code" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="AppointingAuthority.APPOINTING_AUTHORITY" class="control-label"></label>
+                <input asp-for="AppointingAuthority.APPOINTING_AUTHORITY" class="form-control" />
+            </div>
+
+            <div class="d-flex justify-content-between mt-3">
+                <a href="/SuperAdmin/AppointingAuthority" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left"></i> Back to List
+                </a>
+
+                <button type="button" class="btn btn-success btn_send" onclick="UpdateFeedbackAppointingAuthority()">
+                    <i class="fa fa-save"></i> Update
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    function UpdateFeedbackAppointingAuthority() {
+        let sno = document.getElementById("AppointingAuthority_sno").value;
+        let AP_Code = document.getElementById("AppointingAuthority_AppointingAuthority_Code").value.trim();
+        let AP_Name = document.getElementById("AppointingAuthority_APPOINTING_AUTHORITY").value.trim();
+
+        // Collect validation errors
+        let errorMessage = "";
+
+        if (!AP_Code && !AP_Name) {
+            errorMessage = "All fields are required.";
+        }
+        else if (!AP_Code) {
+            errorMessage = "Please enter the Appointing Authority Code.";
+        }
+        else if (!AP_Name) {
+            errorMessage = "Please enter the Appointing Authority  Name.";
+        }
+        if (errorMessage) {
+            Swal.fire({
+                icon: 'warning',
+                title: errorMessage,
+                confirmButtonColor: '#d33'
+            });
+            return;
+        }
+
+
+        Swal.fire({
+            title: "Do you want to save the changes?",
+            icon: "question",
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Save",
+            denyButtonText: `Don't save`
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                $('.btn_send').prop('disabled', true).text("Submitting...");
+
+                $.ajax({
+                    type: 'POST',
+                    url: "/SuperAdmin/EditAppointingAuthority",
+                    data: {
+                        'AppointingAuthority.sno': sno,
+                        'AppointingAuthority.AppointingAuthority_Code': AP_Code,
+                        'AppointingAuthority.APPOINTING_AUTHORITY': AP_Name
+                    },
+
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Appointing Authority Data Updated successfully.',
+                                confirmButtonColor: '#3085d6'
+                            }).then(() => {
+                                window.location.href = '/SuperAdmin/AppointingAuthority';
+                            });
+                        }
+                        else if (response.duplicate_Update_Appointing_Authority_message) {
+                            Swal.fire({
+                                icon: 'warning', 
+                                title: response.duplicate_Update_Appointing_Authority_message,
+                                confirmButtonColor: '#f0ad4e'
+                            });
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: response.error_Update_Appointing_Authority_message,
+                                confirmButtonColor: '#d33'
+                            });
+                        }
+                    },
+                    error: function (response) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops!',
+                            text: 'Something went wrong. Please try again.',
+                            confirmButtonColor: '#d33'
+                        });
+                    },
+                    complete: function () {
+                        $('.btn_send').prop('disabled', false).text("Submit");
+                    }
+                });
+
+            }
+        });
+    }
+</script>

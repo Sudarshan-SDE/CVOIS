@@ -1,0 +1,264 @@
+﻿@model CVOIS.Models.Admin.AddFullTimeCVOModel
+
+@{
+    ViewData["Title"] = "Add_FullTime_CVO";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+
+@* <h1>Add_FullTime_CVO</h1> *@
+
+<div class="card">
+    <div class="card-header">
+        <h3 style="text-align:center">Organisation Selection</h3>
+    </div>
+    <div class="card-text">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-2">
+                </div>
+                <div class="col-md-2">
+                    <label>Select Organisation</label>
+                </div>
+                <div class="col-md-6">
+                    @*  @Html.DropDownListFor(m => m._Orgfilter, Model._Orgfilter, "-Select-", new { @class = "form-control" }) *@
+                    @Html.DropDownListFor(model => model.SelectedOrg,
+                             new SelectList(Model._Orgfilter, "Value", "Text"),
+                             "Select Organization",
+                             new { @class = "form-control", id = "OrgDropdown" })
+
+                </div>
+                <div class="col-md-2">
+                    @* <a href="~/Admin/SearchOrganization_WithCvo" id="btn_orgsearch" class="btn btn-primary">Search </a> *@
+                    <a href="javascript:void(0);" class="btn btn-primary" id="btn_orgsearch">Search</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model?._checkorgwithcvo != null && Model._checkorgwithcvo.Any())
+{
+    <div class="card" id="card_cvodetail">
+        <div class="card-header">
+            <h3>CVO Details</h3>
+        </div>
+        <div class="card-body">
+            <table id="tbl_cvo_deatils" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Sr.No</th>
+                        <th>CVO Name</th>
+                        <th>Organization</th>
+                        <th>Charges</th>
+                        <th>Tenure_From</th>
+                        <th>Tenure_To</th>
+                        <th>Phone No.</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @{
+                        if (Model?._checkorgwithcvo != null && Model._checkorgwithcvo.Any())
+                        {
+                            int i = 0;
+                            @foreach (var item in Model._checkorgwithcvo)
+                            {
+                                i = i + 1;
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@item.CVO_NAME</td>
+                                    <td>@item.ORGNAME</td>
+                                    <td>@item.CHARGES </td>
+                                    <td>@item.TENURE_FROM</td>
+                                    <td>@item.TENURE_TO</td>
+                                    <td>@item.PHONE_NO</td>
+                                    <td>@item.EMAIL_ID</td>
+                                </tr>
+                                i++;
+                            }
+                        }
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+    </div>
+}
+else
+{
+    <div class="card" id="card_cvoform">
+        <div class="card-text">
+        </div>
+        @using (Html.BeginForm("Add_FullTime_CVO", "Admin", FormMethod.Post))
+        {
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-4">
+                        @Html.LabelFor(Model => Model.Organisation)
+                        @Html.TextBoxFor(Model => Model.Organisation, new { @class = "form-control", id = "txtOrg" })
+                        @Html.ValidationMessageFor(Model => Model.Organisation, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model._charges_Dropdown.SelectedCharges)
+                        @Html.DropDownListFor(model => model._charges_Dropdown.SelectedCharges,
+                                 new SelectList(Model._charges_Dropdown.ChargesList, "Value", "Text"),
+                                 "Select Charges",
+                                 new { @class = "form-control", id = "ChargesDropdown" })
+                       @Html.ValidationMessageFor(model => model._charges_Dropdown.SelectedCharges, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-2">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model._title_Dropdown.SelectedTitle)
+                        @Html.DropDownListFor(model => model._title_Dropdown.SelectedTitle,
+                                 new SelectList(Model._title_Dropdown.TilteList, "Value", "Text"),
+                                 "Select Title",
+                                 new { @class = "form-control", id = "TitleDropdown" })
+                      @Html.ValidationMessageFor(model => model._title_Dropdown.SelectedTitle, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-4">
+                        @Html.LabelFor(Model => Model.EnterCVOName)
+                        @Html.TextBoxFor(Model => Model.EnterCVOName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(Model => Model.EnterCVOName, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col-md-2">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model._gender.SelectedGender)
+                        @Html.DropDownListFor(model => model._gender.SelectedGender,
+                                 new SelectList(Model._gender.GenderList, "Value", "Text"),
+                                 "Select Gender",
+                                 new { @class = "form-control", id = "GenderDropdown" })
+                    @Html.ValidationMessageFor(model => model._gender.SelectedGender, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-4">
+                        @Html.LabelFor(Model => Model.MobileNo)
+                        @Html.TextBoxFor(Model => Model.MobileNo, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(Model => Model.MobileNo, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-2">
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-4">
+                        <label>Services<span style="color:red">*</span></label>
+                    @Html.DropDownListFor(m => m.SelectedService, Model._servicesfilter, "--Select Service--", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.SelectedService, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-4">
+                        <label>Batch<span style="color:red">*</span></label>
+                    @Html.DropDownListFor(m => m.SelectedBatch, Model._batchfilter, "--Select Batch--", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.SelectedBatch, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-2">
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-4">
+                        <label>Tenure From<span style="color:red">*</span></label>
+                        <input asp-for="TenureFrom" type="date" class="form-control" />
+                        <span asp-validation-for="TenureFrom" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Tenure To<span style="color:red">*</span></label>
+                        <input asp-for="TenureTo" type="date" class="form-control" />
+                        <span asp-validation-for="TenureTo" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-2">
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-4">
+                        <label>Email Id<span style="color:red">*</span></label>
+                        <input asp-for="Email" type="text" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Status<span style="color:red">*</span></label>
+                        @Html.DropDownListFor(model => model._status.SelectedStatus,
+                                 new SelectList(Model._status.StatusList, "Value", "Text"),
+                                 "Select Status",
+                                 new { @class = "form-control", id = "StatusDropdown" })
+                       @Html.ValidationMessageFor(m => m._status.SelectedStatus, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-2">
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <button type="submit" id="btn_submit" class="btn btn-primary">Submit</button>
+            </div>
+        }
+    </div>
+}
+
+
+<script src="~/ltscript/plugins/jquery/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function(){
+
+          var dropdown = document.getElementById("OrgDropdown");
+            var selectedText = dropdown.options[dropdown.selectedIndex].text;
+            document.getElementById("txtOrg").value = selectedText;
+    } );
+    </script>
+
+
+<script>
+    $(document).ready(function () {
+                 
+        $("#btn_orgsearch").click(function (e) {
+
+        var hasData = @((Model != null && Model._checkorgwithcvo.Any()) ? "true" : "false");
+       
+        if (hasData === "true") {
+            $("#card_cvoform").show(); //  Hide form if data exists
+        } else {
+             $("#card_cvoform").show(); // Show form if data doesn't exist
+        }
+
+            e.preventDefault(); // Prevent default anchor behavior
+
+            var selectedStatus = $("#OrgDropdown").val(); // Get selected dropdown value
+
+            console.log("Selected Status:", selectedStatus); // Debugging line
+
+            if (selectedStatus && selectedStatus !== "") {
+                var baseUrl = "@Url.Action("SearchOrganization_WithCvo", "Admin")";
+                window.location.href = baseUrl + "?OrgCode=" + encodeURIComponent(selectedStatus);
+            } else {
+                alert("Please select a Organization before proceeding.");
+            }            
+        });
+    });
+</script>
+

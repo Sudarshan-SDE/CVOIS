@@ -1,0 +1,306 @@
+﻿@model CVOIS.Models.SuperAdmin.SuperAdminViewModel
+
+@{
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+    // var username = Context.Session.GetString("Username");
+}
+
+@* Master CVO Services modal open button *@
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#mastercvoservicesModal">
+        <i class="fa fa-plus"></i> Add Master Services
+    </button>
+    <h3>Master CVO Services List</h3>
+    <div class="d-flex align-items-center gap-2 ms-auto">
+    </div>
+</div>
+
+
+@* Master CVO Services Modal *@
+<div class="modal fade" id="mastercvoservicesModal" tabindex="-1" role="dialog" aria-labelledby="mastercvoservicesLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form id="mastercvoservicesForm">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Master CVO Services</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-row row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="MasterCVOServices.serviceCode" class="control-label"></label>
+                                <input asp-for="MasterCVOServices.serviceCode" class="form-control" id="serviceCode" placeholder="Master Service Code" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="MasterCVOServices.serviceDesc" class="control-label"></label>
+                                <input asp-for="MasterCVOServices.serviceDesc" class="form-control" id="serviceDesc" placeholder="Master Service Name" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="btnSaveMasterCVOServices" onclick="SaveMasterCVOServices()">
+                        Submit
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="resetModalForm()">
+                        Close
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@* Master CVO Services table *@
+@if (Model.MasterCVOServices_List != null && Model.MasterCVOServices_List.Any())
+{
+    <div class="table-responsive table-wrapper">
+        <table id="masterCVOServicesDataTable" class="table table-bordered table-striped custom-border w-100">
+            <thead class="table-header">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.MasterCVOServices.row_num)</th>
+                    <th>@Html.DisplayNameFor(model => model.MasterCVOServices.serviceCode)</th>
+                    <th>@Html.DisplayNameFor(model => model.MasterCVOServices.serviceDesc)</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.MasterCVOServices_List)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.row_num)</td>
+                        <td>@Html.DisplayFor(modelItem => item.serviceCode)</td>
+                        <td>@Html.DisplayFor(modelItem => item.serviceDesc)</td>
+                        <td class="text-center">
+                            <a asp-action="EditMasterCVOServices" asp-route-id="@item.sno" class="btn btn-sm btn-outline-primary me-1">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a href="javascript:void(0);"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="confirmDelete('@Url.Action("DeleteMasterCVOServices", new { id = item.sno })')">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger">No Master CVO Services records found.</div>
+}
+
+
+@* ----------Script start from here---------*@
+
+@* Data table *@
+<script>
+    $(document).ready(function () {
+        $('#masterCVOServicesDataTable').DataTable({
+            dom: "<'row mb-2'<'col-md-6'B><'col-md-6 text-end'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fa fa-file-excel-o"></i> Export to Excel',
+                    className: 'btn btn-success me-2',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fa fa-file-pdf-o"></i> Export to PDF',
+                    className: 'btn btn-danger me-2',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    className: 'btn btn-primary',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                }
+            ],
+            paging: true,
+            searching: true,
+            ordering: true,
+            responsive: true,
+            scrollX: true,
+            lengthChange: false,
+            info: true,
+            autoWidth: false,
+            columnDefs: [
+                { targets: -1, className: 'text-center' }
+            ],
+            language: {
+                searchPlaceholder: "Search services...",
+                search: "",
+                zeroRecords: "No matching services found",
+                info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                infoEmpty: "No entries available",
+                paginate: {
+                    previous: "<",
+                    next: ">"
+                }
+            }
+        });
+    });
+</script>
+    
+@* Save Master CVO Service Data *@
+<script>
+    function SaveMasterCVOServices() {
+        let serviceCode = $("#serviceCode").val().trim();
+        let serviceDesc = $("#serviceDesc").val().trim();
+
+        // Collect validation errors
+        let errorMessage = "";
+
+        if (!serviceCode && !serviceDesc) {
+            errorMessage = "All fields are required.";
+        }
+        else if (!serviceCode) {
+            errorMessage = "Please Enter the Service Code.";
+        }
+        else if (!serviceDesc) {
+            errorMessage = "Please Enter the Service Name.";
+        }
+        if (errorMessage) {
+            Swal.fire({
+                icon: 'warning',
+                title: errorMessage,
+                confirmButtonColor: '#d33'
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: "Do you want to save the record?",
+            icon: "question",
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Save",
+            denyButtonText: `Don't save`
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                $('#btnSaveMasterCVOServices').prop('disabled', true).text("Submitting...");
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/SuperAdmin/MasterCvoServices',
+                    data: {
+                        'MasterCVOServices.serviceCode': serviceCode,
+                        'MasterCVOServices.serviceDesc': serviceDesc
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Master CVO Services added successfully.',
+                                confirmButtonColor: '#3085d6'
+                            }).then(() => {
+                                $('#mastercvoservicesLabel').modal('hide');
+                                $('#mastercvoservicesForm')[0].reset();
+                                location.reload();
+                            });
+                        }
+                        else if (response.duplicate_Master_Services_message) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: response.duplicate_Master_Services_message,
+                                confirmButtonColor: '#f0ad4e'
+                            });
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: response.error_Master_Services_message,
+                                confirmButtonColor: '#d33'
+                            });
+                        }
+                    },
+                    error: function (response) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops!',
+                            text: 'Something went wrong. Please try again.',
+                            confirmButtonColor: '#d33'
+                        });
+                    },
+                    complete: function () {
+                        $('#btnSaveMasterCVOServices').prop('disabled', false).text("Submit");
+                    }
+                });
+            } 
+        });
+
+    }
+</script>
+
+@* Delete Master CVO Service Data Confirmation*@
+<script>
+    function confirmDelete(deleteUrl) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This action cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = deleteUrl;
+            }
+        });
+    }
+</script>
+
+@* Delete Master CVO Service Data  *@
+<script>
+    $(document).ready(function () {
+        var MasterCVOServicessuccessMessage = '@TempData["Delete_MasterCvoServices_Message"]';
+        var MasterCVOServiceserrorMessage = '@TempData["Failed_MasterCvoServices_Message"]';
+
+        if (MasterCVOServicessuccessMessage) {
+            Swal.fire({
+                title: "Deleted!",
+                text: MasterCVOServicessuccessMessage,
+                icon: "success",
+                confirmButtonText: "OK"
+            });
+        }
+
+        if (MasterCVOServiceserrorMessage) {
+            Swal.fire({
+                title: "Error!",
+                text: MasterCVOServiceserrorMessage,
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+        }
+    });
+</script>
+
+@* Reset Form *@
+<script>
+    function resetModalForm() {
+        document.getElementById("mastercvoservicesForm").reset();
+    }
+</script>

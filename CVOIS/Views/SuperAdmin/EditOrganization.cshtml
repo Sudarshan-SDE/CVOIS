@@ -1,0 +1,416 @@
+﻿@model CVOIS.Models.SuperAdmin.SuperAdminViewModel
+
+@{
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+    // var username = Context.Session.GetString("Username");
+}
+
+<div class="text-center mb-3">
+    <h3>Edit Organization</h3>
+</div>
+
+
+<form asp-controller="SuperAdmin" asp-action="EditOrganization" method="post" id="editOrganizationForm">
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label asp-for="Organization.ORG_ID" class="control-label"></label>
+            <input asp-for="Organization.ORG_ID" class="form-control" readonly />
+        </div>
+        <div class="form-group col-md-4">
+            <label asp-for="Organization.ORGCODE" class="control-label"></label>
+            <input asp-for="Organization.ORGCODE" class="form-control" readonly />
+        </div>
+        <div class="form-group col-md-4">
+            <label asp-for="Organization.MINCODE" class="control-label"></label>
+            <select asp-for="Organization.MINCODE" class="form-control" id="Organization_MINCODE" name="Organization.MINCODE">
+                <option value="">-- Select Ministry --</option>
+                @foreach (var obj in Model.Ministry_ddl_ListforOrg)
+                {
+                    <option value="@obj.Value">@obj.Text</option>
+                }
+            </select>
+            <span id="MINCODEError" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-4">
+            <label asp-for="Organization.DEPTCODE" class="control-label"></label>
+            <select asp-for="ddlDeptCode" class="form-control" asp-items="Model.Department_ddl_List_Basisofmincode">
+                <option value="">Select Department</option>
+            </select>
+            <span id="DEPTCODEError" class="text-danger"></span>
+        </div>
+
+        <div class="form-group col-md-4">
+            <label asp-for="Organization.ORGNAME" class="control-label"></label>
+            <input asp-for="Organization.ORGNAME" class="form-control" id="ORGNAME" />
+            <span id="ORGNAMEError" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-4">
+            <label asp-for="Organization.file_no" class="control-label"></label>
+            <input asp-for="Organization.file_no" class="form-control" id="file_no" />
+            <span id="file_noError" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-4">
+            <label asp-for="Organization.APPOINTING_AUTHORITY" class="control-label"></label>
+            <select asp-for="Organization.APPOINTING_AUTHORITY" class="form-control" id="APPOINTING_AUTHORITY">
+                <option value="">-- Select APPOINTING_AUTHORITY --</option>
+                @foreach (var dept in Model.AppointingAuthority_ddl_List)
+                {
+                    <option value="@dept.Value">@dept.Text</option>
+                }
+            </select>
+            <span id="APPOINTING_AUTHORITYError" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-4">
+            <label asp-for="Organization.org_level" class="control-label"></label>
+            <select asp-for="Organization.org_level" class="form-control" id="org_level">
+                <option value="">-- Select org_level --</option>
+                @foreach (var dept in Model.OrgLevel_ddl_List)
+                {
+                    <option value="@dept.Value">@dept.Text</option>
+                }
+            </select>
+            <span id="org_levelError" class="text-danger"></span>
+        </div>
+
+        <div class="form-group col-md-4">
+            <label asp-for="Organization.section" class="control-label"></label>
+            <input asp-for="Organization.section" class="form-control" id="section" />
+            <span id="sectionError" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-4">
+            <label asp-for="Organization.org_status" class="control-label"></label>
+            <select asp-for="Organization.org_status" class="form-control" id="org_status">
+                <option value="">-- Select Status --</option>
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="INACTIVE">INACTIVE</option>
+            </select>
+            <span id="org_statusError" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-4">
+            <label asp-for="Organization.org_country" class="control-label"></label>
+            <select asp-for="Organization.org_country" class="form-control" id="org_country">
+                <option value="">-- Select Country --</option>
+                <option value="INDIA">India</option>
+                <option value="Other">Other</option>
+            </select>
+            <span id="org_countryError" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-4">
+            <label asp-for="Organization.org_address" class="control-label"></label>
+            <input asp-for="Organization.org_address" class="form-control" id="org_address" />
+        </div>
+
+        <div class="form-group col-md-4">
+            <label asp-for="Organization.org_state" class="control-label"></label>
+            <select asp-for="Organization.org_state" class="form-control" id="org_state" name="Organization.org_state">
+                <option value="">-- Select state --</option>
+                @foreach (var dept in Model.States_ddl_List)
+                {
+                    <option value="@dept.Value">@dept.Text</option>
+                }
+            </select>
+            <span id="org_stateError" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-4">
+            <label asp-for="Organization.org_district" class="control-label"></label>
+            <select class="form-control" id="ddldistrictCode" asp-items="Model.District_ddl_List_Basisofstateid">
+                <option value="">Select District</option>
+            </select>
+            <span id="org_cityError" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-4">
+            <label asp-for="Organization.pincode" class="control-label"></label>
+            <input asp-for="Organization.pincode" class="form-control" id="pincode" type="number" />
+            <span id="pincodeError" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-4">
+            <label asp-for="Organization.phoneno" class="control-label"></label>
+            <input asp-for="Organization.phoneno" class="form-control" id="phoneno" />
+            <span id="phonenoError" class="text-danger"></span>
+        </div>
+
+        <div class="form-group col-md-4">
+            <label asp-for="Organization.fax" class="control-label"></label>
+            <input asp-for="Organization.fax" class="form-control" id="fax" />
+            <span id="faxError" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-4">
+            <label asp-for="Organization.org_category" class="control-label"></label>
+            <select asp-for="Organization.org_category" class="form-control" id="org_category">
+                <option value="">-- Select Category --</option>
+                <option value="PT">Part Time</option>
+                <option value="FT">Full Time</option>
+            </select>
+            <span id="org_categoryError" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-4">
+            <label asp-for="Organization.EMAIL_ID" class="control-label"></label>
+            <input asp-for="Organization.EMAIL_ID" class="form-control" id="EMAIL_ID" />
+            <span id="emailError" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="d-flex justify-content-between mt-3">
+        <a href="/SuperAdmin/Organization" class="btn btn-secondary">
+            <i class="fa fa-arrow-left"></i> Back to List
+        </a>
+
+        <button type="button" id="btnUpdateOrganization" class="btn btn-success" onclick="UpdateOrganization()">
+            <i class="fa fa-save"></i> Update
+        </button>
+    </div>
+    <br />
+</form>
+
+
+@* Update Organization Data *@
+<script>
+    function UpdateOrganization() {
+        const Organization_ORG_ID = document.getElementById("Organization_ORG_ID").value.trim();
+        const Organization_ORGCODE = document.getElementById("Organization_ORGCODE").value.trim();
+        const Organization_MINCODE = document.getElementById("Organization_MINCODE").value.trim();
+        const ddlDeptCode = document.getElementById("ddlDeptCode").value.trim();
+
+        const Organization_ORGNAME = document.getElementById("ORGNAME").value.trim();
+        const Organization_file_no = document.getElementById("file_no").value.trim();
+        const Organization_APPOINTING_AUTHORITY = document.getElementById("APPOINTING_AUTHORITY").value.trim();
+        const Organization_org_level = document.getElementById("org_level").value.trim();
+
+        const Organization_section = document.getElementById("section").value.trim();
+        const Organization_org_status = document.getElementById("org_status").value.trim();
+        const Organization_org_country = document.getElementById("org_country").value.trim();
+        const Organization_org_address = document.getElementById("org_address").value.trim();
+
+        const Organization_org_state = document.getElementById("org_state").value.trim();
+        const Organization_org_district = document.getElementById("ddldistrictCode").value.trim();
+        const Organization_pincode = document.getElementById("pincode").value.trim();
+        const Organization_phoneno = document.getElementById("phoneno").value.trim();
+
+        const Organization_fax = document.getElementById("fax").value.trim();
+        const Organization_org_category = document.getElementById("org_category").value.trim();
+        const Organization_EMAIL_ID = document.getElementById("EMAIL_ID").value.trim();
+
+        // Collect validation errors
+        let errorMessage = "";
+
+        if (!Organization_ORG_ID && !Organization_ORGCODE && !Organization_MINCODE && !ddlDeptCode &&
+            !Organization_ORGNAME && !Organization_file_no && !Organization_APPOINTING_AUTHORITY && !Organization_org_level &&
+            !Organization_section && !Organization_org_status && !Organization_org_country && !Organization_org_address &&
+            !Organization_org_state && !Organization_org_district && !Organization_pincode && !Organization_phoneno &&
+            !Organization_fax && !Organization_org_category && !Organization_EMAIL_ID) {
+            errorMessage = "All fields are required.";
+        }
+
+        else if (!Organization_ORG_ID) {
+            errorMessage = "Please Enter the Ministry Name.";
+        }
+        else if (!Organization_ORGCODE) {
+            errorMessage = "Please Enter the Department Name.";
+        }
+        else if (!Organization_MINCODE) {
+            errorMessage = "Please select the Ministry Status.";
+        }
+        else if (!ddlDeptCode) {
+            errorMessage = "Please select the Department.";
+        }
+
+        else if (!Organization_ORGNAME) {
+            errorMessage = "Please select the Organization.";
+        }
+        else if (!Organization_file_no) {
+            errorMessage = "Please select the file no.";
+        }
+        else if (!Organization_APPOINTING_AUTHORITY) {
+            errorMessage = "Please select the AAP.";
+        }
+        else if (!Organization_org_level) {
+            errorMessage = "Please select the org level.";
+        }
+
+        else if (!Organization_section) {
+            errorMessage = "Please Enter the Section.";
+        }
+        else if (!Organization_org_status) {
+            errorMessage = "Please Enter the Org Status.";
+        }
+        else if (!Organization_org_country) {
+            errorMessage = "Please select the Org Country.";
+        }
+        else if (!Organization_org_address) {
+            errorMessage = "Please select the Org Address.";
+        }
+
+        else if (!Organization_org_state) {
+            errorMessage = "Please Enter the State.";
+        }
+        else if (!Organization_org_district) {
+            errorMessage = "Please Enter the District.";
+        }
+        else if (!Organization_pincode) {
+            errorMessage = "Please select the Pincode.";
+        }
+        else if (!Organization_phoneno) {
+            errorMessage = "Please select the Phone.";
+        }
+
+        else if (!Organization_fax) {
+            errorMessage = "Please Enter the Fax.";
+        }
+        else if (!Organization_org_category) {
+            errorMessage = "Please select the Catagory.";
+        }
+        else if (!Organization_EMAIL_ID) {
+            errorMessage = "Please select the Email ID.";
+        }
+
+        if (errorMessage) {
+            Swal.fire({
+                icon: 'warning',
+                title: errorMessage,
+                confirmButtonColor: '#d33'
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: "Do you want to save the changes?",
+            icon: "question",
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Save",
+            denyButtonText: `Don't save`
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                $('.btnUpdateOrganization').prop('disabled', true).text("Submitting...");
+
+                $.ajax({
+                    type: 'POST',
+                    url: "/SuperAdmin/EditOrganization",
+                    data: {
+                        'Organization.ORG_ID': Organization_ORG_ID,
+                        'Organization.ORGCODE': Organization_ORGCODE,
+                        'Organization.MINCODE': Organization_MINCODE,
+                        'Organization.DEPTCODE': ddlDeptCode,
+
+                        'Organization.ORGNAME': Organization_ORGNAME,
+                        'Organization.file_no': Organization_file_no,
+                        'Organization.APPOINTING_AUTHORITY': Organization_APPOINTING_AUTHORITY,
+                        'Organization.org_level': Organization_org_level,
+
+                        'Organization.section': Organization_section,
+                        'Organization.org_status': Organization_org_status,
+                        'Organization.org_country': Organization_org_country,
+                        'Organization.org_address': Organization_org_address,
+
+                        'Organization.org_state': Organization_org_state,
+                        'Organization.org_district': Organization_org_district,
+                        'Organization.pincode': Organization_pincode,
+                        'Organization.phoneno': Organization_phoneno,
+
+                        'Organization.fax': Organization_fax,
+                        'Organization.org_category': Organization_org_category,
+                        'Organization.EMAIL_ID': Organization_EMAIL_ID
+                    },
+
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Organization Updated successfully.',
+                                confirmButtonColor: '#3085d6'
+                            }).then(() => {
+                                window.location.href = '/SuperAdmin/Organization';
+                            });
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: response.error_Update_Organization_message,
+                                confirmButtonColor: '#d33'
+                            });
+                        }
+                    },
+                    error: function (response) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops!',
+                            text: 'Something went wrong. Please try again.',
+                            confirmButtonColor: '#d33'
+                        });
+                    },
+                    complete: function () {
+                        $('.btnUpdateOrganization').prop('disabled', false).text("Submit");
+                    }
+                });
+
+            }
+        });
+    }
+</script>
+
+@* ministry and department cascading *@
+<script>
+    $(document).ready(function () {
+        $("[name='Organization.MINCODE']").change(function () {
+
+            var Mincode = $(this).val();
+            $("#ddlDeptCode").empty().append('<option value="">-- Select Department --</option>');
+
+            if (Mincode) {
+                $.ajax({
+                    url: "/SuperAdmin/BindDepartmentdropdown",
+                    type: "GET",
+                    data: { Mincode: Mincode },
+                    dataType: "json",
+                    success: function (data) {
+                        // console.log("Response received:", data); // Debugging
+                        if (data.length > 0) {
+                            $.each(data, function (index, item) {
+                                $("#ddlDeptCode").append(new Option(item.text, item.value));
+                            });
+                        } else {
+                            console.log("No departments found.");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX Error:", error);
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+@* State and City cascading *@
+<script>
+    $(document).ready(function () {
+        $("#org_state").change(function () {
+            var stateid = $(this).val();
+
+            $("#ddldistrictCode").empty().append('<option value="">-- Select District --</option>');
+
+            if (stateid) {
+                $.ajax({
+                    url: "/SuperAdmin/GetDistrictsByState",
+                    type: "GET",
+                    data: { state_id: stateid },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data && data.length > 0) {
+                            $.each(data, function (index, item) {
+                                $("#ddldistrictCode").append(new Option(item.text, item.value));
+                            });
+                        } else {
+                            console.log("No Districts found.");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX Error:", error);
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+

@@ -1,0 +1,76 @@
+﻿@model IEnumerable<CVOIS.Models.Admin.Organizations>
+
+@{
+    ViewData["Title"] = "Organizations";
+}
+
+<h1>View Organizations</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.SNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ministry_Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Dept_Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Org_Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Org_Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.pincode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone_no)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Org_category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Org_Status)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ministry_Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Dept_Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Org_Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Org_Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.pincode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phone_no)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Org_category)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Org_Status)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CVOIS</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/CVOIS.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <section style="background-color: #d8efd3;">
+            <div class="container">
+                <div class="row align-items-center py-2">
+                    <div class="col-md-3 text-center text-md-start">
+                        <img src="~/images/logo/eoi-logo_edited.png" alt="EOI Logo" class="img-fluid" style="width: 50px;" />
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <h3 class="mb-1">CENTRAL VIGILANCE COMMISSION</h3>
+                        <h3 class="mb-0">केन्द्रीय सतर्कता आयोग</h3>
+                    </div>
+                    <div class="col-md-3 text-center text-md-end mt-2 mt-md-0">
+                        <img src="~/images/logo/logo.png" alt="Logo" class="img-fluid" style="width: 131px;" />
+                    </div>
+                </div>
+            </div>
+        </section>
+    </header>
+
+
+    <section class="bg-bluenew mb-3" style="background-color: burlywood; font-weight: bold;">
+        <div class="container text-center py-2">
+            <h4 class="mb-0">CVO INFORMATION SYSTEM</h4>
+        </div>
+    </section>
+
+    <div class="container-fluid">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+        <br />
+    </div>
+
+   @*  <footer class="text-muted mt-4" style="background-color: #d8efd3;">
+        <div class="container py-4">
+            <div class="row text-center text-md-start">
+                <div class="col-md-2 mb-3 mb-md-0"></div>
+                <div class="col-md-8">
+                    <h5 class="fw-bold">CENTRAL VIGILANCE COMMISSION</h5>
+                    <p class="mb-1">Satarkta Bhavan, Block-A</p>
+                    <p class="mb-1">GPO Complex, INA New Delhi - 110023</p>
+                    <p class="mb-1">Ph: 011-24651020 | Fax: 011-24651186</p>
+                </div>
+                <div class="col-md-2 mb-3 mb-md-0"></div>
+            </div>
+        </div>
+    </footer>
+ *@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

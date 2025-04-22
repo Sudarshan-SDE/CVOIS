@@ -1,0 +1,150 @@
+﻿@*@model CVOIS.Models.SuperAdmin.MinistryModel*@
+@model CVOIS.Models.SuperAdmin.SuperAdminViewModel
+@{
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+    // var username = Context.Session.GetString("Username");
+}
+
+<div class="text-center mb-3">
+    <h3>Edit Ministry</h3>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="SuperAdmin" id="ministryForm" asp-action="EditMinistry" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Ministry.Min_id" class="control-label"></label>
+                <input asp-for="Ministry.Min_id" class="form-control" readonly />
+            </div>
+            <div class="form-group">
+                <label asp-for="Ministry.Mincode" class="control-label"></label>
+                <input asp-for="Ministry.Mincode" class="form-control" readonly />
+            </div>
+            <div class="form-group">
+                <label asp-for="Ministry.Ministry_Name" class="control-label"></label>
+                <input asp-for="Ministry.Ministry_Name" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Ministry.Min_Status" class="control-label"></label>
+                <select asp-for="Ministry.Min_Status" class="form-control">
+                    <option value="">-- Select Status --</option>
+                    <option value="ACTIVE">ACTIVE</option>
+                    <option value="INACTIVE">INACTIVE</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ministry.Ministry_Type" class="control-label"></label>
+                @Html.DropDownListFor(model => model.Ministry.Ministry_Type, new SelectList(Model.MinistryType_ddl_List, "Value", "Text"), "-Select-", new { @class = "form-control" })
+            </div>
+
+            <div class="d-flex justify-content-between mt-3">
+                <a href="/SuperAdmin/Ministry" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left"></i> Back to List
+                </a>
+                <button type="button" class="btn btn-success btn_send" onclick="UpdateFeedback()">
+                    <i class="fa fa-save"></i> Update
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+<script>
+    function UpdateFeedback() {
+        debugger;
+        let ministry_id = document.getElementById("Ministry_Min_id").value.trim();
+        let ministry_code = document.getElementById("Ministry_Mincode").value.trim();
+        let ministry_name = document.getElementById("Ministry_Ministry_Name").value.trim();
+        let ministry_status = document.getElementById("Ministry_Min_Status").value.trim();
+        let ministry_type = document.getElementById("Ministry_Ministry_Type").value.trim();
+
+        // Collect validation errors
+        let errorMessage = "";
+
+        if (!ministry_name && !ministry_status && !ministry_type) {
+            errorMessage = "All fields are required.";
+        } else if (!ministry_name) {
+            errorMessage = "Please enter the Ministry Name.";
+        } else if (!ministry_status) {
+            errorMessage = "Please select the Ministry Status.";
+        } else if (!ministry_type) {
+            errorMessage = "Please select the Ministry Type.";
+        }
+        if (errorMessage) {
+            Swal.fire({
+                icon: 'warning',
+                title: errorMessage,
+                confirmButtonColor: '#d33'
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: "Do you want to save the changes?",
+            icon: "question",
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Save",
+            denyButtonText: `Don't save`
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                $('.btn_send').prop('disabled', true).text("Submitting...");
+
+                $.ajax({
+                    type: 'POST',
+                    url: "/SuperAdmin/EditMinistry",
+                    data: {
+                        'Ministry.Min_id': ministry_id,
+                        'Ministry.Mincode': ministry_code,
+                        'Ministry.Ministry_Name': ministry_name,
+                        'Ministry.Min_Status': ministry_status,
+                        'Ministry.Ministry_Type': ministry_type
+                    },
+
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Ministry Updated successfully.',
+                                confirmButtonColor: '#3085d6'
+                            }).then(() => {
+                                window.location.href = '/SuperAdmin/Ministry';
+                            });
+                        }
+                        else if (response.duplicate_Update_Ministry_message) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: response.duplicate_Update_Ministry_message,
+                                confirmButtonColor: '#f0ad4e'
+                            });
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: response.error_Update_Ministry_message,
+                                confirmButtonColor: '#d33'
+                            });
+                        }
+                    },
+                    error: function (response) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops!',
+                            text: 'Something went wrong. Please try again.',
+                            confirmButtonColor: '#d33'
+                        });
+                    },
+                    complete: function () {
+                        $('.btn_send').prop('disabled', false).html('<i class="fa fa-save"></i> Update');
+                    }
+                });
+
+            }
+        });
+    }
+</script>

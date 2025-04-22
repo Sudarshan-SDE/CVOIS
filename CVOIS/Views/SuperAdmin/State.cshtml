@@ -1,0 +1,304 @@
+﻿@model CVOIS.Models.SuperAdmin.SuperAdminViewModel
+
+@{
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+    // var username = Context.Session.GetString("Username");
+}
+
+@* State modal open button *@
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#stateModal">
+        <i class="fa fa-plus"></i> Add State
+    </button>
+    <h3>State List</h3>
+    <div class="d-flex align-items-center gap-2 ms-auto">
+    </div>
+</div>
+
+@* State Modal *@
+<div class="modal fade" id="stateModal" tabindex="-1" role="dialog" aria-labelledby="stateLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form id="stateForm">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add State</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-row row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="State.state_id" class="control-label"></label>
+                                <input asp-for="State.state_id" class="form-control" id="state_id" placeholder="State Id" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="State.state_name" class="control-label"></label>
+                                <input asp-for="State.state_name" class="form-control" id="state_name" placeholder="State Name" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="btnSaveState" onclick="SaveState()">
+                        Submit
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="resetModalForm()">
+                        Close
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+@* State table *@
+@if (Model.State_List != null && Model.State_List.Any())
+{
+    <div class="table-responsive table-wrapper">
+        <table id="stateDataTable" class="table table-bordered table-striped custom-border w-100">
+            <thead class="table-header">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.State.state_id)</th>
+                    <th>@Html.DisplayNameFor(model => model.State.state_name)</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.State_List)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.state_id)</td>
+                        <td>@Html.DisplayFor(modelItem => item.state_name)</td>
+                        <td class="text-center">
+                            <a asp-action="EditState" asp-route-id="@item.state_id" class="btn btn-sm btn-outline-primary me-1">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a href="javascript:void(0);"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="confirmDelete('@Url.Action("DeleteState", new { id = item.state_id})')">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger">No State records found.</div>
+}
+
+
+@* ----------Script start from here---------*@
+
+@* Data table *@
+<script>
+    $(document).ready(function () {
+        $('#stateDataTable').DataTable({
+            dom: "<'row mb-2'<'col-md-6'B><'col-md-6 text-end'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fa fa-file-excel-o"></i> Export to Excel',
+                    className: 'btn btn-success me-2',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fa fa-file-pdf-o"></i> Export to PDF',
+                    className: 'btn btn-danger me-2',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    className: 'btn btn-primary',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                }
+            ],
+            paging: true,
+            searching: true,
+            ordering: true,
+            responsive: true,
+            scrollX: true,
+            lengthChange: false,
+            info: true,
+            autoWidth: false,
+            columnDefs: [
+                { targets: -1, className: 'text-center' }
+            ],
+            language: {
+                searchPlaceholder: "Search State...",
+                search: "",
+                zeroRecords: "No matching State found",
+                info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                infoEmpty: "No entries available",
+                paginate: {
+                    previous: "<",
+                    next: ">"
+                }
+            }
+        });
+    });
+</script>
+
+@* Save State Data *@
+<script>
+    function SaveState() {
+        let state_id = $("#state_id").val().trim();
+        let state_name = $("#state_name").val().trim();
+
+        // Collect validation errors
+        let errorMessage = "";
+
+        if (!state_id && !state_name) {
+            errorMessage = "All fields are required.";
+        }
+        else if (!state_id) {
+            errorMessage = "Please Enter the State Id.";
+        }
+        else if (!state_name) {
+            errorMessage = "Please Enter the State Name.";
+        }
+        if (errorMessage) {
+            Swal.fire({
+                icon: 'warning',
+                title: errorMessage,
+                confirmButtonColor: '#d33'
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: "Do you want to save the record?",
+            icon: "question",
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Save",
+            denyButtonText: `Don't save`
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                $('#btnSaveState').prop('disabled', true).text("Submitting...");
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/SuperAdmin/State',
+                    data: {
+                        'State.state_id': state_id,
+                        'State.state_name': state_name
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'State added successfully.',
+                                confirmButtonColor: '#3085d6'
+                            }).then(() => {
+                                $('#stateLabel').modal('hide');
+                                $('#stateForm')[0].reset();
+                                location.reload();
+                            });
+                        }
+                        else if (response.duplicate_state_message) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: response.duplicate_state_message,
+                                confirmButtonColor: '#f0ad4e'
+                            });
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: response.error_state_message,
+                                confirmButtonColor: '#d33'
+                            });
+                        }
+                    },
+                    error: function (response) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops!',
+                            text: 'Something went wrong. Please try again.',
+                            confirmButtonColor: '#d33'
+                        });
+                    },
+                    complete: function () {
+                        $('#btnSaveState').prop('disabled', false).text("Submit");
+                    }
+                });
+            }
+        });
+    }
+</script>
+
+@* Delete State Data Confirmation*@
+<script>
+    function confirmDelete(deleteUrl) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This action cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = deleteUrl;
+            }
+        });
+    }
+</script>
+
+@* Delete State Data  *@
+<script>
+    $(document).ready(function () {
+        var StatesuccessMessage = '@TempData["StatesuccessMessage"]';
+        var StateerrorMessage = '@TempData["StateerrorMessage"]';
+
+        if (StatesuccessMessage) {
+            Swal.fire({
+                title: "Deleted!",
+                text: StatesuccessMessage,
+                icon: "success",
+                confirmButtonText: "OK"
+            });
+        }
+
+        if (StateerrorMessage) {
+            Swal.fire({
+                title: "Error!",
+                text: StateerrorMessage,
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+        }
+    });
+</script>
+
+@* Reset Form *@
+<script>
+    function resetModalForm() {
+        document.getElementById("stateForm").reset();
+    }
+</script>

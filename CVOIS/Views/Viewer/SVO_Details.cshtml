@@ -1,0 +1,122 @@
+﻿@model IEnumerable<CVOIS.Models.Viewers.CVO_Details_Model>
+
+@{
+    ViewData["Title"] = "SVO_Details";
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.cvoName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ministry_Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DeptName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ORGNAME)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CHARGES)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.org_level)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TENURE_FROM)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TENURE_TO)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PHONE_NO)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EMAIL_ID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BATCH)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.org_address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CVO_STATUS)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+ @*    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.cvoName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ministry_Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DeptName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ORGNAME)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CHARGES)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.org_level)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TENURE_FROM)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TENURE_To)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PHONE_NO)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EMAIL_ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BATCH)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.org_address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CVO_STATUS)
+                </td>
+            </tr>
+        }
+    </tbody> *@
+</table>
+
+
+
+
+
+<div class="col-md-2 d-flex align-items-center">
+    <button id="btnBack" class="btn btn-danger mt-3 mt-md-0">Back</button>
+</div>
+@section Scripts {
+    <script>
+        $('#btnBack').click(function () {
+            window.location.href = '@Url.Action("Index", "Viewer")';
+        });
+    </script>
+}
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,117 @@
+﻿@* @model IEnumerable<CVOIS.Models.Admin.AdminViewRequestDetailsModel> *@
+    @model CVOIS.Models.DashboardReportViewModel
+
+@{
+    ViewData["Title"] = "View_DashboardDetailedReport";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title"></h3>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3">
+                <label>Select Status:</label>
+            </div>
+            <div class="col-md-3">
+                @* @Html.DropDownListFor(model => model.StatusFilter.SelectedStatus,
+                         Model.StatusFilter.StatusList, "Select Status", new { @class = "form-control" }) *@
+
+                @Html.DropDownListFor(model => model.StatusFilter.SelectedStatus,
+                         new SelectList(Model.StatusFilter.StatusList, "Value", "Text"),
+                         "Select Status",
+                         new { @class = "form-control", id = "statusDropdown" })
+            </div>
+            <div class="col-md-3">
+                @* <a href="#" class="btn btn-primary" id="submit">Cilk Here</a> *@
+                <a href="javascript:void(0);" class="btn btn-primary" id="submit">Click Here</a>
+            </div>
+            <div class="col-md-3">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">@TempData["Title"]</h3>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+        <table id="example1" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Sr.No</th>
+                    <th>Ministry Name</th>
+                    <th>Request ID</th>
+                    <th>Request Issue</th>
+                    <th>Correction in Organization</th>
+                    <th>Request Comments</th>
+
+                    <th>Approver Remarks</th>
+                    <th>Send to Admin</th>
+                    <th>Verification Date</th>
+                    <th>Status</th>
+
+
+                </tr>
+            </thead>
+            <tbody>
+
+                @{
+                  
+                    if (Model?.Requests != null && Model.Requests.Any())
+                    {
+                        int i = 0;
+                        @foreach (var item in Model.Requests)
+                        {
+                            
+                            i = i + 1;
+                            <tr>
+                                <td>@i</td>
+                                <td>@item.MinName</td>
+                                <td>@item.OrgName</td>
+                                <td>@item.ReqId </td>
+                                <td>@item.RequestIssue</td>
+                                <td>@item.ReqComments</td>
+                                <td>@item.ApproverRemarks</td>
+                                <td>@item.ReqSendAdminFlag</td>
+                                <td>@item.ReqVerificationDate</td>
+                                <td>@item.RequestStatus</td>
+                            </tr>
+                             i++;
+                        }
+                    }
+
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <!-- /.card-body -->
+</div>
+<script src="~/ltscript/plugins/jquery/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#submit").click(function (e) {
+           
+            e.preventDefault(); // Prevent default anchor behavior
+
+            var selectedStatus = $("#statusDropdown").val(); // Get selected dropdown value
+
+            console.log("Selected Status:", selectedStatus); // Debugging line
+
+            if (selectedStatus && selectedStatus !== "") {
+                var baseUrl = "@Url.Action("View_DashboardDetailedReport", "Admin")";
+                window.location.href = baseUrl + "?flag=" + encodeURIComponent(selectedStatus);
+            } else {
+                alert("Please select a status before proceeding.");
+            }
+        });
+    });
+</script>

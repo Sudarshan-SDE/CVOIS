@@ -1,0 +1,310 @@
+﻿@model CVOIS.Models.SuperAdmin.SuperAdminViewModel
+
+@{
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+    // var username = Context.Session.GetString("Username");
+}
+
+@* org level modal open button *@
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#levelModal">
+        <i class="fa fa-plus"></i> Add Org Level
+    </button>
+    <h3>Org Level List</h3>
+    <div class="d-flex align-items-center gap-2 ms-auto">
+    </div>
+</div>
+
+@* Org Level Modal  *@
+<div class="modal fade" id="levelModal" tabindex="-1" role="dialog" aria-labelledby="levelLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form id="levelForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="levelModalLabel">Add New Level</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-row row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Org_Level.Code" class="control-label"></label>
+                                <input asp-for="Org_Level.Code" class="form-control" id="Level_Code" placeholder="Organization Level Code" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Org_Level.org_level" class="control-label"></label>
+                                <input asp-for="Org_Level.org_level" class="form-control" id="Level_org_level" placeholder="Organization Level Name" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="btnSaveLevel" onclick="SaveLevel()">
+                        Submit
+                    </button>
+                    @* <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> *@
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="resetModalForm()">
+                        Close
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@* Org Level table *@
+@if (Model.Org_Level_List != null && Model.Org_Level_List.Any())
+{
+    <div class="table-responsive table-wrapper">
+        <table id="orgLevelDataTable" class="table table-bordered table-striped custom-border w-100">
+            <thead class="table-header">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Org_Level.row_num)</th>
+                    <th>@Html.DisplayNameFor(model => model.Org_Level.Code)</th>
+                    <th>@Html.DisplayNameFor(model => model.Org_Level.org_level)</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Org_Level_List)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.row_num)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Code)</td>
+                        <td>@Html.DisplayFor(modelItem => item.org_level)</td>
+                        <td class="text-center">
+                            <a asp-action="EditLevel" asp-route-id="@item.sno" class="btn btn-sm btn-outline-primary me-1">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a href="javascript:void(0);"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="confirmDelete('@Url.Action("DeleteLevel", new { id = item.sno })')">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger">No Level records found.</div>
+}
+
+
+@* ----------Script start from here---------*@
+
+@* Data table *@
+<script>
+    $(document).ready(function () {
+        $('#orgLevelDataTable').DataTable({
+            dom: "<'row mb-2'<'col-md-6'B><'col-md-6 text-end'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fa fa-file-excel-o"></i> Export to Excel',
+                    className: 'btn btn-success me-2',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fa fa-file-pdf-o"></i> Export to PDF',
+                    className: 'btn btn-danger me-2',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    className: 'btn btn-primary',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                }
+            ],
+            paging: true,
+            searching: true,
+            ordering: true,
+            responsive: true,
+            scrollX: true,
+            lengthChange: false,
+            info: true,
+            autoWidth: false,
+            columnDefs: [
+                { targets: -1, className: 'text-center' } // Align Actions column
+            ],
+            language: {
+                searchPlaceholder: "Search levels...",
+                search: "",
+                zeroRecords: "No matching levels found",
+                info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                infoEmpty: "No entries available",
+                paginate: {
+                    previous: "<",
+                    next: ">"
+                }
+            }
+        });
+    });
+</script>
+
+@* Save Org Level Data *@
+<script>
+    function SaveLevel() {
+        let orglevel_code = $("#Level_Code").val().trim();
+        let orglevel_name = $("#Level_org_level").val().trim();
+
+        // Collect validation errors
+        let errorMessage = "";
+
+        if (!orglevel_code && !orglevel_name) {
+            errorMessage = "All fields are required.";
+        }
+        else if (!orglevel_code) {
+            errorMessage = "Please enter the Org Level Code.";
+        }
+        else if (!orglevel_name) {
+            errorMessage = "Please select the Org Level Name.";
+        }
+        if (errorMessage) {
+            Swal.fire({
+                icon: 'warning',
+                title: errorMessage,
+                confirmButtonColor: '#d33'
+            });
+            return;
+        }
+
+
+        Swal.fire({
+            title: "Do you want to save the record?",
+            icon: "question",
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Save",
+            denyButtonText: `Don't save`
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+
+                $('#btnSaveLevel').prop('disabled', true).text("Submitting...");
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/SuperAdmin/Level',
+                    data: {
+                        'Org_Level.Code': orglevel_code,
+                        'Org_Level.org_level': orglevel_name
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Level added successfully.',
+                                confirmButtonColor: '#3085d6'
+                            }).then(() => {
+                                $('#levelLabel').modal('hide');
+                                $('#levelForm')[0].reset();
+                                location.reload();
+                            });
+                        }
+                        else if (response.duplicate_Level_message) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: response.duplicate_Level_message,
+                                confirmButtonColor: '#d33'
+                            });
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: response.error_Level_message,
+                                confirmButtonColor: '#d33'
+                            });
+                        }
+                    },
+                    error: function (response) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops!',
+                            text: 'Something went wrong. Please try again.',
+                            confirmButtonColor: '#d33'
+                        });
+                    },
+                    complete: function () {
+                        $('#btnSaveLevel').prop('disabled', false).text("Submit");
+                    }
+                });
+
+
+            }
+        });
+    }
+</script>
+
+@* Delete Org Level Data Confirmation *@
+<script>
+    function confirmDelete(deleteUrl) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This action cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = deleteUrl;
+            }
+        });
+    }
+</script>
+
+@* Delete Org Level Data  *@
+<script>
+    $(document).ready(function () {
+        var LevelsuccessMessage = '@TempData["Delete_Level_Message"]';
+        var LevelerrorMessage = '@TempData["Failed_Level_Message"]';
+
+        if (LevelsuccessMessage) {
+            Swal.fire({
+                title: "Deleted!",
+                text: LevelsuccessMessage,
+                icon: "success",
+                confirmButtonText: "OK"
+            });
+        }
+
+        if (LevelerrorMessage) {
+            Swal.fire({
+                title: "Error!",
+                text: LevelerrorMessage,
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+        }
+    });
+</script>
+
+@* Reset Form *@
+<script>
+    function resetModalForm() {
+        document.getElementById("levelForm").reset();
+    }
+</script>
+

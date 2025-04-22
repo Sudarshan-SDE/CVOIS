@@ -1,0 +1,329 @@
+﻿@model CVOIS.Models.Viewers.ViewerModel
+
+@{
+
+    Layout = "~/Views/Shared/_ViewerLayout.cshtml";
+}
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger">
+        @ViewBag.ErrorMessage
+    </div>
+   
+}
+
+
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+
+        <h5 class="mb-0">CVO Details</h5>
+
+        <h5 class="mb-0">Select Data</h5>
+
+    </div>
+
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="d-flex align-items-center gap-2">
+                    <label for="AppointingAuthority" class="mb-0" style="width: 150px;">
+                        <b>Appointing Authority<span class="text-danger">*</span>:</b>
+                    </label>
+                    @* @Html.DropDownListFor(m => m.AppointingAuthority, Model.AppointingAuthorityList, "-Select-", new { @class = "form-control" }) *@
+                    <select id="AppointingAuthority" name="AppointingAuthority" class="form-control">
+                        <option value="">-Select-</option>
+                        @foreach (var obj in Model.AppointingAuthorityList)
+                        {
+                            <option value="@obj.Value">@obj.Text</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="d-flex align-items-center gap-2">
+                    <label for="Level" class="mb-0" style="width: 150px;">
+                        <b>Level<span class="text-danger">*</span>:</b>
+                    </label>
+                    @* @Html.DropDownListFor(m => m.Level, Model.LevelList, "-Select-", new { @class = "form-control" }) *@
+                    <select id="Level" name="Level" class="form-control">
+                        <option value="">-Select-</option>
+                        @foreach (var obj in Model.LevelList)
+                        {
+                            <option value="@obj.Value">@obj.Text</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="d-flex align-items-center gap-2">
+                    <label for="State" class="mb-0" style="width: 150px;"><b>State<span class="text-danger">*</span>:</b></label>
+                    @* @Html.DropDownListFor(m => m.State, Model.StateList, "-Select-", new { @class = "form-control" }) *@
+                    <select id="State" name="State" class="form-control">
+                        <option value="">-Select-</option>
+                        @foreach (var obj in Model.StateList)
+                        {
+                            <option value="@obj.Value">@obj.Text</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <br />
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="d-flex align-items-center gap-2">
+                    <label for="Service" class="mb-0" style="width: 150px;"><b>Service<span class="text-danger">*</span>:</b></label>
+                    @* @Html.DropDownListFor(m => m.Service, Model.ServiceList, "-Select-", new { @class = "form-control" }) *@
+                    <select id="Service" name="Service" class="form-control">
+                        <option value="">-Select-</option>
+                        @foreach (var obj in Model.ServiceList)
+                        {
+                            <option value="@obj.Value">@obj.Text</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="d-flex align-items-center gap-2">
+                    <label for="CVO" class="mb-0" style="width: 150px;"><b>CVO Name<span class="text-danger">*</span>:</b></label>
+                    @* @Html.DropDownListFor(m => m.CVO, Model.CVOList, "-Select-", new { @class = "form-control" }) *@
+                    <select id="CVO" name="CVO" class="form-control">
+                        <option value="">-Select-</option>
+                        @foreach (var obj in Model.CVOList)
+                        {
+                            <option value="@obj.Value">@obj.Text</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <br />
+
+        <div class="row">
+            <div class="col-md-6">
+                @*   <div>
+                <label for="Ministry" class="mb-0" style="width: 150px;"><b>Ministry Name</b></label>
+                @Html.DropDownListFor(m => m.Ministry, Model.MinistryList, "-Select-", new { @class = "form-control" })
+                </div> *@
+                <div class="mb-3 d-flex align-items-center">
+                    <label for="Ministry" class="mb-0" style="width: 150px;"><b>Ministry Name<span class="text-danger">*</span>:</b></label>
+                    <select id="Ministry" name="Ministry" class="form-control">
+                        <option value="">-Select-</option>
+                        @foreach (var dept in Model.MinistryList)
+                        {
+                            <option value="@dept.Text" data-ministry="@dept.Value">@dept.Text</option>
+                        }
+                    </select>
+                </div>
+
+                @*  <div>
+                <label for="Department" class="mb-0" style="width: 150px;"><b>Department Name</b></label>
+                @Html.DropDownListFor(m => m.Department, Model.DepartmentList, "-Select-", new { @class = "form-control" })
+                </div> *@
+                <div class="mb-3 d-flex align-items-center">
+                    <label for="Department" class="mb-0" style="width: 150px;"><b>Department Name<span class="text-danger">*</span>:</b></label>
+                    <select id="Department" name="Department" class="form-control">
+                        <option value="">-Select-</option>
+                        @foreach (var dept in Model.DepartmentList)
+                        {
+                            <option value="@dept.Text" data-ministry="@dept.Value">@dept.Text</option>
+                        }
+                    </select>
+                </div>
+
+                @*  <div>
+                <label for="Organisation" class="mb-0" style="width: 150px;"><b>Organisation Name</b></label>
+                @Html.DropDownListFor(m => m.Organisation, Model.OrganisationList, "-Select-", new { @class = "form-control" })
+                </div> *@
+                <div class="mb-3 d-flex align-items-center">
+                    <label for="Organisation" class="mb-0" style="width: 150px;"><b>Organisation Name<span class="text-danger">*</span>:</b></label>
+                    <select id="Organisation" name="Organisation" class="form-control">
+                        <option value="">-Select-</option>
+                        @foreach (var org in Model.OrganisationList)
+                        {
+                            <option value="@org.Text" data-department="@org.Value">@org.Text</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="mb-3 d-flex align-items-center">
+                    <label for="OrganisationCategory" class="me-2" style="width: 200px;"><b>Organisation Category<span class="text-danger">*</span>:</b></label>
+                    @* @Html.DropDownListFor(m => m.OrganisationCategory, Model.OrganisationCategoryList, "-Select-", new { @class = "form-control w-100" }) *@
+                    <select id="OrganisationCategory" name="OrganisationCategory" class="form-control">
+                        <option value="">-Select-</option>
+                        @foreach (var obj in Model.OrganisationCategoryList)
+                        {
+                            <option value="@obj.Value">@obj.Text</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3 d-flex align-items-center">
+                    <label for="tenure_start" class="me-2" style="width: 200px;"><b>Tenure From Start<span class="text-danger">*</span>:</b></label>
+                    <input type="date" name="Tenurefrom" id="tenure_start" />
+                </div>
+
+                <div class="mb-3 d-flex align-items-center">
+                    <label for="tenure_end" class="me-2" style="width: 200px;"><b>Tenure From End<span class="text-danger">*</span>:</b></label>
+                    <input type="date" name="TenureTo" id="tenure_end" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2 d-flex align-items-center">
+            <button id="btnSubmit" class="btn btn-primary mt-3 mt-md-0">Submit</button>
+        </div>
+    </div>
+</div>
+
+
+<div>
+    <hr />
+    <div id="dataTableContainer" style="display: none;">
+        <h5>CVO Details</h5>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped" id="dataTable">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Ministry Name</th>
+                        <th>Department</th>
+                        <th>Organisation</th>
+                        <th>CHARGES</th>
+                        <th>org_level</th>
+                        <th>Tenure From</th>
+                        <th>Tenure To</th>
+                        <th>PHONE_NO</th>
+                        <th>Email</th>
+                        <th>BATCH</th>
+                        <th>org_address</th>
+                        <th>CVO_STATUS</th>
+                        <!-- Add more columns as needed -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Rows will be populated here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#btnSubmit').on('click', function (e) {
+            e.preventDefault();           
+            var requestData = {
+                AppointingAuthority: $('#AppointingAuthority').val(),
+                Level: $('#Level').val(),
+                State: $('#State').val(),
+                Service: $('#Service').val(),
+                CVO: $('#CVO').val(),
+                Ministry: $('#Ministry').val(),
+                Department: $('#Department').val(),
+                Organisation: $('#Organisation').val(),
+                OrganisationCategory: $('#OrganisationCategory').val(),
+                Tenurefrom: $('#tenure_start').val(),
+                TenureTo: $('#tenure_end').val()
+            };
+            // Check if all fields are empty
+            var allEmpty = Object.values(requestData).every(function (val) {
+                return val === "" || val === null;
+            });
+            if (allEmpty) {
+                alert("Please select at least one filter value.");
+                return; // Don't proceed to AJAX
+            }
+
+            console.log("Sending data:", requestData); // For debugging
+
+            $.ajax({
+                url: '/Viewer/Index',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(requestData),
+                success: function (response) {
+                    console.log("Server response:", response);
+                    var tbody = $('#dataTable tbody');
+                    tbody.empty();
+                    if (response.success && response.data.length > 0) {
+                        $('#dataTableContainer').show();
+                        response.data.forEach(function (item) {
+                            var row = `<tr>
+                                            <td>${item.cvoName}</td>
+                                            <td>${item.ministry_Name}</td>
+                                            <td>${item.deptName}</td>
+                                            <td>${item.orgname}</td>
+                                            <td>${item.charges}</td>
+                                            <td>${item.org_level}</td>
+                                            <td>${item.tenure_FROM}</td>
+                                            <td>${item.tenure_TO}</td>
+                                            <td>${item.phone_NO}</td>
+                                            <td>${item.email_ID}</td>
+                                            <td>${item.batch}</td>
+                                            <td>${item.org_address}</td>
+                                            <td>${item.cvo_STATUS}</td>
+                                        </tr>`;
+                            tbody.append(row);
+                        });
+                    } else {
+                        $('#dataTableContainer').show();
+                        tbody.append('<tr><td colspan="13" class="text-center">No records found.</td></tr>');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error occurred:", error);
+                }
+            });
+
+        });
+    });
+
+</script>
+
+
+
+
+@* Cascading  *@
+<script>
+    $(document).ready(function () {
+
+        // Filter Departments based on selected Ministry
+        $('#Ministry').on('change', function () {
+            var selectedMinistry = $(this).val();
+            $('#Department').val('').prop('disabled', !selectedMinistry);
+            $('#Organisation').val('').prop('disabled', true);
+
+            $('#Department option').each(function () {
+                var show = !selectedMinistry || $(this).data('ministry') === selectedMinistry || $(this).val() === "";
+                $(this).toggle(show);
+            });
+
+            $('#Organisation option').hide().filter('[value=""]').show();
+        });
+
+        // Filter Organisations based on selected Department
+        $('#Department').on('change', function () {
+            var selectedDept = $(this).val();
+            $('#Organisation').val('').prop('disabled', !selectedDept);
+
+            $('#Organisation option').each(function () {
+                var show = !selectedDept || $(this).data('department') === selectedDept || $(this).val() === "";
+                $(this).toggle(show);
+            });
+        });
+
+        // On load: hide all child options
+        $('#Department option').not('[value=""]').hide();
+        $('#Organisation option').not('[value=""]').hide();
+        $('#Department, #Organisation').prop('disabled', true);
+    });
+</script>

@@ -1,0 +1,140 @@
+﻿@model IEnumerable<CVOIS.Models.Admin.AdminDashboardModel>
+
+
+@{
+    ViewData["Title"] = "AdminDashboard";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+
+@* <h1>AdminDashboard</h1> *@
+
+@* <div class="content-wrapper"> *@
+<div class="content-header">    
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                @* <h1 class="m-0">Dashboard</h1> *@
+            </div>
+            <div class="col-sm-6">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@foreach (var item in Model)
+{
+  <section class="content">
+    @*  <div class="container-fluid"> *@
+    <div class="row">
+        <div class="col-lg-2 col-2">
+        </div>
+        <div class="col-lg-4 col-4">
+            <!-- small box -->
+            <div class="small-box bg-info">
+                <div class="inner">
+                    <h3>@item.TotalRequestReceived </h3>
+                    
+                    <p>Total Requests Received</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-bag"></i>
+                </div>
+                    <a href="~/Admin/View_DashboardDetailedReport?flag=N" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-4 col-4">
+            <!-- small box -->
+            <div class="small-box bg-success">
+                <div class="inner">
+                    <h3>@item.TotalRequestApprovedCount</h3>
+
+                    <p>Approved</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-stats-bars"></i>
+                </div>
+                    <a href="~/Admin/View_DashboardDetailedReport?flag=Y" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <div class="col-lg-2 col-2">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-2 col-2">
+        </div>
+        <div class="col-lg-4 col-4">
+            <!-- small box -->
+            <div class="small-box bg-warning">
+                <div class="inner">
+                    <h3>@item.TotalRequestPendingCount</h3>
+
+                    <p>Pending</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-person-add"></i>
+                </div>
+                    <a href="~/Admin/View_DashboardDetailedReport?flag=N" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-4 col-4">
+            <!-- small box -->
+            <div class="small-box bg-danger">
+                <div class="inner">
+                    <h3>@item.TotalRequestRejected</h3>
+
+                    <p>Rejected</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-pie-graph"></i>
+                </div>
+                    <a href="~/Admin/View_DashboardDetailedReport?flag=R" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <div class="col-lg-2 col-2">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-2 col-2">
+        </div>
+        <div class="col-lg-4 col-4">
+            <!-- small box -->
+            <div class="small-box bg-warning">
+                <div class="inner">
+                    <h3>44</h3>
+
+                    <p>Vacant Full Time Organisation</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-person-add"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-4 col-4">
+            <!-- small box -->
+            <div class="small-box bg-danger">
+                <div class="inner">
+                    <h3>65</h3>
+
+                    <p>Pending For Approval Organisation</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-pie-graph"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <div class="col-lg-2 col-2">
+        </div>
+    </div>
+    
+    @* </div> *@
+</section>
+}
+
+@* </div> *@

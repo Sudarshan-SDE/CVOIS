@@ -1,0 +1,208 @@
+﻿@model IEnumerable<CVOIS.Models.Admin.FulltimeCVOListForManageModel>
+
+@{
+    ViewData["Title"] = "Get_FullTimeCVOForManage";
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+
+<style>
+    .card-body {
+        overflow-x: auto;
+        overflow-y: auto;
+        max-height: 500px; /* Adjust height as needed */
+        white-space: nowrap; /* Prevents text wrapping */
+    }
+
+    #tbl_cvodetails {
+        width: 100%;
+        table-layout: fixed; /* Ensures column widths are respected */
+    }
+
+        #tbl_cvodetails thead {
+            position: sticky;
+            top: 0;
+            background-color: #fff;
+            z-index: 10;
+        }
+
+        #tbl_cvodetails th, #tbl_cvodetails td {
+            text-align: center; /* Centers text in cells */
+            vertical-align: middle;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap; /* Keeps content in one line */
+        }
+
+    #tbl_cvodetails_wrapper {
+        width: 100%;
+    }
+
+</style>
+
+<div class="card">
+    <div class="card-header">       
+        <div class="row d-flex align-items-center text-center">
+            <div class="col-md-2 d-flex justify-content-left">
+                <a href="~/Admin/Add_FullTime_CVO" class="btn btn-primary"> Add CVO </a>
+            </div>
+            <div class="col-md-8 d-flex justify-content-center">
+                <h3 class="card-title" style="font-weight:bold; font-size:large">@TempData["Title"]</h3>
+            </div>
+            <div class="col-md-2">
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- /.card-header -->
+    <div class="card-body">
+        <table id="tbl_cvodetails" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Sno</th>
+                    <th>CVO Name</th>
+                    <th>Organisation Name</th>
+                    <th>Designation</th>
+                    <th>Services</th>
+                    <th>Batch</th>
+                    <th>Level</th>
+                    <th>TenureFrom</th>
+                    <th>TenureTo</th>
+                    <th>Charges</th>
+                    <th>PhoneNo</th>
+                    <th>EmailId</th>
+                    <th>Status</th>
+                    <th>Action</th>
+
+
+                </tr>
+            </thead>
+            <tbody>
+
+                @{
+
+                    if (Model != null && Model.Any())
+                    {
+                        // int i = 0;
+                        @foreach (var item in Model)
+                        {
+                            // i = i + 1;
+                            <tr>
+                                <td>@item.Sno</td>
+                                <td>@item.cvoName</td>
+                                <td>@item.orgName</td>
+                                <td>@item.cvoDesignation </td>
+                                <td>@item.cvoServices</td>
+                                <td>@item.cvoBatch</td>
+                                <td>@item.cvoLevel</td>
+                                <td>@item.cvoTenureFrom</td>
+                                <td>@item.cvoTenureTo</td>
+                                <td>@item.charges</td>
+                                <td>@item.phoneNo</td>
+                                <td>@item.emailid</td>
+                                <td>@item.Cvostatus</td>
+                                <td><a href="~/Admin/Update_CVODetails?id=@item.cvoid & flag=@item.verifierflag"> Update</a></td>
+                            </tr>
+                            // i++;
+                        }
+                    }
+
+                }
+            </tbody>
+            @* <tfoot>
+                <tr>
+                </tr>
+            </tfoot> *@
+        </table>
+    </div>
+    <!-- /.card-body -->
+</div>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
+
+<!-- jQuery and DataTables JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+
+<script>
+        $(document).ready(function () {
+        $('#tbl_cvodetails').DataTable({
+            dom: 'Bfrtip', // Adds buttons to the table
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: 'Export to Excel',
+                    className: 'btn btn-success'
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: 'Export to PDF',
+                    className: 'btn btn-danger'
+                },
+                {
+                    extend: 'print',
+                    text: 'Print',
+                    className: 'btn btn-primary'
+                }
+            ],
+            scrollX: true,  // Enable horizontal scrolling
+            scrollY: "400px", // Makes table vertically scrollable
+            scrollCollapse: true,
+            paging: true,
+            autoWidth: false, // Prevents auto column resizing
+            columnDefs: [
+                { width: "5px", targets: 0 }, // Sno
+                { width: "250px", targets: 1 }, // CVO Name
+                { width: "350px", targets: 2 }, // Organisation Name
+                { width: "100px", targets: 3 }, // Designation
+                { width: "50px", targets: 4 }, // Services
+                { width: "40px", targets: 5 }, // Batch
+                { width: "150px", targets: 6 }, // Level
+                { width: "100px", targets: 7 }, // Tenure From
+                { width: "100px", targets: 8 }, // Tenure To
+                { width: "70px", targets: 9 }, // Charges
+                { width: "100px", targets: 10 }, // Phone No
+                { width: "150px", targets: 11 }, // Email ID
+                { width: "50px", targets: 12 }, // Status
+                { width: "80px", targets: 13 }  // Action
+            ]
+        });
+    });
+
+</script>
+
+@* <script>
+    $(document).ready(function () {
+        $('#tbl_cvodetails').DataTable({
+            dom: 'Bfrtip', // Adds buttons to the table
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: 'Export to Excel',
+                    className: 'btn btn-success'
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: 'Export to PDF',
+                    className: 'btn btn-danger'
+                },
+                {
+                    extend: 'print',
+                    text: 'Print',
+                    className: 'btn btn-primary'
+                }
+            ],
+            scrollY: "400px", // Makes table scrollable
+            scrollCollapse: true,
+            paging: true
+        });
+    });
+</script> *@

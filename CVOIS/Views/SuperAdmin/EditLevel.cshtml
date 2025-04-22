@@ -1,0 +1,140 @@
+﻿@model CVOIS.Models.SuperAdmin.SuperAdminViewModel
+
+@{
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+    // var username = Context.Session.GetString("Username");
+}
+
+<div class="text-center mb-3">
+    <h3>Edit Org Level</h3>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="SuperAdmin" asp-action="EditLevel" id="levelForm" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Org_Level.sno" class="control-label"></label>
+                <input asp-for="Org_Level.sno" class="form-control" id="Level_sno" readonly />
+                <span asp-validation-for="Org_Level.sno" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Org_Level.Code" class="control-label"></label>
+                <input asp-for="Org_Level.Code" class="form-control" id="Level_Code" />
+                <span asp-validation-for="Org_Level.Code" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Org_Level.org_level" class="control-label"></label>
+                <input asp-for="Org_Level.org_level" class="form-control" id="Level_org_level" />
+                <span asp-validation-for="Org_Level.org_level" class="text-danger"></span>
+            </div>
+
+
+            <div class="d-flex justify-content-between mt-3">
+                <a href="/SuperAdmin/Level" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left"></i> Back to List
+                </a>
+
+                <button type="button" class="btn btn-success btn_send" onclick="UpdateFeedbackLevel()">
+                    <i class="fa fa-save"></i> Update
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<script>
+    function UpdateFeedbackLevel() {
+        let orglevel_sno = document.getElementById("Level_sno").value;
+        let orglevel_code = document.getElementById("Level_Code").value.trim();
+        let orglevel_name= document.getElementById("Level_org_level").value.trim();
+
+        // Collect validation errors
+        let errorMessage = "";
+
+        if (!orglevel_code && !orglevel_name) {
+            errorMessage = "All fields are required.";
+        }
+        else if (!orglevel_code) {
+            errorMessage = "Please enter the Org Level Code.";
+        }
+        else if (!orglevel_name) {
+            errorMessage = "Please select the Org Level Name.";
+        }
+        if (errorMessage) {
+            Swal.fire({
+                icon: 'warning',
+                title: errorMessage,
+                confirmButtonColor: '#d33'
+            });
+            return;
+        }
+
+
+        Swal.fire({
+            title: "Do you want to save the changes?",
+            icon: "question",
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Save",
+            denyButtonText: `Don't save`
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                $('.btn_send').prop('disabled', true).text("Submitting...");
+
+                $.ajax({
+                    type: 'POST',
+                    url: "/SuperAdmin/EditLevel",
+                    data: {
+                        'Org_Level.sno': orglevel_sno,
+                        'Org_Level.Code': orglevel_code,
+                        'Org_Level.org_level': orglevel_name
+                    },
+
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Level Data Updated successfully.',
+                                confirmButtonColor: '#3085d6'
+                            }).then(() => {
+                                window.location.href = '/SuperAdmin/Level';
+                            });
+                        }
+                        else if (response.duplicate_Update_Level_message) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: response.duplicate_Update_Level_message,
+                                confirmButtonColor: '#f0ad4e'
+                            });
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: response.error_Update_Level_message,
+                                confirmButtonColor: '#d33'
+                            });
+                        }
+                    },
+                    error: function (response) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops!',
+                            text: 'Something went wrong. Please try again.',
+                            confirmButtonColor: '#d33'
+                        });
+                    },
+                    complete: function () {
+                        $('.btn_send').prop('disabled', false).text("Submit");
+                    }
+                });
+
+            }
+        });
+    }
+</script>
+
+

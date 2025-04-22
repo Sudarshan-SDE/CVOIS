@@ -1,0 +1,392 @@
+﻿@model CVOIS.Models.SuperAdmin.SuperAdminViewModel
+
+@{
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+    // var username = Context.Session.GetString("Username");
+}
+<style>
+    .MinistryList {
+        
+    }
+</style>
+
+@* ministry modal open button *@
+<div class="row">
+    <div class="col-md-2">
+        <button type="button" class="btn btn-primary addministrybtn" data-toggle="modal" data-target="#ministryModal">
+            <i class="fa fa-plus"></i> Add Ministry
+        </button>
+    </div>
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <h3>Ministry List</h3>
+    </div>
+    <div class="col-md-2"></div>
+</div>
+<br />
+@* Ministry Modal  *@
+<div class="modal fade" id="ministryModal" tabindex="-1" role="dialog" aria-labelledby="ministryLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form id="ministryForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ministryModalLabel">Add New Ministry</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-row row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Ministry.Ministry_Name" class="control-label"></label>
+                                <input asp-for="Ministry.Ministry_Name" class="form-control" id="Ministry_Ministry_Name" placeholder="Ministry Name" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Ministry.Min_Status" class="control-label"></label>
+                                <select asp-for="Ministry.Min_Status" class="form-control" id="Ministry_Min_Status">
+                                    <option value="">-- Select Status --</option>
+                                    <option value="ACTIVE">ACTIVE</option>
+                                    <option value="INACTIVE">INACTIVE</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Ministry.Ministry_Type" class="control-label"></label>
+                                @Html.DropDownListFor(model => model.Ministry.Ministry_Type,
+                                new SelectList(Model.MinistryType_ddl_List, "Value", "Text"),
+                                "-Select-",
+                                new { @class = "form-control", @id = "Ministry_Ministry_Type" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="btnSaveMinistry" onclick="SaveMinistry()">
+                        Submit
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="resetModalForm()">
+                        Close
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@* Ministry Table *@
+@if (Model.Ministry_List != null && Model.Ministry_List.Any())
+{
+    <div id="ministryTable" class="table-wrapper table-responsive">
+        <table id="ministryDataTable" class="table table-bordered table-striped">
+            <thead class="table-header ">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Ministry.Min_id)</th>
+                    <th>@Html.DisplayNameFor(model => model.Ministry.Mincode)</th>
+                    <th>@Html.DisplayNameFor(model => model.Ministry.Ministry_Name)</th>
+                    <th>@Html.DisplayNameFor(model => model.Ministry.Min_Status)</th>
+                    <th>@Html.DisplayNameFor(model => model.Ministry.Ministry_Type)</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Ministry_List)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Min_id)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Mincode)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Ministry_Name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Min_Status)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Ministry_Type)</td>
+                        <td class="text-center">
+                            <a asp-action="EditMinistry" asp-route-id="@item.Min_id" class="btn btn-sm btn-outline-primary me-1">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a href="javascript:void(0);"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="confirmDelete('@Url.Action("DeleteMinistry", new { id = item.Min_id })')">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger">No ministry records found.</div>
+}
+
+
+
+@* ----------Script start from here---------*@
+
+@* Data table *@
+@* <script>
+    $(document).ready(function () {
+        $('#ministryDataTable').DataTable({
+            dom: 'Bfrtip', // Adds buttons to the table
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fa fa-file-excel-o"></i> Export to Excel',
+                    className: 'btn btn-success'
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fa fa-file-pdf-o"></i> Export to PDF',
+                    className: 'btn btn-danger'
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    className: 'btn btn-primary'
+                }
+            ],
+            paging: true,
+            searching: true,
+            ordering: true,
+            responsive: true,
+            lengthChange: false,
+            info: true,
+            autoWidth: false,
+            scrollX: true,
+            columnDefs: [
+                { targets: -1, className: 'text-center' }
+            ],
+            language: {
+                searchPlaceholder: "Search ministries...",
+                search: "",
+                zeroRecords: "No matching ministries found",
+                info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                infoEmpty: "No entries available",
+                paginate: {
+                    previous: "<",
+                    next: ">"
+                }
+            }
+        });
+    });
+</script> *@
+
+
+<script>
+    $(document).ready(function () {
+        $('#ministryDataTable').DataTable({
+            dom: "<'row mb-2'<'col-md-6'B><'col-md-6 text-end'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fa fa-file-excel-o"></i> Export to Excel',
+                    className: 'btn btn-success me-2',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fa fa-file-pdf-o"></i> Export to PDF',
+                    className: 'btn btn-danger me-2',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    className: 'btn btn-primary',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                }
+            ],
+            paging: true,
+            searching: true,
+            ordering: true,
+            responsive: true,
+            lengthChange: false,
+            info: true,
+            autoWidth: false,
+            scrollX: true,
+            columnDefs: [
+                { targets: -1, className: 'text-center' }
+            ],
+            language: {
+                searchPlaceholder: "Search ministries...",
+                search: "",
+                zeroRecords: "No matching ministries found",
+                info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                infoEmpty: "No entries available",
+                paginate: {
+                    previous: "<",
+                    next: ">"
+                }
+            }
+        });
+    });
+</script>
+
+
+
+
+@* Save Ministry Data *@
+<script>
+    function SaveMinistry() {
+        const ministry_name = $("#Ministry_Ministry_Name").val().trim();
+        const ministry_status = $("#Ministry_Min_Status").val().trim();
+        const ministry_type = $("#Ministry_Ministry_Type").val().trim();
+
+        // Collect validation errors
+        let errorMessage = "";
+
+        if (!ministry_name && !ministry_status && !ministry_type) {
+            errorMessage = "All fields are required.";
+        } else if (!ministry_name) {
+            errorMessage = "Please enter the Ministry Name.";
+        } else if (!ministry_status) {
+            errorMessage = "Please select the Ministry Status.";
+        } else if (!ministry_type) {
+            errorMessage = "Please select the Ministry Type.";
+        }
+        if (errorMessage) {
+            Swal.fire({
+                icon: 'warning',
+                title: errorMessage,
+                confirmButtonColor: '#d33'
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: "Do you want to save the record?",
+            icon: "question",
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Save",
+            denyButtonText: `Don't save`
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                $('#btnSaveMinistry').prop('disabled', true).text("Submitting...");
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/SuperAdmin/Ministry',
+                    data: {
+                        'Ministry.Ministry_Name': ministry_name,
+                        'Ministry.Min_Status': ministry_status,
+                        'Ministry.Ministry_Type': ministry_type
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: "Ministry added successfully",
+                                confirmButtonColor: '#3085d6'
+                            }).then(() => {
+                                $('#ministryModal').modal('hide');
+                                $('#ministryForm')[0].reset();
+                                location.reload();
+                            });
+                        }
+                        else if (response.duplicate_Ministry_message) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: response.duplicate_Ministry_message,
+                                confirmButtonColor: '#d33'
+                            });
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.error_Ministry_message,
+                                confirmButtonColor: '#d33'
+                            });
+                        }
+                    },
+                    error: function (response) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops!',
+                            text: 'Something went wrong. Please try again.',
+                            confirmButtonColor: '#d33'
+                        });
+                    },
+                    complete: function () {
+                        $('#btnSaveMinistry').prop('disabled', false).text("Submit");
+                    }
+                });
+
+            }
+        });
+    }
+</script>
+
+@* Delete Ministry Data Confirmation *@
+<script>
+    function confirmDelete(deleteUrl) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This action cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = deleteUrl;
+            }
+        });
+    }
+</script>
+
+@* Delete Ministry Data  *@
+<script>
+    $(document).ready(function () {
+        var MinistrysuccessMessage = '@TempData["Delete_Ministry_Message"]';
+        var MinistryerrorMessage = '@TempData["Failed_Ministry_Message"]';
+
+        if (MinistrysuccessMessage) {
+            Swal.fire({
+                title: "Deleted!",
+                text: MinistrysuccessMessage,
+                icon: "success",
+                confirmButtonText: "OK"
+            });
+        }
+
+        if (MinistryerrorMessage) {
+            Swal.fire({
+                title: "Error!",
+                text: MinistryerrorMessage,
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+        }
+    });
+</script>
+
+@* Reset Form *@
+<script>
+    function resetModalForm() {
+        document.getElementById("ministryForm").reset();
+    }
+</script>
+
+
+
+

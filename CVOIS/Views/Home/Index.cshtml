@@ -1,0 +1,212 @@
+﻿@model CVOIS.Models.Home.UserLoginModel
+@using CVOIS.App_Code;
+
+@{
+    Layout = null;
+}
+
+@if (TempData["IndexError"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["IndexError"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>User Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <link rel="stylesheet" href="~/css/Login.css" />
+    <style>
+        .navbar-custom {
+            background: linear-gradient(to right, #007BFF, #00C6CC);
+            color: white;
+        }
+
+            .navbar-custom .navbar-brand {
+                font-size: 46px;
+                font-weight: bold;
+                margin: 0 auto;
+                color: white;
+            }
+
+                .navbar-custom .navbar-brand:hover {
+                    color: #f8f9fa; /* light hover effect */
+                }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom shadow-sm">
+        <div class="container-fluid justify-content-center">
+            <a class="navbar-brand" style="cursor: default;" href="#">CVOIS</a>
+        </div>
+    </nav>
+
+    <div class="container login-container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h3 class="mb-0">User Login</h3>
+                    </div>
+                    <div class="card-body p-4">
+
+                        @if (TempData["ErrorMessage"] != null)
+                        {
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                @TempData["ErrorMessage"]
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        }
+
+                        @using (Html.BeginForm("UserLogin", "Home", FormMethod.Post, new { onsubmit = "return validateLoginForm()" }))
+                        {
+                            <div class="mb-3">
+                                @Html.LabelFor(m => m.Username)
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    @Html.TextBoxFor(m => m.Username, new { @class = "form-control", @placeholder = "Enter User Name" })
+                                </div>
+                                @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="mb-3">
+                                @Html.LabelFor(m => m.Password)
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Enter Password", @id = "Password" })
+                                    <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="mb-3">
+                                @Html.LabelFor(m => m.Captchacode)
+                                <div class="captcha-wrapper mb-2">
+                                    <img src="@Url.Action("GenerateCaptcha", "Captcha")" alt="CAPTCHA" id="captchaImage" class="border rounded" style="height: 40px;" />
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="reloadCaptcha()">
+                                        <i class="fas fa-sync-alt"></i> Reload
+                                    </button>
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-shield-alt"></i></span>
+                                    @Html.TextBoxFor(m => m.Captchacode, new { @class = "form-control", @placeholder = "Enter Captcha" })
+                                </div>
+                                <small style="color: #e67e22; font-size: 0.95rem; font-weight: 600;">CAPTCHA is case-sensitive. Enter it exactly as shown.</small>
+                            </div>
+
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-sign-in-alt me-1"></i> Sign in
+                                </button>
+                            </div>
+
+
+
+                            @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+                            {
+                                <div class="alert alert-danger mt-3 text-center">
+                                    @ViewBag.ErrorMessage
+                                </div>
+                            }
+                        }
+                        <div class="text-center">
+                            <a href="@Url.Action("ForgotPassword", "Home")" class="text-decoration-none" style="color: #e67e22; font-weight: 500;">
+                                <i class="fas fa-unlock-alt me-1"></i> Forgot Password?
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // reload reloadCaptcha function
+        function reloadCaptcha() {
+            document.getElementById("captchaImage").src = '@Url.Action("GenerateCaptcha", "Captcha")' + '?' + new Date().getTime();
+        }
+
+        //login validation function
+        function validateLoginForm() {
+            var username = document.getElementById("Username").value.trim();
+            var password = document.getElementById("Password").value.trim();
+            var captcha = document.getElementById("Captchacode").value.trim();
+
+            if (!username && !password && !captcha) {
+                // alert("Please enter all fields.");
+                // return false;
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'All fields are required'
+                });
+                return false;
+            }
+            if (!username) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'User Id Required'
+                });
+                return false;
+            }
+            if (!password) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Password Required'
+                });
+                return false;
+            }
+            if (!captcha) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Captcha Required',
+                });
+                return false;
+            }
+
+            if (captcha !== captcha.toUpperCase()) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Captcha',
+                    text: 'CAPTCHA must be in uppercase letters and must match.'
+                });
+                return false;
+            }
+            return true;
+        }
+
+
+        //toggle Show/hide Button
+        function togglePassword() {
+            const passwordInput = document.getElementById("Password");
+            const toggleBtn = passwordInput.nextElementSibling;
+            const icon = toggleBtn.querySelector("i");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+    </script>
+</body>
+</html>

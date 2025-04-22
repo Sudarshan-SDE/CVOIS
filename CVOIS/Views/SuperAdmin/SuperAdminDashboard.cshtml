@@ -1,0 +1,10 @@
+﻿@using Microsoft.AspNetCore.Http
+
+@{
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+    var username = Context.Session.GetString("Username");
+}
+
+<h3>Welcome, @username!</h3>
+
+

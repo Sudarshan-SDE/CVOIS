@@ -1,0 +1,310 @@
+﻿@model CVOIS.Models.SuperAdmin.SuperAdminViewModel
+
+@{
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+    // var username = Context.Session.GetString("Username");
+}
+
+@* Appointing Authority modal open button *@
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#appointingauthorityModal">
+        <i class="fa fa-plus"></i> Add Appointing Authority
+    </button>
+    <h3>Appointing Authority List</h3>
+    <div class="d-flex align-items-center gap-2 ms-auto">
+    </div>
+</div>
+
+
+@* Appointing Authority Modal *@
+<div class="modal fade" id="appointingauthorityModal" tabindex="-1" role="dialog" aria-labelledby="appointingauthorityLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form id="appointingauthorityForm">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Appointing Authority</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-row row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="AppointingAuthority.AppointingAuthority_Code" class="control-label"></label>
+                                <input asp-for="AppointingAuthority.AppointingAuthority_Code" class="form-control" id="AppointingAuthority_Code" placeholder="Appointing Authority Code" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="AppointingAuthority.APPOINTING_AUTHORITY" class="control-label"></label>
+                                <input asp-for="AppointingAuthority.APPOINTING_AUTHORITY" class="form-control" id="AppointingAuthority_Name" placeholder="Appointing Authority" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="btnSaveAppointingAuthority" onclick="SaveAppointingAuthority()">
+                        Submit
+                    </button>
+                    @* <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> *@
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="resetModalForm()">
+                        Close
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@* Appointing Authority table *@
+@if (Model.AppointingAuthority_List != null && Model.AppointingAuthority_List.Any())
+{
+    <div class="table-responsive table-wrapper">
+        <table id="appointingAuthorityDataTable" class="table table-bordered table-striped custom-border w-100">
+            <thead class="table-header">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.AppointingAuthority.row_num)</th>
+                    <th>@Html.DisplayNameFor(model => model.AppointingAuthority.AppointingAuthority_Code)</th>
+                    <th>@Html.DisplayNameFor(model => model.AppointingAuthority.APPOINTING_AUTHORITY)</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.AppointingAuthority_List)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.row_num)</td>
+                        <td>@Html.DisplayFor(modelItem => item.AppointingAuthority_Code)</td>
+                        <td>@Html.DisplayFor(modelItem => item.APPOINTING_AUTHORITY)</td>
+                        <td class="text-center">
+                            <a asp-action="EditAppointingAuthority" asp-route-id="@item.sno" class="btn btn-sm btn-outline-primary me-1">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a href="javascript:void(0);"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="confirmDelete('@Url.Action("DeleteAppointingAuthority", new { id = item.sno })')">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger">No Appointing Authority records found.</div>
+}
+
+
+@* ----------Script start from here---------*@
+
+@* Data table *@
+<script>
+    $(document).ready(function () {
+        $('#appointingAuthorityDataTable').DataTable({
+            dom: "<'row mb-2'<'col-md-6'B><'col-md-6 text-end'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fa fa-file-excel-o"></i> Export to Excel',
+                    className: 'btn btn-success me-2',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fa fa-file-pdf-o"></i> Export to PDF',
+                    className: 'btn btn-danger me-2',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    className: 'btn btn-primary',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                }
+            ],
+            paging: true,
+            searching: true,
+            ordering: true,
+            responsive: true,
+            scrollX: true,
+            autoWidth: false,
+            lengthChange: false,
+            info: true,
+            columnDefs: [
+                { targets: -1, className: 'text-center' } // Align 'Actions' column
+            ],
+            language: {
+                searchPlaceholder: "Search authority...",
+                search: "",
+                zeroRecords: "No matching records found",
+                info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                infoEmpty: "No entries available",
+                paginate: {
+                    previous: "<",
+                    next: ">"
+                }
+            }
+        });
+    });
+</script>
+
+@* Save Appointing Authority Data *@
+<script>
+    function SaveAppointingAuthority() {
+        let AP_Code = $("#AppointingAuthority_Code").val().trim();
+        let AP_Name = $("#AppointingAuthority_Name").val().trim();
+
+        // Collect validation errors
+        let errorMessage = "";
+
+        if (!AP_Code && !AP_Name) {
+            errorMessage = "All fields are required.";
+        }
+        else if (!AP_Code) {
+            errorMessage = "Please enter the Appointing Authority Code.";
+        }
+        else if (!AP_Name) {
+            errorMessage = "Please enter the Appointing Authority  Name.";
+        }
+        if (errorMessage) {
+            Swal.fire({
+                icon: 'warning',
+                title: errorMessage,
+                confirmButtonColor: '#d33'
+            });
+            return;
+        }
+
+
+        Swal.fire({
+            title: "Do you want to save the record?",
+            icon: "question",
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Save",
+            denyButtonText: `Don't save`
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                $('#btnSaveAppointingAuthority').prop('disabled', true).text("Submitting...");
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/SuperAdmin/AppointingAuthority',
+                    data: {
+                        'AppointingAuthority.AppointingAuthority_Code': AP_Code,
+                        'AppointingAuthority.APPOINTING_AUTHORITY': AP_Name
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Appointing Authority added successfully.',
+                                confirmButtonColor: '#3085d6'
+                            }).then(() => {
+                                $('#appointingauthorityLabel').modal('hide');
+                                $('#appointingauthorityForm')[0].reset();
+                                location.reload();
+                            });
+                        }
+                        else if (response.duplicate_AppointingAuthority_message) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: response.duplicate_AppointingAuthority_message,
+                                confirmButtonColor: '#d33'
+                            });
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: response.error_AppointingAuthority_message,
+                                confirmButtonColor: '#d33'
+                            });
+                        }
+                    },
+                    error: function (response) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops!',
+                            text: 'Something went wrong. Please try again.',
+                            confirmButtonColor: '#d33'
+                        });
+                    },
+                    complete: function () {
+                        $('#btnSaveAppointingAuthority').prop('disabled', false).text("Submit");
+                    }
+                });
+
+            }
+        });
+
+
+    }
+</script>
+
+@* Delete Appointing Authority Data Confirmation*@
+<script>
+    function confirmDelete(deleteUrl) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This action cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = deleteUrl;
+            }
+        });
+    }
+</script>
+
+@* Delete Appointing Authority Data  *@
+<script>
+    $(document).ready(function () {
+        var AppointingAuthoritysuccessMessage = '@TempData["Delete_Appointing_Authority_Message"]';
+        var AppointingAuthorityerrorMessage = '@TempData["Failed_Appointing_Authority_Message"]';
+
+        if (AppointingAuthoritysuccessMessage) {
+            Swal.fire({
+                title: "Deleted!",
+                text: AppointingAuthoritysuccessMessage,
+                icon: "success",
+                confirmButtonText: "OK"
+            });
+        }
+
+        if (AppointingAuthorityerrorMessage) {
+            Swal.fire({
+                title: "Error!",
+                text: AppointingAuthorityerrorMessage,
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+        }
+    });
+</script>
+
+@* Reset Form *@
+<script>
+    function resetModalForm() {
+        document.getElementById("appointingauthorityForm").reset();
+    }
+</script>

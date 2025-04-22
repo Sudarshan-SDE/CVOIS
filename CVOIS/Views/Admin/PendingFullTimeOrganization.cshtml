@@ -1,0 +1,81 @@
+﻿@model IEnumerable<CVOIS.Models.Admin.PendingFullTimeOrgnizations>
+
+@{
+    ViewData["Title"] = "PendingFullTimeOrganization";
+}
+
+<h1>Pending FullTime Organization</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CVO_NAME)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ORGNAME)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Designation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Charges)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Services)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Batch)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tenure_From)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tenure_To)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CVO_NAME)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ORGNAME)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Designation)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Charges)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Services)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Batch)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tenure_From)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tenure_To)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

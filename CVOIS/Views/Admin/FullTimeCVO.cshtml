@@ -1,0 +1,93 @@
+﻿@model IEnumerable<CVOIS.Models.Admin.FullTimeCVO>
+
+@{
+    ViewData["Title"] = "Full Time CVO";
+}
+
+<h1>Full Time CVO List</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Sno)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.cvoName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.orgName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.cvoDesignation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.cvoServices)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.cvoBatch)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.cvoLevel)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.cvoTenureFrom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.cvoTenureTo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CHARGES)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PHONE_NO)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EMAIL_ID)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Sno)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.cvoName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.orgName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.cvoDesignation)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.cvoServices)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.cvoBatch)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.cvoLevel)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.cvoTenureFrom)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.cvoTenureTo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CHARGES)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PHONE_NO)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EMAIL_ID)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

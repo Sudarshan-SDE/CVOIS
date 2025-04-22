@@ -1,0 +1,48 @@
+﻿@model IEnumerable<CVOIS.Models.Admin.Vacant>
+
+@{
+    ViewData["Title"] = "VacantFullTimeCVO";
+}
+
+<h1>VacantFullTimeCVO</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.SNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.cvoName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.orgName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.VacantFrom)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.SNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.cvoName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.orgName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VacantFrom)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

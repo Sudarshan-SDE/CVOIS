@@ -1,0 +1,324 @@
+﻿@model CVOIS.Models.SuperAdmin.SuperAdminViewModel
+
+@{
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+    // var username = Context.Session.GetString("Username");
+}
+
+
+@* department modal open button *@
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#departmentModal">
+        <i class="fa fa-plus"></i> Add Department
+    </button>
+    <h3>Department List</h3>
+    <div class="d-flex align-items-center gap-2 ms-auto">
+    </div>
+</div>
+
+@* Department Modal  *@
+<div class="modal fade" id="departmentModal" tabindex="-1" role="dialog" aria-labelledby="departmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form id="departmentForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="departmentModalLabel">Add New Department</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span>&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-row row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Department.Mincode" class="control-label"></label>
+                                <select asp-for="Department.Mincode" class="form-control" id="Department_Mincode">
+                                    <option value="">-- Select Ministry --</option>
+                                    @foreach (var minobj in Model.Ministry_ddl_List)
+                                    {
+                                        <option value="@minobj.Value">@minobj.Text</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Department.DeptName" class="control-label"></label>
+                                <input asp-for="Department.DeptName" class="form-control" id="Department_DeptName" placeholder="Department Name" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Department.Dept_status" class="control-label"></label>
+                                <select asp-for="Department.Dept_status" class="form-control" id="Department_Dept_status">
+                                    <option value="">-- Select Status --</option>
+                                    <option value="ACTIVE">ACTIVE</option>
+                                    <option value="INACTIVE">INACTIVE</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="btnSaveDepartment" onclick="SaveDepartment()">Submit</button>
+                    @*  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> *@
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="resetModalForm()">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@* Department Table *@
+@if (Model.Department_List != null && Model.Department_List.Any())
+{
+    <div class="table-wrapper table-responsive">
+        <table id="departmentDataTable" class="table table-bordered table-striped w-100">
+            <thead class="table-header">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Department.row_num)</th>
+                    <th>@Html.DisplayNameFor(model => model.Department.Ministry_Name)</th>
+                    <th>@Html.DisplayNameFor(model => model.Department.DeptName)</th>
+                    <th>@Html.DisplayNameFor(model => model.Department.Dept_status)</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Department_List)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.row_num)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Ministry_Name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.DeptName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Dept_status)</td>
+                        <td class="text-center">
+                            <a asp-action="EditDepartment" asp-route-id="@item.Dept_Id" class="btn btn-sm btn-outline-primary me-1">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a href="javascript:void(0);"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="confirmDelete('@Url.Action("DeleteDepartment", new { id = item.Dept_Id})')">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">No departments found.</div>
+}
+
+
+@* ----------Script start from here---------*@
+
+@* Data table *@
+<script>
+    $(document).ready(function () {
+        $('#departmentDataTable').DataTable({
+            dom: "<'row mb-2'<'col-md-6'B><'col-md-6 text-end'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fa fa-file-excel-o"></i> Export to Excel',
+                    className: 'btn btn-success me-2',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fa fa-file-pdf-o"></i> Export to PDF',
+                    className: 'btn btn-danger me-2',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    className: 'btn btn-primary',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                }
+            ],
+            paging: true,
+            searching: true,
+            ordering: true,
+            responsive: true,
+            autoWidth: false,
+            scrollX: true,
+            lengthChange: false,
+            info: true,
+            columnDefs: [
+                { targets: -1, className: 'text-center' }
+            ],
+            language: {
+                searchPlaceholder: "Search departments...",
+                search: "",
+                zeroRecords: "No matching departments found",
+                info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                infoEmpty: "No entries available",
+                paginate: {
+                    previous: "<",
+                    next: ">"
+                }
+            }
+        });
+    });
+</script>
+
+@* Save Department Data *@
+<script>
+    function SaveDepartment() {
+        const department_mincode = $("#Department_Mincode").val().trim();
+        const department_name = $("#Department_DeptName").val().trim();
+        const department_status = $("#Department_Dept_status").val().trim();
+
+        // Collect validation errors
+        let errorMessage = "";
+
+        if (!department_mincode && !department_name && !department_status) {
+            errorMessage = "All fields are required.";
+        } else if (!department_mincode) {
+            errorMessage = "Please enter the Ministry Name.";
+        } else if (!department_name) {
+            errorMessage = "Please select the Department Name.";
+        } else if (!department_status) {
+            errorMessage = "Please select the Department Status.";
+        }
+        if (errorMessage) {
+            Swal.fire({
+                icon: 'warning',
+                title: errorMessage,
+                confirmButtonColor: '#d33'
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: "Do you want to save the record?",
+            icon: "question",
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Save",
+            denyButtonText: `Don't save`
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                // Disable submit button to prevent multiple clicks
+                $("#btnSaveDepartment").prop("disabled", true).text("Submitting...");
+
+                $.ajax({
+                    type: 'POST',
+                    url: "/SuperAdmin/Department",
+                    data: {
+                        'Department.Mincode': department_mincode,
+                        'Department.DeptName': department_name,
+                        'Department.Dept_status': department_status
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Department added successfully.',
+                                confirmButtonColor: '#3085d6'
+                            }).then(() => {
+                                $('#departmentModal').modal('hide');
+                                $('#departmentForm')[0].reset();
+                                location.reload();
+                            });
+                        }
+                        else if (response.duplicate_Department_message) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: response.duplicate_Department_message,
+                                confirmButtonColor: '#d33'
+                            });
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: response.error_Department_message,
+                                confirmButtonColor: '#d33'
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops!',
+                            text: 'Something went wrong. Please try again.',
+                            confirmButtonColor: '#d33'
+                        });
+                    },
+                    complete: function () {
+                        $("#btnSaveDepartment").prop("disabled", false).text("Submit");
+                    }
+                });
+            }
+        });
+    }
+</script>
+
+@* Delete Department Data Confirmation *@
+<script>
+    function confirmDelete(deleteUrl) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This action cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = deleteUrl;
+            }
+        });
+    }
+</script>
+
+@* Delete Department Data  *@
+<script>
+    $(document).ready(function () {
+        var DepartmentsuccessMessage = '@TempData["Delete_Department_Message"]';
+        var DepartmenterrorMessage = '@TempData["Failed_Department_Message"]';
+
+        if (DepartmentsuccessMessage) {
+            Swal.fire({
+                title: "Deleted!",
+                text: DepartmentsuccessMessage,
+                icon: "success",
+                confirmButtonText: "OK"
+            });
+        }
+
+        if (DepartmenterrorMessage) {
+            Swal.fire({
+                title: "Error!",
+                text: DepartmenterrorMessage,
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+        }
+    });
+</script>
+
+@* Reset Form *@
+<script>
+    function resetModalForm() {
+        document.getElementById("departmentForm").reset();
+    }
+</script>

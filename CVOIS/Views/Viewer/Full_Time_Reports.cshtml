@@ -1,0 +1,247 @@
+﻿@{
+    ViewData["Title"] = "Full_Time_Reports";
+}
+
+
+<div class="table-responsive">
+    <form name="form" action="" method="post">
+        <table id="FTCvoDetails" class="table table-bordered table-striped">
+            <tbody>
+                <tr>
+                    <td><label for="appointing_authority">Appointing Authority</label></td>
+                    <td>
+                        <select id="appointing_authority" name="appointing_authority" class="form-control" autocomplete="off">
+                            <option value="-1">---Select---</option>
+                            <option value="CBDT">CBDT</option>
+                            <option value="CBIC">CBIC</option>
+                            <option value="Department of Posts">Department of Posts</option>
+                            <option value="DFS">DFS</option>
+                            <option value="DoPT">DoPT</option>
+                            <option value="MHA">MHA</option>
+                            <option value="MoRailways">MoRailways</option>
+                            <option value="Others">Others</option>
+                            <option value="RBI">RBI</option>
+                        </select>
+                    </td>
+
+                    <td><label for="org_level">Level</label></td>
+                    <td>
+                        <select id="org_level" name="org_level" class="form-control" autocomplete="off">
+                            <option value="-1">---Select---</option>
+                            <option value="JOINT SECRETARY">Joint Secretary</option>
+                            <option value="DIRECTOR">Director</option>
+                            <option value="DEPUTY SECRETARY">Deputy Secretary</option>
+                            <option value="OTHERS">Others</option>
+                        </select>
+                    </td>
+
+                    <td><label for="state_name">State Name</label></td>
+                    <td>
+                        <select id="state_name" name="state_name" class="form-control" autocomplete="off">
+                            <option value="-1">---Select---</option>
+                            <option value="AN/Andaman and Nicobar Island (UT)">Andaman and Nicobar Island (UT)</option>
+                            <option value="AP/Andhra Pradesh">Andhra Pradesh</option>
+                            <option value="AR/Arunachal Pradesh">Arunachal Pradesh</option>
+                            <option value="AS/Assam">Assam</option>
+                            <option value="BR/Bihar">Bihar</option>
+                            <option value="CH/Chandigarh (UT)">Chandigarh (UT)</option>
+                            <option value="CG/Chhattisgarh">Chhattisgarh</option>
+                            <option value="DN/Dadra and Nagar Haveli (UT)">Dadra and Nagar Haveli (UT)</option>
+                            <option value="DD/Daman and Diu (UT)">Daman and Diu (UT)</option>
+                            <option value="DL/Delhi (NCT)">Delhi (NCT)</option>
+                            <option value="GA/Goa">Goa</option>
+                            <option value="GJ/Gujarat">Gujarat</option>
+                            <option value="HR/Haryana">Haryana</option>
+                            <option value="HP/Himachal Pradesh">Himachal Pradesh</option>
+                            <option value="JK/Jammu and Kashmir (UT)">Jammu and Kashmir (UT)</option>
+                            <option value="JH/Jharkhand">Jharkhand</option>
+                            <option value="KA/Karnataka">Karnataka</option>
+                            <option value="KL/Kerala">Kerala</option>
+                            <option value="LK/Ladakh(UT)">Ladakh(UT)</option>
+                            <option value="LD/Lakshadweep (UT)">Lakshadweep (UT)</option>
+                            <option value="MP/Madhya Pradesh">Madhya Pradesh</option>
+                            <option value="MH/Maharashtra">Maharashtra</option>
+                            <option value="MN/Manipur">Manipur</option>
+                            <option value="ML/Meghalaya">Meghalaya</option>
+                            <option value="MZ/Mizoram">Mizoram</option>
+                            <option value="NL/Nagaland">Nagaland</option>
+                            <option value="OR/Odisha">Odisha</option>
+                            <option value="PY/Puducherry (UT)">Puducherry (UT)</option>
+                            <option value="PB/Punjab">Punjab</option>
+                            <option value="RJ/Rajasthan">Rajasthan</option>
+                            <option value="SK/Sikkim">Sikkim</option>
+                            <option value="TN/Tamil Nadu">Tamil Nadu</option>
+                            <option value="TG/Telangana">Telangana</option>
+                            <option value="TR/Tripura">Tripura</option>
+                            <option value="UP/Uttar Pradesh">Uttar Pradesh</option>
+                            <option value="UK/Uttarakhand">Uttarakhand</option>
+                            <option value="WB/West Bengal">West Bengal</option>
+                        </select>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><label for="service_name">Service</label></td>
+                    <td>
+                        <select id="service_name" name="service_name" class="form-control" autocomplete="off">
+                            <option value="-1">---Select---</option>
+                            <option value="10/AP&amp;TA&amp;FS">AP&amp;TA&amp;FS</option>
+                            <option value="37/BANKING">BANKING</option>
+                            <option value="1/CPES">CPES</option>
+                            <option value="24/CPSE">CPSE</option>
+                            <option value="33/CSS">CSS</option>
+                            <option value="30/CWES">CWES</option>
+                            <option value="31/IA&amp;AS">IA&amp;AS</option>
+                            <option value="2/IAS">IAS</option>
+                            <option value="25/IBES">IBES</option>
+                            <option value="3/IDAS">IDAS</option>
+                            <option value="4/IDES">IDES</option>
+                            <option value="26/IDSE">IDSE</option>
+                            <option value="28/IES">IES</option>
+                            <option value="5/IFoS">IFoS</option>
+                            <option value="6/IFS">IFS</option>
+                            <option value="32/IInfoS">IInfoS</option>
+                            <option value="7/IOFS">IOFS</option>
+                            <option value="8/IP&amp;T">IP&amp;T</option>
+                            <option value="9/IP&amp;TAFS">IP&amp;TAFS</option>
+                            <option value="11/IPoS">IPoS</option>
+                            <option value="12/IPS">IPS</option>
+                            <option value="13/IRAS">IRAS</option>
+                            <option value="14/IRPS">IRPS</option>
+                            <option value="34/IRS">IRS</option>
+                            <option value="36/IRS(C&amp;CE)">IRS(C&amp;CE)</option>
+                            <option value="16/IRS(C&amp;IT)">IRS(C&amp;IT)</option>
+                            <option value="15/IRS(IT)">IRS(IT)</option>
+                            <option value="27/IRSE">IRSE</option>
+                            <option value="17/IRSEE">IRSEE</option>
+                            <option value="18/IRSME">IRSME</option>
+                            <option value="19/IRSS">IRSS</option>
+                            <option value="20/IRSSE">IRSSE</option>
+                            <option value="21/IRTS">IRTS</option>
+                            <option value="22/ISS">ISS</option>
+                            <option value="23/ITS">ITS</option>
+                            <option value="50/OTHERS">OTHERS</option>
+                            <option value="29/PSU(NTPC)">PSU(NTPC)</option>
+                        </select>
+                    </td>
+
+                    <td><label for="cvo_name">CVO Name</label></td>
+                    <td>
+                        <select id="cvo_name" name="cvo_name" class="form-control" autocomplete="off">
+                            <option value="-1">---Select---</option>
+                            <option value="0/ BRAJESH KUMAR TRIPATHY">BRAJESH KUMAR TRIPATHY</option>
+                            <option value="0/ J K  RATHOD">J K  RATHOD</option>
+                            <option value="0/ SIRRA KARUNA RAJU">SIRRA KARUNA RAJU</option>
+                            <option value="0/ABHISHEK RANJAN">ABHISHEK RANJAN</option>
+                            <option value="0/ADARSH KUMAR MODI">ADARSH KUMAR MODI</option>
+                            <option value="0/ADITYA SINGH">ADITYA SINGH</option>
+                            <option value="0/AJAY KUMAR SAHANI">AJAY KUMAR SAHANI</option>
+                            <option value="0/AJAY KUMAR SINGH">AJAY KUMAR SINGH</option>
+                            <option value="0/AJAY MADHUKAR MHETRE">AJAY MADHUKAR MHETRE</option>
+                            <option value="0/AJIT KUMAR RATH">AJIT KUMAR RATH</option>
+                            <option value="0/AJITKUMAR VASANTRAO SONTAKKE">AJITKUMAR VASANTRAO SONTAKKE</option>
+                            <option value="0/AKANKSHA SHARMA">AKANKSHA SHARMA</option>
+                            <option value="0/ALOK RANJAN">ALOK RANJAN</option>
+                            <option value="0/AMAN RAJ">AMAN RAJ</option>
+                            <option value="0/AMIT SRIVASTAVA">AMIT SRIVASTAVA</option>
+                            <option value="0/ANANT KUMAR SINGH">ANANT KUMAR SINGH</option>
+                            <option value="0/ANIL KUMAR AGRAWAL">ANIL KUMAR AGRAWAL</option>
+                            <option value="0/ANUPAM CHANDRA">ANUPAM CHANDRA</option>
+                            <option value="0/ANURAG PRASAD">ANURAG PRASAD</option>
+                            <option value="0/APRAJITA SHARRMA">APRAJITA SHARRMA</option>
+                            <option value="0/ARUN KUMAR AGARWAL">ARUN KUMAR AGARWAL</option>
+                            <option value="0/ASHA RAJIV">ASHA RAJIV</option>
+                            <option value="0/ASHISH  TRIPATHI">ASHISH  TRIPATHI</option>
+                            <option value="0/ASHOK KUMAR">ASHOK KUMAR</option>
+                            <option value="0/ASHOK KUMAR GUPTA">ASHOK KUMAR GUPTA</option>
+                            <option value="0/ASHWINI KUMAR TIWARI">ASHWINI KUMAR TIWARI</option>
+                            <option value="0/B V S ATCHUTA RAO">B V S ATCHUTA RAO</option>
+                            <option value="0/BAIJU KC">BAIJU KC</option>
+                            <option value="0/BHARATULA VISHWANATH">BHARATULA VISHWANATH</option>
+                            <option value="0/BHAVANI SINGH YADAV">BHAVANI SINGH YADAV</option>
+                            <option value="0/BINDU TEWARI">BINDU TEWARI</option>
+                            <option value="0/BK GANGTE">BK GANGTE</option>
+                            <option value="0/CHANDRAMANI  SHARMA">CHANDRAMANI  SHARMA</option>
+                            <option value="0/CHANDRANI GUPTA">CHANDRANI GUPTA</option>
+                            <option value="0/COL SFH RIZVI">COL SFH RIZVI</option>
+                            <option value="0/D SATHISH KUMAR">D SATHISH KUMAR</option>
+                            <option value="0/DEEPA CHAWLA">DEEPA CHAWLA</option>
+                            <option value="0/DEEPIKA LOHIA ARAN">DEEPIKA LOHIA ARAN</option>
+                            <option value="0/DEEPTI PATEL">DEEPTI PATEL</option>
+                            <option value="0/DHARMENDRA YADAV">DHARMENDRA YADAV</option>
+                            <option value="0/DILIP KUMAR SINGH">DILIP KUMAR SINGH</option>
+                            <option value="0/DK SINGH">DK SINGH</option>
+                            <option value="0/GANESH S BHAT">GANESH S BHAT</option>
+                            <option value="0/GARIMA  SINGH">GARIMA  SINGH</option>
+                            <option value="0/GOVINDARAJAN APPAKKANNU">GOVINDARAJAN APPAKKANNU</option>
+                            <option value="0/HARI NARAYAN JANGID">HARI NARAYAN JANGID</option>
+                            <option value="0/HARSIMRAN SINGH">HARSIMRAN SINGH</option>
+                            <option value="0/HEMANT KUMAR NANDA">HEMANT KUMAR NANDA</option>
+                            <option value="0/HIMANSHU JAIN">HIMANSHU JAIN</option>
+                            <option value="0/HIRENDRA SINGH RANA">HIRENDRA SINGH RANA</option>
+                            <option value="0/KALYANI  SETHURAMAN">KALYANI  SETHURAMAN</option>
+                            <option value="0/KHWAIRAKPAM PRATAP SINGH">KHWAIRAKPAM PRATAP SINGH</option>
+                            <option value="0/KOLAPURAM ANITHA DEVI">KOLAPURAM ANITHA DEVI</option>
+                            <option value="0/KRISHNA KUMAR PILLI">KRISHNA KUMAR PILLI</option>
+                            <option value="0/LALIT MOHAN  PANDEY">LALIT MOHAN  PANDEY</option>
+                            <option value="0/MAMATA SARANGI">MAMATA SARANGI</option>
+                            <option value="0/MANISH KUMAR AGARWAL">MANISH KUMAR AGARWAL</option>
+                            <option value="0/MANOJ KUMAR">MANOJ KUMAR</option>
+                            <option value="0/MANOJ KUMAR MAURYA">MANOJ KUMAR MAURYA</option>
+                            <option value="0/MEENAXI RAWAT">MEENAXI RAWAT</option>
+                            <option value="0/N RAMKUMAR">N RAMKUMAR</option>
+                            <option value="0/NABIN KUMAR DASH">NABIN KUMAR DASH</option>
+                            <option value="0/NIDHI S JAIN">NIDHI S JAIN</option>
+                            <option value="0/NIKHIL KUMAR KANODIA">NIKHIL KUMAR KANODIA</option>
+                            <option value="0/NILABHRA SENGUPTA">NILABHRA SENGUPTA</option>
+                            <option value="0/NIRAJ KUMAR">NIRAJ KUMAR</option>
+                            <option value="0/P S LINGESWARA SWAMI">P S LINGESWARA SWAMI</option>
+                            <option value="0/PADMANABHACHAR K">PADMANABHACHAR K</option>
+                            <option value="0/PANDI SELVA DURAI C">PANDI SELVA DURAI C</option>
+                            <option value="0/PANKAJ GUPTA">PANKAJ GUPTA</option>
+                            <option value="0/PANKAJ KUMAR">PANKAJ KUMAR</option>
+                            <option value="0/PARDEEP KUMAR">PARDEEP KUMAR</option>
+                            <option value="0/PRADEEP KUMAR">PRADEEP KUMAR</option>
+                            <option value="0/PRAMOD KUMAR">PRAMOD KUMAR</option>
+                            <option value="0/PRAMOD KUMAR CHOUDHARY">PRAMOD KUMAR CHOUDHARY</option>
+                            <option value="0/PRANAB KUMAR PATEL">PRANAB KUMAR PATEL</option>
+                            <option value="0/PRANABJYOTI NATH">PRANABJYOTI NATH</option>
+                            <option value="0/PRATIMA  GUPTA">PRATIMA  GUPTA</option>
+                            <option value="0/PREETI MAHTO">PREETI MAHTO</option>
+                            <option value="0/PREM PRAKASH">PREM PRAKASH</option>
+                            <option value="0/PUNEET AGARWAL">PUNEET AGARWAL</option>
+                            <option value="0/RAGHVENDRA KUMAR">RAGHVENDRA KUMAR</option>
+                            <option value="0/RAHUL SUBHASH JAGTAP">RAHUL SUBHASH JAGTAP</option>
+                            <option value="0/RAJEEV KUMAR">RAJEEV KUMAR</option>
+                            <option value="0/RAJEEV KUMAR SINGH">RAJEEV KUMAR SINGH</option>
+                            <option value="0/RAKESH YADAV">RAKESH YADAV</option>
+                            <option value="0/RAKVINDRA SINGH">RAKVINDRA SINGH</option>
+                            <option value="0/RAVI KUMAR R">RAVI KUMAR R</option>
+                            <option value="0/RAJESH KUMAR">RAJESH KUMAR</option>
+                            <option value="0/RAVI KUMAR RAJPUT">RAVI KUMAR RAJPUT</option>
+                        </select>
+                    </td>
+                  
+                </tr>
+
+            </tbody>
+        </table>
+
+        <!-- Submit Button -->
+        <div class="text-center mt-3">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+
+
+<!-- Bootstrap JS and CSS (Make sure you include Bootstrap's CSS and JS files in your HTML file) -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</div>
+
+
+
+

@@ -24,13 +24,9 @@ namespace CVOIS.DataAccessLayer.HomeDAL
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@UserId", userId);
                 cmd.Parameters.AddWithValue("@Password", oldPassword);
-
                 con.Open();
                 object result = cmd.ExecuteScalar();
                 int count = result != null ? Convert.ToInt32(result) : 0;
-
-                Console.WriteLine($"CheckOldPassword count: {count}");
-
                 return count > 0;
             }
         }

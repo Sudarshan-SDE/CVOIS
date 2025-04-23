@@ -1,93 +1,123 @@
-﻿@model IEnumerable<CVOIS.Models.Admin.FullTimeCVO>
+﻿@model CVOIS.Models.Admin.FullTimeCVO
 
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css" />
 @{
-    ViewData["Title"] = "Full Time CVO";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Full Time CVO List</h1>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Sno)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.cvoName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.orgName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.cvoDesignation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.cvoServices)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.cvoBatch)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.cvoLevel)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.cvoTenureFrom)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.cvoTenureTo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CHARGES)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PHONE_NO)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EMAIL_ID)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Sno)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.cvoName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.orgName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.cvoDesignation)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.cvoServices)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.cvoBatch)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.cvoLevel)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.cvoTenureFrom)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.cvoTenureTo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CHARGES)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PHONE_NO)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EMAIL_ID)
-            </td>
-        </tr>
+@if (Model != null && Model.FullTimeCVO_List?.Any() == true)
+{
+    <div id="Table" class="table-wrapper table-responsive">
+        <table id="FullTimeCVODataTable" class="table table-bordered table-striped">
+            <thead class="table-header">
+                <tr>
+                    <th>S.No</th>
+                    <th>Name</th>
+                    <th>Organization</th>
+                    <th>Designation</th>
+                    <th>Services</th>
+                    <th>Batch</th>
+                    <th>Level</th>
+                    <th>Tenure From</th>
+                    <th>Tenure To</th>
+                    <th>Charges</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.FullTimeCVO_List)
+                {
+                    <tr>
+                        <td>@item.Sno</td>
+                        <td>@item.cvoName</td>
+                        <td>@item.orgName</td>
+                        <td>@item.cvoDesignation</td>
+                        <td>@item.cvoServices</td>
+                        <td>@item.cvoBatch</td>
+                        <td>@item.cvoLevel</td>
+                        <td>@item.cvoTenureFrom</td>
+                        <td>@item.cvoTenureTo</td>
+                        <td>@item.CHARGES</td>
+                        <td>@item.PHONE_NO</td>
+                        <td>@item.EMAIL_ID</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
-    </tbody>
-</table>
+else
+{
+    <div class="alert alert-danger">No records found.</div>
+}
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+
+@* Data table *@
+<script>
+    $(document).ready(function () {
+        $('#FullTimeCVODataTable').DataTable({
+            dom: "<'row '<'col-md-6'B><'col-md-6 text-end'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fa fa-file-excel-o"></i> Export to Excel',
+                    className: 'btn btn-sm btn-success me-2',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fa fa-file-pdf-o"></i> Export to PDF',
+                    className: 'btn btn-sm btn-danger me-2',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    className: 'btn btn-sm btn-primary',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                }
+            ],
+            paging: true,
+            searching: true,
+            ordering: true,
+            responsive: true,
+            autoWidth: false,
+            scrollX: true,
+            lengthChange: false,
+            info: true,
+            columnDefs: [
+                { targets: -1, className: 'text-center' }
+            ],
+            language: {
+                searchPlaceholder: "Search departments...",
+                search: "",
+                zeroRecords: "No matching departments found",
+                info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                infoEmpty: "No entries available",
+                paginate: {
+                    previous: "<",
+                    next: ">"
+                }
+            }
+        });
+    });
+</script>

@@ -9,6 +9,8 @@ namespace CVOIS.Models.Admin
         [Display(Name = "S No.")]
         public int  SNo  { get; set; }
 
+        public int row_num{ get; set; }
+
         [Display(Name = "Ministry Name")] 
         public string Ministry_Name{ get; set; }
 
@@ -17,5 +19,6 @@ namespace CVOIS.Models.Admin
 
         [Display(Name = "Dept Status")]
         public string Dept_status { get; set; }
+        public List<Departments> Department_List { get; internal set; }
     }
 }

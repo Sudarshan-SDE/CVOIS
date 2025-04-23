@@ -16,67 +16,36 @@ namespace CVOIS.DataAccessLayer.Admin
         {
             _connectionString = connectionString.Value.DefaultConnection;
         }
-        //public List<Ministries> Get_Admin_View_Ministries()
-        //{
-        //    List<Ministries> objList = new List<Ministries>();
-        //    try
-        //    {
-        //        string query = "usp_Get_List_Ministry";
-        //        using (SqlConnection con = new SqlConnection(_connectionString))
-        //        {
-        //            SqlCommand cmd = new SqlCommand(query, con);
-        //            cmd.CommandType = CommandType.StoredProcedure;
-        //            con.Open();
-        //            SqlDataReader reader = cmd.ExecuteReader();
-        //            while (reader.Read())
-        //            {
-        //                Ministries obj = new Ministries
-        //                {
-        //                    Min_id = Convert.ToInt32(reader["Min_id"]),
-        //                    Mincode = reader["MinCode"].ToString(),
-        //                    Ministry_Name = reader["Ministry_Name"].ToString(),
-        //                    Min_Status = reader["Min_Status"].ToString(),
-        //                    Ministry_Type = reader["MinistryType"].ToString()
-        //                };
-        //                objList.Add(obj);
-        //            }
-        //            con.Close();
-        //        }
-        //    }
-        //    catch (SqlException ex)
-        //    {
-        //        Console.WriteLine("SQL Error: " + ex.Message);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine("General Error: " + ex.Message);
-        //    }
-        //    return objList;
-        //}
-
-        public List<Ministries> Get_Ministries()
+        public List<Ministries> Get_Ministries(string minCode, string manage)
         {
             List<Ministries> objList = new List<Ministries>();
             try
             {
-                string query = "usp_Get_List_Ministry";
                 using (SqlConnection con = new SqlConnection(_connectionString))
                 {
-                    SqlDataAdapter sda = new SqlDataAdapter(query, con);
-                    sda.SelectCommand.CommandType = CommandType.StoredProcedure;
-                    DataSet ds = new DataSet();
-                    sda.Fill(ds);
-                    foreach (DataRow row in ds.Tables[0].Rows)
+                    using (SqlCommand cmd = new SqlCommand("usp_Get_List_Ministry", con))
                     {
-                        Ministries obj = new Ministries
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@minCode", minCode ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@manage", manage ?? string.Empty);
+
+                        con.Open(); // Use synchronous for now
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
                         {
-                            Min_id = Convert.ToInt32(row["Min_id"]),
-                            Mincode = row["MinCode"].ToString(),
-                            Ministry_Name = row["Ministry_Name"].ToString(),
-                            Min_Status = row["Min_Status"].ToString(),
-                            Ministry_Type = row["MinistryType"].ToString()
-                        };
-                        objList.Add(obj);
+                            while (reader.Read())
+                            {
+                                Ministries obj = new Ministries
+                                {
+                                    Min_id = Convert.ToInt32(reader["Min_id"]),
+                                    Mincode = reader["MinCode"].ToString(),
+                                    Ministry_Name = reader["Ministry_Name"].ToString(),
+                                    Min_Status = reader["Min_Status"].ToString(),
+                                    Ministry_Type = reader["MinistryType"].ToString()
+                                };
+                                objList.Add(obj);
+                            }
+                        }
                     }
                 }
             }
@@ -90,7 +59,6 @@ namespace CVOIS.DataAccessLayer.Admin
             }
             return objList;
         }
-
         public List<Departments> Get_Departments()
         {
             List<Departments> objList = new List<Departments>();
@@ -116,7 +84,6 @@ namespace CVOIS.DataAccessLayer.Admin
             }
             return objList;
         }
-
         public List<Organizations> Get_Organization()
         {
             List<Organizations> objList = new List<Organizations>();
@@ -132,14 +99,15 @@ namespace CVOIS.DataAccessLayer.Admin
                     Organizations obj = new Organizations
                     {
                         SNo = Convert.ToInt32(reader["row_num"]),
+                        ORG_ID = Convert.ToInt32(reader["ORG_ID"]),
                         Ministry_Name = reader["Ministry_Name"].ToString(),
-                        Dept_Name = reader["DeptName"].ToString(),
+                        DeptName = reader["DeptName"].ToString(),
                         Org_Name = reader["ORGNAME"].ToString(),
-                        Org_Address = reader["org_address"].ToString(),
+                        org_address = reader["org_address"].ToString(),
                         pincode = reader["pincode"].ToString(),
-                        Phone_no = reader["phoneno"].ToString(),
-                        Org_category = reader["org_category"].ToString(),
-                        Org_Status = reader["org_status"].ToString(),
+                        phoneno = reader["phoneno"].ToString(),
+                        org_category = reader["org_category"].ToString(),
+                        org_status = reader["org_status"].ToString()
                     };
                     objList.Add(obj);
                 }
@@ -147,7 +115,6 @@ namespace CVOIS.DataAccessLayer.Admin
             }
             return objList;
         }
-
         public List<FullTimeCVO> Get_Full_Time_CVO()
         {
             List<FullTimeCVO> objList = new List<FullTimeCVO>();
@@ -181,6 +148,8 @@ namespace CVOIS.DataAccessLayer.Admin
             }
             return objList;
         }
+
+
 
         public List<Vacant> Get_Vacant()
         {
@@ -339,9 +308,9 @@ namespace CVOIS.DataAccessLayer.Admin
             }
             catch (Exception ex)
             {
-                throw new Exception (ex.Message);
+                throw new Exception(ex.Message);
             }
-           
+
         }
 
 
@@ -436,10 +405,10 @@ namespace CVOIS.DataAccessLayer.Admin
                             while (reader.Read())
                             {
                                 CheckOrgWithcvoModel obj = new CheckOrgWithcvoModel
-                                {                                   
+                                {
                                     CVO_NAME = reader["CVO_NAME"]?.ToString() ?? "0",
-                                    ORGNAME =  reader["ORGNAME"]?.ToString() ?? "0",
-                                    CHARGES =  reader["CHARGES"]?.ToString() ?? "0",
+                                    ORGNAME = reader["ORGNAME"]?.ToString() ?? "0",
+                                    CHARGES = reader["CHARGES"]?.ToString() ?? "0",
                                     TENURE_FROM = reader["TENURE_FROM"]?.ToString() ?? "0",
                                     TENURE_TO = reader["TENURE_TO"]?.ToString() ?? "0",
                                     PHONE_NO = reader["PHONE_NO"]?.ToString() ?? "0",
@@ -499,8 +468,51 @@ namespace CVOIS.DataAccessLayer.Admin
                 throw new Exception("An error occurred while inserting ministry.", ex);
             }
         }
+
+
         #endregion
 
 
     }
 }
+
+
+
+
+//23/04/2024
+//public List<Ministries> Get_Ministries()
+//{
+//    List<Ministries> objList = new List<Ministries>();
+//    try
+//    {
+//        string query = "usp_Get_List_Ministry";
+//        using (SqlConnection con = new SqlConnection(_connectionString))
+//        {
+//            SqlDataAdapter sda = new SqlDataAdapter(query, con);
+//            sda.SelectCommand.CommandType = CommandType.StoredProcedure;
+//            DataSet ds = new DataSet();
+//            sda.Fill(ds);
+//            foreach (DataRow row in ds.Tables[0].Rows)
+//            {
+//                Ministries obj = new Ministries
+//                {
+//                    Min_id = Convert.ToInt32(row["Min_id"]),
+//                    Mincode = row["MinCode"].ToString(),
+//                    Ministry_Name = row["Ministry_Name"].ToString(),
+//                    Min_Status = row["Min_Status"].ToString(),
+//                    Ministry_Type = row["MinistryType"].ToString()
+//                };
+//                objList.Add(obj);
+//            }
+//        }
+//    }
+//    catch (SqlException ex)
+//    {
+//        Console.WriteLine("SQL Error: " + ex.Message);
+//    }
+//    catch (Exception ex)
+//    {
+//        Console.WriteLine("General Error: " + ex.Message);
+//    }
+//    return objList;
+//}

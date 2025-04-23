@@ -1,37 +1,35 @@
 ﻿@model CVOIS.Models.SuperAdmin.SuperAdminViewModel
+
 @{
     Layout = null;
 }
-@if (Model.Ministry_List != null && Model.Ministry_List.Any())
+
+@if (Model.MasterCVOServices_List != null && Model.MasterCVOServices_List.Any())
 {
-    <div id="ministryTable" class="table-wrapper table-responsive">
-        <table id="ministryDataTable" class="table table-bordered table-striped">
-            <thead class="table-header ">
+    <div class="table-responsive table-wrapper">
+        <table id="masterCVOServicesDataTable" class="table table-bordered table-striped custom-border w-100">
+            <thead class="table-header">
                 <tr>
-                    <th>@Html.DisplayNameFor(model => model.Ministry.Min_id)</th>
-                    <th>@Html.DisplayNameFor(model => model.Ministry.Mincode)</th>
-                    <th>@Html.DisplayNameFor(model => model.Ministry.Ministry_Name)</th>
-                    <th>@Html.DisplayNameFor(model => model.Ministry.Min_Status)</th>
-                    <th>@Html.DisplayNameFor(model => model.Ministry.Ministry_Type)</th>
+                    <th>@Html.DisplayNameFor(model => model.MasterCVOServices.row_num)</th>
+                    <th>@Html.DisplayNameFor(model => model.MasterCVOServices.serviceCode)</th>
+                    <th>@Html.DisplayNameFor(model => model.MasterCVOServices.serviceDesc)</th>
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Ministry_List)
+                @foreach (var item in Model.MasterCVOServices_List)
                 {
                     <tr>
-                        <td>@Html.DisplayFor(modelItem => item.Min_id)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Mincode)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Ministry_Name)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Min_Status)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Ministry_Type)</td>
+                        <td>@Html.DisplayFor(modelItem => item.row_num)</td>
+                        <td>@Html.DisplayFor(modelItem => item.serviceCode)</td>
+                        <td>@Html.DisplayFor(modelItem => item.serviceDesc)</td>
                         <td class="text-center">
-                            <a asp-action="EditMinistry" asp-route-id="@item.Min_id" class="btn btn-sm btn-outline-primary me-1">
+                            <a asp-action="EditMasterCVOServices" asp-route-id="@item.sno" class="btn btn-sm btn-outline-primary me-1">
                                 <i class="fas fa-edit"></i> Edit
                             </a>
                             <a href="javascript:void(0);"
                                class="btn btn-sm btn-outline-danger"
-                               onclick="confirmDelete('@Url.Action("DeleteMinistry", new { id = item.Min_id })')">
+                               onclick="confirmDelete('@Url.Action("DeleteMasterCVOServices", new { id = item.sno })')">
                                 <i class="fas fa-trash-alt"></i> Delete
                             </a>
                         </td>
@@ -43,15 +41,14 @@
 }
 else
 {
-    <div class="alert alert-danger">No ministry records found.</div>
+    <div class="alert alert-danger">No Master CVO Services records found.</div>
 }
-
 
 
 @* Data table *@
 <script>
     $(document).ready(function () {
-        $('#ministryDataTable').DataTable({
+        $('#masterCVOServicesDataTable').DataTable({
             dom: "<'row '<'col-md-6'B><'col-md-6 text-end'f>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
@@ -59,7 +56,7 @@ else
                 {
                     extend: 'excelHtml5',
                     text: '<i class="fa fa-file-excel-o"></i> Export to Excel',
-                    className: 'btn btn-sm btn-outline-success me-2',
+                    className: 'btn btn-sm btn-soutline-uccess me-2',
                     exportOptions: {
                         columns: ':not(:last-child)'
                     }
@@ -85,17 +82,17 @@ else
             searching: true,
             ordering: true,
             responsive: true,
+            scrollX: true,
             lengthChange: false,
             info: true,
             autoWidth: false,
-            scrollX: true,
             columnDefs: [
                 { targets: -1, className: 'text-center' }
             ],
             language: {
-                searchPlaceholder: "Search ministries...",
+                searchPlaceholder: "Search services...",
                 search: "",
-                zeroRecords: "No matching ministries found",
+                zeroRecords: "No matching services found",
                 info: "Showing _START_ to _END_ of _TOTAL_ entries",
                 infoEmpty: "No entries available",
                 paginate: {

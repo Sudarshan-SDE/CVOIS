@@ -14,19 +14,21 @@ namespace CVOIS.Controllers
         private readonly IDatabaseDAL _databaseDAL;
         private readonly IMinistry _ministry;
         private readonly IDepartment _department;
+        private readonly IHttpContextAccessor _contextAccessor;
         private readonly IOrganization _organization;
         private readonly ILevel _level;
         private readonly IAppointingAuthority _appointingauthority;
         private readonly IMasterCvoServices _masterCvoServices;
         private readonly IState _state;
 
-        public SuperAdminController(IMinistry ministry, IDepartment department, IOrganization organization, IDatabaseDAL databaseDAL, ILevel level, IAppointingAuthority appointingauthority, IMasterCvoServices masterCvoServices, IState state)
+        public SuperAdminController(IMinistry ministry, IDepartment department, IOrganization organization, IDatabaseDAL databaseDAL, ILevel level, IAppointingAuthority appointingauthority, IMasterCvoServices masterCvoServices, IState state, IHttpContextAccessor contextAccessor)
         {
             this._ministry = ministry;
             this._department = department;
             this._organization = organization;
             this._databaseDAL = databaseDAL;
             this._level = level;
+            _contextAccessor = contextAccessor;
             this._appointingauthority = appointingauthority;
             this._masterCvoServices = masterCvoServices;
             this._state = state;
@@ -35,7 +37,8 @@ namespace CVOIS.Controllers
         {
             try
             {
-                string username = HttpContext.Session.GetString("Username");
+                ViewBag.title = "SuperAdmin Dashboard";
+                string username = _contextAccessor.HttpContext.Session.GetString("Username");
                 if (string.IsNullOrEmpty(username))
                 {
                     return RedirectToAction("Index", "Home");
@@ -66,8 +69,8 @@ namespace CVOIS.Controllers
             try
             {
                 ViewBag.title = "Ministry";
-                string username = HttpContext.Session.GetString("Username");
-                string Fullname = HttpContext.Session.GetString("Fullname");
+                string username = _contextAccessor.HttpContext.Session.GetString("Username");
+             
                 if (string.IsNullOrEmpty(username))
                 {
                     return RedirectToAction("Index", "Home");
@@ -77,14 +80,14 @@ namespace CVOIS.Controllers
                 var model = new SuperAdminViewModel
                 {
                     Ministry_List = await _ministry.Get_MinistriesAsync(minCode, manageFlag),
-                    MinistryType_ddl_List = await _ministry.GetMinistryTypeAsync() // You can make this async too if needed
+                    MinistryType_ddl_List = await _ministry.GetMinistryTypeAsync()
                 };
 
                 return View(model);
             }
             catch (Exception)
             {
-                ViewBag.Error = "Something went wrong while loading the form.";
+                ViewBag.Error = "Something went wrong while loading the page.";
                 return View();
             }
         }

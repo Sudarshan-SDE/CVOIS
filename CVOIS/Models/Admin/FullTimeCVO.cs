@@ -40,5 +40,6 @@ namespace CVOIS.Models.Admin
 
         [Display(Name = "Email Id")]
         public string EMAIL_ID { get; set; }
+        public List<FullTimeCVO> FullTimeCVO_List { get; internal set; }
     }
 }

@@ -49,7 +49,7 @@ namespace CVOIS.Controllers
                 else
                 {
                     // Retrieve the CAPTCHA value from session
-                    string sessionCaptcha = HttpContext.Session.GetString("CaptchaCode");
+                    string sessionCaptcha = _httpContextAccessor.HttpContext.Session.GetString("CaptchaCode");
 
                     if (string.IsNullOrEmpty(sessionCaptcha) || !sessionCaptcha.Equals(Model.Captchacode, StringComparison.OrdinalIgnoreCase))
                     {
@@ -68,10 +68,10 @@ namespace CVOIS.Controllers
 
                             if (pass == Model.Password)
                             {
-                                HttpContext.Session.SetString("Username", _Userid.UserName);
-                                HttpContext.Session.SetInt32("UserId", _Userid.Id);
-                                HttpContext.Session.SetString("Role", _Userid.Role);
-                                HttpContext.Session.SetString("Fullname", _Userid.Fullname);
+                                _httpContextAccessor.HttpContext.Session.SetString("Username", _Userid.UserName);
+                                _httpContextAccessor.HttpContext.Session.SetInt32("UserId", _Userid.Id);
+                                _httpContextAccessor.HttpContext.Session.SetString("Role", _Userid.Role);
+                                _httpContextAccessor.HttpContext.Session.SetString("Fullname", _Userid.Fullname);
 
                                 string username = HttpContext.Session.GetString("Username");
                                 int? userId = HttpContext.Session.GetInt32("UserId");
@@ -144,6 +144,7 @@ namespace CVOIS.Controllers
         [HttpGet]
         public IActionResult ResetPassword(string id)
         {
+            ViewBag.title = "ResetPassword";
             string Username = HttpContext.Session.GetString("Username");
             string Fullname = HttpContext.Session.GetString("Fullname");
 
@@ -164,6 +165,12 @@ namespace CVOIS.Controllers
             model.SessionID = HttpContext.Session.Id;
             model.UserId = userid;
 
+
+            if (string.IsNullOrWhiteSpace(model.OldPassword) || string.IsNullOrWhiteSpace(model.NewPassword))
+            {
+                return BadRequest("Please fill all the fields.");
+            }
+
             bool isOldPasswordValid = _user.CheckOldPassword(userid, model.OldPassword);
             if (!isOldPasswordValid)
             {
@@ -173,10 +180,11 @@ namespace CVOIS.Controllers
             bool isUpdated = _user.UpdateUserPassword(userid, model.NewPassword);
             if (isUpdated)
             {
+                TempData.Remove("Userid");
                 return Ok(new { message = "Password updated successfully." });
             }
 
-            return StatusCode(500, "An unexpected error occurred.");
+            return StatusCode(500, "An unexpected error occurred while updating the password.");
         }
 
 

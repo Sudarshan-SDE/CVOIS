@@ -60,107 +60,11 @@
 </div>
 
 @* Org Level table *@
-@if (Model.Org_Level_List != null && Model.Org_Level_List.Any())
-{
-    <div class="table-responsive table-wrapper">
-        <table id="orgLevelDataTable" class="table table-bordered table-striped custom-border w-100">
-            <thead class="table-header">
-                <tr>
-                    <th>@Html.DisplayNameFor(model => model.Org_Level.row_num)</th>
-                    <th>@Html.DisplayNameFor(model => model.Org_Level.Code)</th>
-                    <th>@Html.DisplayNameFor(model => model.Org_Level.org_level)</th>
-                    <th class="text-center">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.Org_Level_List)
-                {
-                    <tr>
-                        <td>@Html.DisplayFor(modelItem => item.row_num)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Code)</td>
-                        <td>@Html.DisplayFor(modelItem => item.org_level)</td>
-                        <td class="text-center">
-                            <a asp-action="EditLevel" asp-route-id="@item.sno" class="btn btn-sm btn-outline-primary me-1">
-                                <i class="fas fa-edit"></i> Edit
-                            </a>
-                            <a href="javascript:void(0);"
-                               class="btn btn-sm btn-outline-danger"
-                               onclick="confirmDelete('@Url.Action("DeleteLevel", new { id = item.sno })')">
-                                <i class="fas fa-trash-alt"></i> Delete
-                            </a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-}
-else
-{
-    <div class="alert alert-danger">No Level records found.</div>
-}
+@Html.Partial("_OrgLevelTable.cshtml")
+
 
 
 @* ----------Script start from here---------*@
-
-@* Data table *@
-<script>
-    $(document).ready(function () {
-        $('#orgLevelDataTable').DataTable({
-            dom: "<'row mb-2'<'col-md-6'B><'col-md-6 text-end'f>>" +
-                "<'row'<'col-sm-12'tr>>" +
-                "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
-            buttons: [
-                {
-                    extend: 'excelHtml5',
-                    text: '<i class="fa fa-file-excel-o"></i> Export to Excel',
-                    className: 'btn btn-success me-2',
-                    exportOptions: {
-                        columns: ':not(:last-child)'
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    text: '<i class="fa fa-file-pdf-o"></i> Export to PDF',
-                    className: 'btn btn-danger me-2',
-                    exportOptions: {
-                        columns: ':not(:last-child)'
-                    }
-                },
-                {
-                    extend: 'print',
-                    text: '<i class="fa fa-print"></i> Print',
-                    className: 'btn btn-primary',
-                    exportOptions: {
-                        columns: ':not(:last-child)'
-                    }
-                }
-            ],
-            paging: true,
-            searching: true,
-            ordering: true,
-            responsive: true,
-            scrollX: true,
-            lengthChange: false,
-            info: true,
-            autoWidth: false,
-            columnDefs: [
-                { targets: -1, className: 'text-center' } // Align Actions column
-            ],
-            language: {
-                searchPlaceholder: "Search levels...",
-                search: "",
-                zeroRecords: "No matching levels found",
-                info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                infoEmpty: "No entries available",
-                paginate: {
-                    previous: "<",
-                    next: ">"
-                }
-            }
-        });
-    });
-</script>
 
 @* Save Org Level Data *@
 <script>

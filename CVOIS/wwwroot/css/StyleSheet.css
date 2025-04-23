@@ -72,3 +72,10 @@
         font-size: 12px;
     }
 }
+
+
+/*reset password button css start*/
+.btn-spacing {
+    margin-left: 10px;
+}
+/*reset password button css end*/

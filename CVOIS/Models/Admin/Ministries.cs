@@ -18,5 +18,7 @@ namespace CVOIS.Models.Admin
 
         [Display(Name = "Ministry Type")]
         public string Ministry_Type{ get; set; }
+
+        public List<Ministries> Ministry_List { get; set; } = new List<Ministries>();
     }
 }

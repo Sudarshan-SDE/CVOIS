@@ -19,7 +19,7 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(10);
     options.Cookie.Name = ".MyApp.Session";
     options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
+    options.Cookie.IsEssential = false;
 });
 
 
@@ -38,9 +38,6 @@ builder.Services.AddSingleton<CaptchaService>();
 builder.Services.AddControllersWithViews()
     .AddViewOptions(options => options.HtmlHelperOptions.ClientValidationEnabled = true);
 
-
-//for session (Service)
-builder.Services.AddSession();
 
 
 builder.Services.AddDbContext<cvois_context>(options =>
@@ -76,6 +73,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     //pattern: "{controller=SuperAdmin}/{action=SuperAdminDashboard}/{id?}");
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    //pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Admin}/{action=AdminDashboard}/{id?}");
 
 app.Run();

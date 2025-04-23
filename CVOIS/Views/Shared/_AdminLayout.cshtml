@@ -5,6 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.title</title>
+
     <meta name="author" content="Central Vigilance Commission (CVC)">
     <meta name="MobileOptimized" content="width">
     <meta name="HandheldFriendly" content="true">
@@ -14,8 +15,8 @@
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome Icons -->
 
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="~/ltscript/plugins/fontawesome-free/css/all.min.css" />
 
     <!-- DataTables -->
@@ -23,20 +24,11 @@
     <link rel="stylesheet" href="~/ltscript/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet" href="~/ltscript/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 
+    <!-- AdminLTE + Custom Styles -->
     <link rel="stylesheet" href="~/ltscript/dist/css/adminlte.min.css" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-
     <link href="~/css/stylesheet.css" rel="stylesheet" />
+
 </head>
-@{
-    var username = Context.Session.GetString("Username");
-    var FullName = Context.Session.GetString("Fullname");
-    int? userId = Context.Session.GetInt32("UserId");
-}
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
 
@@ -48,10 +40,10 @@
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="~/Viewer/ViewerDashboard" class="nav-link">Viewer Dashboard</a>
+                    <a href="~/Admin/AdminDashboard" class="nav-link">Admin Dashboard</a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="~/Admin/AdminDashboard" class="nav-link">Admin Dashboard</a>
+                    <a href="~/Viewer/ViewerDashboard" class="nav-link">Viewer Dashboard</a>
                 </li>
             </ul>
         </nav>
@@ -61,101 +53,81 @@
             <!-- Brand Logo -->
             <!-- Sidebar -->
             <div class="sidebar">
-                <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
                         <img src="~/ltscript/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
                     </div>
                     <div class="info">
-                        <a href="" style="cursor: default;" class="d-block">@username</a>
+                        <a href="" style="cursor: default;" class="d-block">Admin</a>
                     </div>
                 </div>
 
                 <!-- SidebarSearch Form -->
-                <!-- Sidebar Menu -->
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <li class="nav-item menu-close">
-
                             <a href="#" class="nav-link active">
                                 <i class="nav-icon fas fa-edit"></i>
                                 <p>Add/Update Records<i class="right fas fa-angle-left"></i></p>
                             </a>
-
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a asp-controller="SuperAdmin" asp-action="Ministry" class="nav-link active">
-                                        <i class="far fa-circle nav-icon"></i><p>Manage Ministry</p>
+                                    <a href="~/Admin/Get_FullTimeCVOForManage" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i><p>Add Full Time CVO</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="~/SuperAdmin/Department" class="nav-link active">
-                                        <i class="far fa-circle nav-icon"></i><p>Manage Department</p>
+                                    <a href="#" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i><p>Update Full Time CVO</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="~/SuperAdmin/Organization" class="nav-link active">
-                                        <i class="far fa-circle nav-icon"></i><p>Manage Organization</p>
+                                    <a href="#" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i><p>Active/Inactive Full Time CVO</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item menu-close">
+                            <a href="#" class="nav-link active">
+                                <i class="nav-icon fas fa-edit"></i><p>Report<i class="right fas fa-angle-left"></i></p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="~/Admin/Ministries" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i><p>View Ministries</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="~/SuperAdmin/Level" class="nav-link active">
-                                        <i class="far fa-circle nav-icon"></i><p>Manage Org Level</p>
+                                    <a href="~/Admin/Departments" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i><p>View Departments</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="~/SuperAdmin/AppointingAuthority" class="nav-link active">
-                                        <i class="far fa-circle nav-icon"></i><p>Manage Appointing Auth</p>
+                                    <a href="~/Admin/Organizations" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i><p>View Organisations</p>
+                                    </a>
+                                </li>
+                                  <li class="nav-item">
+                                    <a href="~/Admin/FullTimeCVO" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i><p>View FullTimeCVO</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="~/SuperAdmin/MasterCvoServices" class="nav-link active">
-                                        <i class="far fa-circle nav-icon"></i><p>Manage Master Services</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="~/SuperAdmin/State" class="nav-link active">
-                                        <i class="far fa-circle nav-icon"></i><p>Manage State</p>
+                                    <a href="~/Admin/VacantFullTimeCVO" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i><p>View VacantFullTimeCVO</p>
                                     </a>
                                 </li>
                             </ul>
                         </li>
                     </ul>
                 </nav>
-                <!-- /.sidebar-menu -->
-
             </div>
-            <!-- /.sidebar -->
         </aside>
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
-            <!-- Content Header (Page header) -->
-           @*  <div class="content-header">
-                <div class="container-fluid">
-                    <div class="row mb-2">
-                        <div class="col-sm-6">
-                            <h5 class="mb-0 me-3">Welcome, @username! @FullName</h5>
-                        </div>
-                        <div class="col-sm-6">
-                            <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a href="~/SuperAdmin/SuperAdminDashboard">Home</a></li>
-                                <li class="breadcrumb-item active">@ViewBag.title</li>
-                                <li class="ml-3">
-                                    <a asp-action="Logout" asp-controller="Home" class="btn btn-sm btn-outline-danger me-3">
-                                        <i class="fas fa-sign-out-alt"></i> Logout
-                                    </a>
-                                </li>
-                                <li>
-                                    <a asp-action="ResetPassword" asp-controller="Home" asp-route-id="@userId" class="btn btn-sm btn-outline-primary btn-spacing">
-                                        <i class="fas fa-edit"></i> Reset Password
-                                    </a>
-                                </li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-            </div> *@
             <div class="content-header">
                 <div class="container-fluid">
                     <div class="d-flex justify-content-between align-items-center flex-wrap">
@@ -171,46 +143,39 @@
 
                         <!-- Right side: Action buttons -->
                         <div class="d-flex align-items-center mt-2 mt-sm-0">
-                            <h5 class="mb-0 me-3">Welcome, @username! @FullName</h5>
+                            <h5 class="mb-0 me-3">Welcome, Admin! Sudarshan</h5>
                             <a asp-action="Logout" asp-controller="Home" class="btn btn-sm btn-outline-danger me-2 btn-spacing">
                                 <i class="fas fa-sign-out-alt"></i> Logout
                             </a>
-                            <a asp-action="ResetPassword" asp-controller="Home" asp-route-id="@userId" class="btn btn-sm btn-outline-primary btn-spacing">
+                            <a asp-action="ResetPassword" asp-controller="Home" class="btn btn-sm btn-outline-primary btn-spacing">
                                 <i class="fas fa-edit"></i> Reset Password
                             </a>
                         </div>
                     </div>
                 </div>
             </div>
-
-
-
+           
             <!-- Main content -->
             <div class="content">
                 <div class="container-fluid">
                     @RenderBody()
-                    <!-- Render Section -->
-                </div><!-- /.container-fluid -->
+                </div>
             </div>
-            <!-- /.content -->
         </div>
-        <!-- /.content-wrapper -->
+
+       
         <!-- Main Footer -->
         <footer class="main-footer">
-            <!-- To the right -->
-            <!-- Default to the left -->
             <strong>Copyright &copy; 2023-2025 <a href="https://cvois.cvc.gov.in">CVC-CVOIS</a>.</strong> All rights reserved.
         </footer>
     </div>
 
-    <!-- jQuery -->
-
     <script src="~/ltscript/plugins/jquery/jquery.min.js"></script>
-    <!-- Bootstrap 4 -->
 
+    <!-- Bootstrap 4 -->
     <script src="~/ltscript/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    <!-- DataTables  & Plugins -->
+    <!-- DataTables & Plugins -->
     <script src="~/ltscript/plugins/datatables/jquery.dataTables.min.js"></script>
     <script src="~/ltscript/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
     <script src="~/ltscript/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
@@ -223,24 +188,19 @@
     <script src="~/ltscript/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
     <script src="~/ltscript/plugins/datatables-buttons/js/buttons.print.min.js"></script>
     <script src="~/ltscript/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <!-- AdminLTE App -->
 
+    <!-- AdminLTE -->
     <script src="~/ltscript/dist/js/adminlte.min.js"></script>
 
-    <!-- DataTables Buttons Extension + Dependencies -->
-    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
     <script>
         $(function () {
             $("#example1").DataTable({
-                "responsive": true, "lengthChange": false, "autoWidth": false,
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
                 "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
             $('#example2').DataTable({
                 "paging": true,
                 "lengthChange": false,
@@ -250,18 +210,6 @@
                 "autoWidth": false,
                 "responsive": true,
             });
-        });
-    </script>
-
-
-    <script>
-        $(document).ready(function () {
-            let params1 = (new URL(window.location.href)).toString();
-            var parts2qu = params1.split('?');
-            let count = parts2qu.length;
-            if (count > 1) {
-                window.location.href = '/404.html';
-            }
         });
     </script>
 

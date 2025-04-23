@@ -1,39 +1,107 @@
-﻿@model IEnumerable<CVOIS.Models.Admin.Ministries>
+﻿@model CVOIS.Models.Admin.Ministries
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css" />
 
 @{
-    ViewData["Title"] = "Ministries";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>View Ministries</h1>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Min_id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Ministry_Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Min_Status)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Min_id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Ministry_Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Min_Status)
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+@if (Model != null && Model.Ministry_List?.Any() == true)
+{
+    <div id="Table" class="table-wrapper table-responsive">
+        <table id="MinistryDataTable" class="table table-bordered table-striped">
+            <thead class="table-header">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Min_id)</th>
+                    <th>@Html.DisplayNameFor(model => model.Mincode)</th>
+                    <th>@Html.DisplayNameFor(model => model.Ministry_Name)</th>
+                    <th>@Html.DisplayNameFor(model => model.Min_Status)</th>
+                    <th>@Html.DisplayNameFor(model => model.Ministry_Type)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Ministry_List)
+                {
+                    <tr>
+                        <td>@item.Min_id</td>
+                        <td>@item.Mincode</td>
+                        <td>@item.Ministry_Name</td>
+                        <td>@item.Min_Status</td>
+                        <td>@item.Ministry_Type</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger">No records found.</div>
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+
+@* Data table *@
+<script>
+    $(document).ready(function () {
+        $('#MinistryDataTable').DataTable({
+            dom: "<'row'<'col-md-6'B><'col-md-6 text-end'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fa fa-file-excel-o"></i> Export to Excel ',
+                    className: 'btn btn-sm btn-success me-2',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fa fa-file-pdf-o"></i> Export to PDF',
+                    className: 'btn btn-sm btn-danger me-2',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    className: 'btn btn-sm btn-primary',
+                    exportOptions: {
+                        columns: ':not(:last-child)'
+                    }
+                }
+            ],
+            responsive: true,
+            paging: true,
+            searching: true,
+            ordering: true,
+            info: true,
+            autoWidth: false,
+            scrollX: true,
+            columnDefs: [
+                { targets: -1, className: 'text-center' }
+            ],
+            language: {
+                searchPlaceholder: "Search ministries...",
+                search: "",
+                zeroRecords: "No matching ministries found",
+                info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                infoEmpty: "No entries available",
+                paginate: {
+                    previous: "<",
+                    next: ">"
+                }
+            }
+        });
+    });
+</script>

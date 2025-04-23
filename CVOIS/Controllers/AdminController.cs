@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Data;
 using Newtonsoft.Json;
 using CVOIS.Interfaces.ISuperAdmin;
+using CVOIS.Models.SuperAdmin;
 
 namespace CVOIS.Controllers
 {
@@ -26,6 +27,7 @@ namespace CVOIS.Controllers
         {
             try
             {
+                ViewBag.title = "Admin Dashboard";
                 var _DashboardData = _Report_Admin.GetAdminDashboardData("countList", "");
                 return View(_DashboardData);
             }
@@ -85,28 +87,79 @@ namespace CVOIS.Controllers
 
 
 
-        public IActionResult Ministries()
+        //23-04-2025
+        public IActionResult Ministries(string minCode = "")
         {
-            var min_obj = _Report_Admin.Get_Ministries();
-            return View(min_obj);
+            try
+            {
+                ViewBag.title = "Ministries";
+                var manageFlag = string.IsNullOrEmpty(minCode) ? "manage" : "";
+                Ministries model = new Ministries
+                {
+                    Ministry_List = _Report_Admin.Get_Ministries(minCode, manageFlag)
+                };
+                return View(model);
+            }
+            catch
+            {
+                ViewBag.ErrorMessage = "An error occurred while loading the ministry data.";
+                return View();
+            }
         }
         public IActionResult Departments()
         {
-            var dept_obj = _Report_Admin.Get_Departments();
-            return View(dept_obj);
+            try
+            {
+                ViewBag.title = "Department";
+                Departments model = new Departments
+                {
+                    Department_List = _Report_Admin.Get_Departments()
+                };
+                return View(model);
+            }
+            catch
+            {
+                ViewBag.ErrorMessage = "An error occurred while loading the department data.";
+                return View();
+            }
         }
         public IActionResult Organizations()
         {
-            var org_obj = _Report_Admin.Get_Organization();
-            return View(org_obj);
+            try
+            {
+                ViewBag.title = "Organizations";
+                Organizations model = new Organizations
+                {
+                    Organizations_List = _Report_Admin.Get_Organization()
+                };
+                return View(model);
+            }
+            catch
+            {
+                ViewBag.ErrorMessage = "An error occurred while loading the organization data.";
+                return View();
+            }
         }
         public IActionResult FullTimeCVO()
         {
-            var fullTimeCVO_obj = _Report_Admin.Get_Full_Time_CVO();
-            return View(fullTimeCVO_obj);
+            try
+            {
+                ViewBag.title = "Full Time CVO";
+                FullTimeCVO model = new FullTimeCVO
+                {
+                    FullTimeCVO_List = _Report_Admin.Get_Full_Time_CVO()
+                };
+                return View(model);
+            }
+            catch
+            {
+                ViewBag.ErrorMessage = "An error occurred while loading the department data.";
+                return View();
+            }
         }
         public IActionResult VacantFullTimeCVO()
-        {
+        {  
+            ViewBag.title = "VacantFullTimeCVO";
             var vacantCVO_obj = _Report_Admin.Get_Vacant();
             return View(vacantCVO_obj);
         }
@@ -114,6 +167,11 @@ namespace CVOIS.Controllers
         {
             return View();
         }
+        //23-04-2025
+
+
+
+
 
         #region Added as on date 17.03.2025
         public IActionResult Get_FullTimeCVOForManage()
@@ -211,9 +269,9 @@ namespace CVOIS.Controllers
                     },
 
                     SelectedOrg = (string)TempData["OrgCode"],
-                
 
-            };
+
+                };
 
                 return View(model);
             }
@@ -257,7 +315,7 @@ namespace CVOIS.Controllers
                 //    addmodel.EMAIL_ID = model.Email;
                 //    addmodel.CVO_STATUS = model._status.SelectedStatus;
                 //};
-                
+
 
             }
             catch (Exception ex)
@@ -294,7 +352,7 @@ namespace CVOIS.Controllers
 
                 TempData["OrgCode"] = OrgCode;
                 TempData.Keep("OrgCode");
-           
+
 
                 return RedirectToAction("Add_FullTime_CVO");
             }

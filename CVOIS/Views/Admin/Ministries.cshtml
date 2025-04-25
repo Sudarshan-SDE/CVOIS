@@ -1,7 +1,4 @@
-﻿@model CVOIS.Models.Admin.Ministries
-
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css" />
+﻿@model CVOIS.Models.Admin.MinistriesModel
 
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -52,33 +49,24 @@ else
 <script>
     $(document).ready(function () {
         $('#MinistryDataTable').DataTable({
-            dom: "<'row'<'col-md-6'B><'col-md-6 text-end'f>>" +
+            dom: "<'row align-items-center mb-2'<'col-md-4 dt-buttons-container d-flex align-items-center'B><'col-md-4 text-center'<'ministry-title'>><'col-md-4 text-end'f>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
             buttons: [
                 {
                     extend: 'excelHtml5',
-                    text: '<i class="fa fa-file-excel-o"></i> Export to Excel ',
-                    className: 'btn btn-sm btn-success me-2',
-                    exportOptions: {
-                        columns: ':not(:last-child)'
-                    }
+                    text: '<i class="fa fa-file-excel-o"></i> Export to Excel',
+                    className: 'btn btn-sm btn-success me-2'
                 },
                 {
                     extend: 'pdfHtml5',
                     text: '<i class="fa fa-file-pdf-o"></i> Export to PDF',
-                    className: 'btn btn-sm btn-danger me-2',
-                    exportOptions: {
-                        columns: ':not(:last-child)'
-                    }
+                    className: 'btn btn-sm btn-danger me-2'
                 },
                 {
                     extend: 'print',
                     text: '<i class="fa fa-print"></i> Print',
-                    className: 'btn btn-sm btn-primary',
-                    exportOptions: {
-                        columns: ':not(:last-child)'
-                    }
+                    className: 'btn btn-sm btn-primary me-2'
                 }
             ],
             responsive: true,
@@ -103,5 +91,8 @@ else
                 }
             }
         });
+
+        // Insert centered title
+        $('.ministry-title').html('<h3 class="m-0 fw-bold">Ministry List</h3>');
     });
 </script>

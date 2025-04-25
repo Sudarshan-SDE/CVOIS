@@ -26,11 +26,11 @@
                         <td>@Html.DisplayFor(modelItem => item.Min_Status)</td>
                         <td>@Html.DisplayFor(modelItem => item.Ministry_Type)</td>
                         <td class="text-center">
-                            <a asp-action="EditMinistry" asp-route-id="@item.Min_id" class="btn btn-sm btn-outline-primary me-1">
+                            <a asp-action="EditMinistry" asp-route-id="@item.Min_id" class="btn btn-sm btn-primary me-1">
                                 <i class="fas fa-edit"></i> Edit
                             </a>
                             <a href="javascript:void(0);"
-                               class="btn btn-sm btn-outline-danger"
+                               class="btn btn-sm btn-danger"
                                onclick="confirmDelete('@Url.Action("DeleteMinistry", new { id = item.Min_id })')">
                                 <i class="fas fa-trash-alt"></i> Delete
                             </a>
@@ -51,15 +51,16 @@ else
 @* Data table *@
 <script>
     $(document).ready(function () {
-        $('#ministryDataTable').DataTable({
-            dom: "<'row '<'col-md-6'B><'col-md-6 text-end'f>>" +
+        const table = $('#ministryDataTable').DataTable({
+            dom: "<'row align-items-center mb-2'<'col-md-4'B><'col-md-4 text-center'<'ministry-title'>><'col-md-4 text-end'f>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
+
             buttons: [
                 {
                     extend: 'excelHtml5',
                     text: '<i class="fa fa-file-excel-o"></i> Export to Excel',
-                    className: 'btn btn-sm btn-outline-success me-2',
+                    className: 'btn btn-sm btn-success me-2',
                     exportOptions: {
                         columns: ':not(:last-child)'
                     }
@@ -67,7 +68,7 @@ else
                 {
                     extend: 'pdfHtml5',
                     text: '<i class="fa fa-file-pdf-o"></i> Export to PDF',
-                    className: 'btn btn-sm btn-outline-danger me-2',
+                    className: 'btn btn-sm btn-danger me-2',
                     exportOptions: {
                         columns: ':not(:last-child)'
                     }
@@ -75,7 +76,7 @@ else
                 {
                     extend: 'print',
                     text: '<i class="fa fa-print"></i> Print',
-                    className: 'btn btn-sm btn-outline-primary',
+                    className: 'btn btn-sm btn-primary me-2',
                     exportOptions: {
                         columns: ':not(:last-child)'
                     }
@@ -104,5 +105,15 @@ else
                 }
             }
         });
+
+        // Inject Ministry List heading
+        $('.ministry-title').html('<h3 class="m-0 fw-bold">Ministry List</h3>');
+
+        // Prepend Add button before the export buttons
+        $('.dt-buttons').prepend(`
+                <button type="button" class="btn btn-sm btn-primary addministrybtn me-2" data-toggle="modal" data-target="#ministryModal">
+                    <i class="fa fa-plus"></i> Add Ministry
+                </button>
+            `);
     });
 </script>

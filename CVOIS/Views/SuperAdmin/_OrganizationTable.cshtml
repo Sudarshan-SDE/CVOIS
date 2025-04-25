@@ -6,8 +6,8 @@
 
 @if (Model.Organization_List != null && Model.Organization_List.Any())
 {
-    <div class="table-responsive table-wrapper">
-        <table id="organizationDataTable" class="table table-bordered table-striped custom-border">
+    <div id="organizatioTable" class="table-responsive table-wrapper">
+        <table id="organizationDataTable" class="table table-bordered table-striped">
             <thead class="table-header">
                 <tr>
                     <th class="text-center">Actions</th>
@@ -28,11 +28,11 @@
                 {
                     <tr>
                         <td class="text-center">
-                            <a asp-action="EditOrganization" asp-route-id="@item.ORG_ID" class="btn btn-sm btn-outline-primary me-1">
+                            <a asp-action="EditOrganization" asp-route-id="@item.ORG_ID" class="btn btn-sm btn-primary me-1">
                                 <i class="fas fa-edit"></i>Edit
                             </a>
                             <a href="javascript:void(0);"
-                               class="btn btn-sm btn-outline-danger"
+                               class="btn btn-sm btn-danger"
                                onclick="confirmDelete('@Url.Action("DeleteOrganization", new { id = item.ORG_ID })')">
                                 <i class="fas fa-trash"></i> Delete
                             </a>
@@ -62,36 +62,38 @@ else
 @* Data table *@
 <script>
     $(document).ready(function () {
-        $('#organizationDataTable').DataTable({
-            dom: "<'row '<'col-md-6'B><'col-md-6 text-end'f>>" +
-                "<'row'<'col-sm-12'tr>>" +
-                "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
+        const table = $('#organizationDataTable').DataTable({
+            dom: "<'row align-items-center mb-2'<'col-md-5 dt-buttons-container d-flex align-items-center'B><'col-md-3 text-center'<'organization-title'>><'col-md-4 text-end'f>>" +
+                 "<'row'<'col-sm-12'tr>>" +
+                 "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
+
             buttons: [
                 {
                     extend: 'excelHtml5',
                     text: '<i class="fa fa-file-excel-o"></i> Export to Excel',
-                    className: 'btn btn-sm btn-outline-success me-2',
+                    className: 'btn btn-sm btn-success me-2',
                     exportOptions: {
-                        columns: ':not(:last-child)'
+                        columns: ':not(:first-child)'
                     }
                 },
                 {
                     extend: 'pdfHtml5',
                     text: '<i class="fa fa-file-pdf-o"></i> Export to PDF',
-                    className: 'btn btn-sm btn-outline-danger me-2',
+                    className: 'btn btn-sm btn-danger me-2',
                     exportOptions: {
-                        columns: ':not(:last-child)'
+                        columns: ':not(:first-child)'
                     }
                 },
                 {
                     extend: 'print',
                     text: '<i class="fa fa-print"></i> Print',
-                    className: 'btn btn-sm btn-outline-primary',
+                    className: 'btn btn-sm btn-primary',
                     exportOptions: {
-                        columns: ':not(:last-child)'
+                        columns: ':not(:first-child)'
                     }
                 }
             ],
+
             paging: true,
             searching: true,
             ordering: true,
@@ -100,9 +102,11 @@ else
             scrollX: true,
             lengthChange: false,
             info: true,
+
             columnDefs: [
                 { targets: -1, className: 'text-center' }
             ],
+
             language: {
                 searchPlaceholder: "Search organization...",
                 search: "",
@@ -115,5 +119,15 @@ else
                 }
             }
         });
+
+        // Inject Organization List heading in the center
+        $('.organization-title').html('<h3 class="m-0 fw-bold">Organization List</h3>');
+
+        // Prepend the "Add Organization" button before all DataTable buttons
+        $('.dt-buttons').prepend(`
+            <button type="button" class="btn btn-sm btn-primary me-2" data-toggle="modal" data-target="#organizationModal">
+                <i class="fa fa-plus"></i> Add Organization
+            </button>
+        `);
     });
 </script>

@@ -72,8 +72,8 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    //pattern: "{controller=SuperAdmin}/{action=SuperAdminDashboard}/{id?}");
-    //pattern: "{controller=Home}/{action=Index}/{id?}");
-    pattern: "{controller=Admin}/{action=AdminDashboard}/{id?}");
+//pattern: "{controller=SuperAdmin}/{action=SuperAdminDashboard}/{id?}");
+//pattern: "{controller=Home}/{action=Index}/{id?}");
+pattern: "{controller=Admin}/{action=AdminDashboard}/{id?}");
 
 app.Run();

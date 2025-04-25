@@ -1,4 +1,3 @@
-
 using CVOIS.Interfaces.Admin;
 using CVOIS.Models;
 using CVOIS.Models.Admin;
@@ -94,7 +93,7 @@ namespace CVOIS.Controllers
             {
                 ViewBag.title = "Ministries";
                 var manageFlag = string.IsNullOrEmpty(minCode) ? "manage" : "";
-                Ministries model = new Ministries
+                MinistriesModel model = new MinistriesModel
                 {
                     Ministry_List = _Report_Admin.Get_Ministries(minCode, manageFlag)
                 };
@@ -111,7 +110,7 @@ namespace CVOIS.Controllers
             try
             {
                 ViewBag.title = "Department";
-                Departments model = new Departments
+                DepartmentsModel model = new DepartmentsModel
                 {
                     Department_List = _Report_Admin.Get_Departments()
                 };
@@ -128,7 +127,7 @@ namespace CVOIS.Controllers
             try
             {
                 ViewBag.title = "Organizations";
-                Organizations model = new Organizations
+                OrganizationsModel model = new OrganizationsModel
                 {
                     Organizations_List = _Report_Admin.Get_Organization()
                 };
@@ -145,9 +144,9 @@ namespace CVOIS.Controllers
             try
             {
                 ViewBag.title = "Full Time CVO";
-                FullTimeCVO model = new FullTimeCVO
+                FullTimeCVOModel model = new FullTimeCVOModel
                 {
-                    FullTimeCVO_List = _Report_Admin.Get_Full_Time_CVO()
+                    FullTimeCVO_List = _Report_Admin.Get_FullTimeCVO()
                 };
                 return View(model);
             }
@@ -158,11 +157,25 @@ namespace CVOIS.Controllers
             }
         }
         public IActionResult VacantFullTimeCVO()
-        {  
-            ViewBag.title = "VacantFullTimeCVO";
-            var vacantCVO_obj = _Report_Admin.Get_Vacant();
-            return View(vacantCVO_obj);
+        {
+            try
+            {
+                ViewBag.title = "Vacant Full Time CVO";
+                VacantFullTimeCVOModel model = new VacantFullTimeCVOModel
+                {
+                    VacantFullTimeCVO_List = _Report_Admin.Get_VacantFullTimeCVO("Detailed")
+                };
+                return View(model);
+            }
+            catch
+            {
+                ViewBag.ErrorMessage = "An error occurred while loading the vacant CVO data.";
+                return View();
+            }
         }
+
+
+
         public IActionResult PendingFullTimeOrganization()
         {
             return View();
@@ -170,7 +183,10 @@ namespace CVOIS.Controllers
         //23-04-2025
 
 
-
+        public IActionResult PendingFullTimeOrganization1()
+        {
+            return View();
+        }
 
 
         #region Added as on date 17.03.2025

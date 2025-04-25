@@ -6,13 +6,13 @@ namespace CVOIS.Interfaces.Admin
 {
     public interface IReport_Admin
     {
-        List<Ministries> Get_Ministries(string minCode, string manage);
-        List<Departments> Get_Departments();
-        List<Organizations> Get_Organization();
-        List<FullTimeCVO> Get_Full_Time_CVO();
-       
+        List<MinistriesModel> Get_Ministries(string minCode, string manage);
+        List<DepartmentsModel> Get_Departments();
+        List<OrganizationsModel> Get_Organization();
+        List<FullTimeCVOModel> Get_FullTimeCVO();
+        List<VacantFullTimeCVOModel> Get_VacantFullTimeCVO(string reportType);
 
-        List<Vacant> Get_Vacant();        
+
         List<AdminDashboardModel> GetAdminDashboardData(string reportType, string VER_APP_FLAG);
         List<AdminViewRequestDetailsModel> AdminViewRequestDetails(string reportType, string VER_APP_FLAG);
 

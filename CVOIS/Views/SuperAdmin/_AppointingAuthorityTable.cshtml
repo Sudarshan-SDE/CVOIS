@@ -24,11 +24,11 @@
                         <td>@Html.DisplayFor(modelItem => item.AppointingAuthority_Code)</td>
                         <td>@Html.DisplayFor(modelItem => item.APPOINTING_AUTHORITY)</td>
                         <td class="text-center">
-                            <a asp-action="EditAppointingAuthority" asp-route-id="@item.sno" class="btn btn-sm btn-outline-primary me-1">
+                            <a asp-action="EditAppointingAuthority" asp-route-id="@item.sno" class="btn btn-sm btn-primary me-1">
                                 <i class="fas fa-edit"></i> Edit
                             </a>
                             <a href="javascript:void(0);"
-                               class="btn btn-sm btn-outline-danger"
+                               class="btn btn-sm btn-danger"
                                onclick="confirmDelete('@Url.Action("DeleteAppointingAuthority", new { id = item.sno })')">
                                 <i class="fas fa-trash-alt"></i> Delete
                             </a>
@@ -49,22 +49,22 @@ else
 <script>
     $(document).ready(function () {
         $('#appointingAuthorityDataTable').DataTable({
-            dom: "<'row '<'col-md-6'B><'col-md-6 text-end'f>>" +
+            dom: "<'row align-items-center mb-2'<'col-md-5 dt-buttons-container d-flex align-items-center'B><'col-md-3 text-center'<'appointing-title'>><'col-md-4 text-end'f>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
             buttons: [
                 {
                     extend: 'excelHtml5',
                     text: '<i class="fa fa-file-excel-o"></i> Export to Excel',
-                    className: 'btn btn-sm btn-outline-success me-2',
+                    className: 'btn btn-sm btn-success me-2',
                     exportOptions: {
                         columns: ':not(:last-child)'
                     }
                 },
-                {
+                {   
                     extend: 'pdfHtml5',
                     text: '<i class="fa fa-file-pdf-o"></i> Export to PDF',
-                    className: 'btn btn-sm btn-outline-danger me-2',
+                    className: 'btn btn-sm btn-danger me-2',
                     exportOptions: {
                         columns: ':not(:last-child)'
                     }
@@ -72,7 +72,7 @@ else
                 {
                     extend: 'print',
                     text: '<i class="fa fa-print"></i> Print',
-                    className: 'btn btn-sm btn-outline-primary',
+                    className: 'btn btn-sm btn-primary',
                     exportOptions: {
                         columns: ':not(:last-child)'
                     }
@@ -87,7 +87,7 @@ else
             lengthChange: false,
             info: true,
             columnDefs: [
-                { targets: -1, className: 'text-center' } // Align 'Actions' column
+                { targets: -1, className: 'text-center' }
             ],
             language: {
                 searchPlaceholder: "Search authority...",
@@ -101,5 +101,15 @@ else
                 }
             }
         });
+
+        // Inject title in the middle column
+        $('.appointing-title').html('<h3 class="m-0 fw-bold">Appointing Authority List</h3>');
+
+        // Add button before export buttons
+        $('.dt-buttons').prepend(`
+                <button type="button" class="btn btn-sm btn-primary me-2" data-toggle="modal" data-target="#appointingauthorityModal">
+                    <i class="fa fa-plus"></i> Add Appointing Authority
+                </button>
+            `);
     });
 </script>

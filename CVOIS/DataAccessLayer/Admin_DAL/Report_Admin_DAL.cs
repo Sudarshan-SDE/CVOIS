@@ -4,6 +4,7 @@ using CVOIS.Models.Connection;
 using CVOIS.Models.SuperAdmin;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Options;
 using System.Data;
 
@@ -16,9 +17,9 @@ namespace CVOIS.DataAccessLayer.Admin
         {
             _connectionString = connectionString.Value.DefaultConnection;
         }
-        public List<Ministries> Get_Ministries(string minCode, string manage)
+        public List<MinistriesModel> Get_Ministries(string minCode, string manage)
         {
-            List<Ministries> objList = new List<Ministries>();
+            List<MinistriesModel> objList = new List<MinistriesModel>();
             try
             {
                 using (SqlConnection con = new SqlConnection(_connectionString))
@@ -35,7 +36,7 @@ namespace CVOIS.DataAccessLayer.Admin
                         {
                             while (reader.Read())
                             {
-                                Ministries obj = new Ministries
+                                MinistriesModel obj = new MinistriesModel
                                 {
                                     Min_id = Convert.ToInt32(reader["Min_id"]),
                                     Mincode = reader["MinCode"].ToString(),
@@ -59,9 +60,9 @@ namespace CVOIS.DataAccessLayer.Admin
             }
             return objList;
         }
-        public List<Departments> Get_Departments()
+        public List<DepartmentsModel> Get_Departments()
         {
-            List<Departments> objList = new List<Departments>();
+            List<DepartmentsModel> objList = new List<DepartmentsModel>();
             string query = "usp_Get_List_Department";
             using (SqlConnection con = new SqlConnection(_connectionString))
             {
@@ -71,7 +72,7 @@ namespace CVOIS.DataAccessLayer.Admin
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    Departments obj = new Departments
+                    DepartmentsModel obj = new DepartmentsModel
                     {
                         SNo = Convert.ToInt32(reader["row_num"]),
                         Ministry_Name = reader["Ministry_Name"].ToString(),
@@ -84,9 +85,9 @@ namespace CVOIS.DataAccessLayer.Admin
             }
             return objList;
         }
-        public List<Organizations> Get_Organization()
+        public List<OrganizationsModel> Get_Organization()
         {
-            List<Organizations> objList = new List<Organizations>();
+            List<OrganizationsModel> objList = new List<OrganizationsModel>();
             string query = "usp_Get_List_Organisation";
             using (SqlConnection con = new SqlConnection(_connectionString))
             {
@@ -96,7 +97,7 @@ namespace CVOIS.DataAccessLayer.Admin
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    Organizations obj = new Organizations
+                    OrganizationsModel obj = new OrganizationsModel
                     {
                         SNo = Convert.ToInt32(reader["row_num"]),
                         ORG_ID = Convert.ToInt32(reader["ORG_ID"]),
@@ -115,9 +116,9 @@ namespace CVOIS.DataAccessLayer.Admin
             }
             return objList;
         }
-        public List<FullTimeCVO> Get_Full_Time_CVO()
+        public List<FullTimeCVOModel> Get_FullTimeCVO()
         {
-            List<FullTimeCVO> objList = new List<FullTimeCVO>();
+            List<FullTimeCVOModel> objList = new List<FullTimeCVOModel>();
             string query = "usp_GetFullTimeCvoList";
             using (SqlConnection con = new SqlConnection(_connectionString))
             {
@@ -127,7 +128,7 @@ namespace CVOIS.DataAccessLayer.Admin
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    FullTimeCVO obj = new FullTimeCVO
+                    FullTimeCVOModel obj = new FullTimeCVOModel
                     {
                         Sno = Convert.ToInt32(reader["Sno"]),
                         cvoName = reader["cvoName"].ToString(),
@@ -148,34 +149,50 @@ namespace CVOIS.DataAccessLayer.Admin
             }
             return objList;
         }
-
-
-
-        public List<Vacant> Get_Vacant()
+        public List<VacantFullTimeCVOModel> Get_VacantFullTimeCVO(string reportType)
         {
-            List<Vacant> objList = new List<Vacant>();
+            List<VacantFullTimeCVOModel> objList = new List<VacantFullTimeCVOModel>();
             string query = "usp_GetFullTimeCvoList_Vacant";
-            using (SqlConnection con = new SqlConnection(_connectionString))
+
+            try
             {
-                SqlCommand cmd = new SqlCommand(query, con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                con.Open();
-                SqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
+                using (SqlConnection con = new SqlConnection(_connectionString))
                 {
-                    Vacant obj = new Vacant
+                    using (SqlCommand cmd = new SqlCommand(query, con))
                     {
-                        SNo = Convert.ToInt32(reader["Sno"]),
-                        cvoName = reader["cvoName"].ToString(),
-                        orgName = reader["orgName"].ToString(),
-                        VacantFrom = reader["VacantFrom"].ToString(),
-                    };
-                    objList.Add(obj);
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        // Add parameter
+                        cmd.Parameters.AddWithValue("@reportType", reportType);
+
+                        con.Open();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                VacantFullTimeCVOModel obj = new VacantFullTimeCVOModel
+                                {
+                                    SNo = Convert.ToInt32(reader["Sno"]),
+                                    cvoName = reader["cvoName"].ToString(),
+                                    orgName = reader["orgName"].ToString(),
+                                    VacantFrom = reader["VacantFrom"].ToString(),
+                                };
+                                objList.Add(obj);
+                            }
+                        }
+                    }
                 }
-                con.Close();
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error in Get_VacantFullTimeCVO: " + ex.Message);
+            }
+
             return objList;
         }
+
+
+
 
         public List<AdminDashboardModel> GetAdminDashboardData(string reportType, string VER_APP_FLAG)
         {

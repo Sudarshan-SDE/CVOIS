@@ -2,11 +2,10 @@
 @{
     Layout = null;
 }
-
 @if (Model.Department_List != null && Model.Department_List.Any())
 {
-    <div class="table-wrapper table-responsive">
-        <table id="departmentDataTable" class="table table-bordered table-striped w-100">
+    <div id="departmentTable" class="table-wrapper table-responsive">
+        <table id="departmentDataTable" class="table table-bordered table-striped">
             <thead class="table-header">
                 <tr>
                     <th>@Html.DisplayNameFor(model => model.Department.row_num)</th>
@@ -25,11 +24,11 @@
                         <td>@Html.DisplayFor(modelItem => item.DeptName)</td>
                         <td>@Html.DisplayFor(modelItem => item.Dept_status)</td>
                         <td class="text-center">
-                            <a asp-action="EditDepartment" asp-route-id="@item.Dept_Id" class="btn btn-sm btn-outline-primary me-1">
+                            <a asp-action="EditDepartment" asp-route-id="@item.Dept_Id" class="btn btn-sm btn-primary me-1">
                                 <i class="fas fa-edit"></i> Edit
                             </a>
                             <a href="javascript:void(0);"
-                               class="btn btn-sm btn-outline-danger"
+                               class="btn btn-sm btn-danger"
                                onclick="confirmDelete('@Url.Action("DeleteDepartment", new { id = item.Dept_Id})')">
                                 <i class="fas fa-trash"></i> Delete
                             </a>
@@ -49,15 +48,16 @@ else
 @* Data table *@
 <script>
     $(document).ready(function () {
-        $('#departmentDataTable').DataTable({
-            dom: "<'row '<'col-md-6'B><'col-md-6 text-end'f>>" +
+        const table = $('#departmentDataTable').DataTable({
+            dom: "<'row align-items-center mb-2'<'col-md-5'B><'col-md-3 text-center'<'department-title'>><'col-md-4 text-end'f>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
+
             buttons: [
                 {
                     extend: 'excelHtml5',
                     text: '<i class="fa fa-file-excel-o"></i> Export to Excel',
-                    className: 'btn btn-sm btn-outline-success me-2',
+                    className: 'btn btn-sm btn-success me-2',
                     exportOptions: {
                         columns: ':not(:last-child)'
                     }
@@ -65,7 +65,7 @@ else
                 {
                     extend: 'pdfHtml5',
                     text: '<i class="fa fa-file-pdf-o"></i> Export to PDF',
-                    className: 'btn btn-sm btn-outline-danger me-2',
+                    className: 'btn btn-sm btn-danger me-2',
                     exportOptions: {
                         columns: ':not(:last-child)'
                     }
@@ -73,12 +73,13 @@ else
                 {
                     extend: 'print',
                     text: '<i class="fa fa-print"></i> Print',
-                    className: 'btn btn-sm btn-outline-primary',
+                    className: 'btn btn-sm btn-primary',
                     exportOptions: {
                         columns: ':not(:last-child)'
                     }
                 }
             ],
+
             paging: true,
             searching: true,
             ordering: true,
@@ -87,9 +88,11 @@ else
             scrollX: true,
             lengthChange: false,
             info: true,
+
             columnDefs: [
                 { targets: -1, className: 'text-center' }
             ],
+
             language: {
                 searchPlaceholder: "Search departments...",
                 search: "",
@@ -102,5 +105,15 @@ else
                 }
             }
         });
+
+        // Inject department List heading
+        $('.department-title').html('<h3 class="m-0 fw-bold">Department List</h3>');
+
+        // Prepend Add button before the export buttons
+        $('.dt-buttons').prepend(`
+                        <button type="button" class="btn btn-sm btn-primary adddepartmentbtn me-2" data-toggle="modal" data-target="#departmentModal">
+                        <i class="fa fa-plus"></i> Add Department
+                    </button>
+                `);
     });
 </script>

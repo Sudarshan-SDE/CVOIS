@@ -1,48 +1,98 @@
-﻿@model IEnumerable<CVOIS.Models.Admin.Vacant>
+﻿@model CVOIS.Models.Admin.VacantFullTimeCVOModel
 
 @{
-    ViewData["Title"] = "VacantFullTimeCVO";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>VacantFullTimeCVO</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.SNo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.cvoName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.orgName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.VacantFrom)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.SNo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.cvoName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.orgName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.VacantFrom)
-            </td>
-        </tr>
+@if (Model != null && Model.VacantFullTimeCVO_List?.Any() == true)
+{
+    <div id="Table" class="table-wrapper table-responsive">
+        <table id="VacantFullTimeCVODataTable" class="table table-bordered table-striped">
+            <thead class="table-header">
+                <tr>
+                    <th>S.No</th>
+                    <th>cvoName</th>
+                    <th>orgName</th>
+                    <th>VacantFrom</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.VacantFullTimeCVO_List)
+                {
+                    <tr>
+                        <td>@item.SNo</td>
+                        <td>@item.cvoName</td>
+                        <td>@item.orgName</td>
+                        <td>@item.VacantFrom</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
-    </tbody>
-</table>
+else
+{
+    <div class="alert alert-danger">No records found.</div>
+}
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+
+@* Data table *@
+<script>
+    $(document).ready(function () {
+        $('#VacantFullTimeCVODataTable').DataTable({
+            dom: "<'row align-items-center mb-2'<'col-md-4 dt-buttons-container d-flex align-items-center'B><'col-md-4 text-center'<'vacantfulltimecvo-title'>><'col-md-4 text-end'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fa fa-file-excel-o"></i> Export to Excel',
+                    className: 'btn btn-sm btn-success me-2'
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fa fa-file-pdf-o"></i> Export to PDF',
+                    className: 'btn btn-sm btn-danger me-2'
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Print',
+                    className: 'btn btn-sm btn-primary'
+                }
+            ],
+            paging: true,
+            searching: true,
+            ordering: true,
+            responsive: true,
+            autoWidth: false,
+            scrollX: true,
+            lengthChange: false,
+            info: true,
+            columnDefs: [
+                { targets: -1, className: 'text-center' }
+            ],
+            language: {
+                searchPlaceholder: "Search Vacant Full Time CVO...",
+                search: "",
+                zeroRecords: "No matching Vacant Full Time CVO found",
+                info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                infoEmpty: "No entries available",
+                paginate: {
+                    previous: "<",
+                    next: ">"
+                }
+            }
+        });
+        // Insert centered title
+        $('.vacantfulltimecvo-title').html('<h3 class="m-0 fw-bold">Vacant Full Time CVO List</h3>');
+    });
+</script>

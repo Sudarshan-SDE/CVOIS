@@ -1,6 +1,4 @@
-﻿@model CVOIS.Models.Admin.Organizations
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css" />
+﻿@model CVOIS.Models.Admin.OrganizationsModel
 
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -62,33 +60,24 @@ else
 <script>
     $(document).ready(function () {
         $('#organizationDataTable').DataTable({
-            dom: "<'row '<'col-md-6'B><'col-md-6 text-end'f>>" +
+            dom: "<'row align-items-center mb-2'<'col-md-4 dt-buttons-container d-flex align-items-center'B><'col-md-4 text-center'<'organization-title'>><'col-md-4 text-end'f>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
             buttons: [
                 {
                     extend: 'excelHtml5',
                     text: '<i class="fa fa-file-excel-o"></i> Export to Excel',
-                    className: 'btn btn-sm btn-success me-2',
-                    exportOptions: {
-                        columns: ':not(:last-child)'
-                    }
+                    className: 'btn btn-sm btn-success me-2'
                 },
                 {
                     extend: 'pdfHtml5',
                     text: '<i class="fa fa-file-pdf-o"></i> Export to PDF',
-                    className: 'btn btn-sm btn-danger me-2',
-                    exportOptions: {
-                        columns: ':not(:last-child)'
-                    }
+                    className: 'btn btn-sm btn-danger me-2'
                 },
                 {
                     extend: 'print',
                     text: '<i class="fa fa-print"></i> Print',
-                    className: 'btn btn-sm btn-primary',
-                    exportOptions: {
-                        columns: ':not(:last-child)'
-                    }
+                    className: 'btn btn-sm btn-primary'
                 }
             ],
             paging: true,
@@ -105,7 +94,7 @@ else
             language: {
                 searchPlaceholder: "Search organization...",
                 search: "",
-                zeroRecords: "No matching departments found",
+                zeroRecords: "No matching organization found",
                 info: "Showing _START_ to _END_ of _TOTAL_ entries",
                 infoEmpty: "No entries available",
                 paginate: {
@@ -114,5 +103,7 @@ else
                 }
             }
         });
+        // Insert centered title
+        $('.organization-title').html('<h3 class="m-0 fw-bold">Organization List</h3>');
     });
 </script>

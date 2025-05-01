@@ -6,6 +6,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using CVOIS.Models.SuperAdmin.AuditTrail;
 
 namespace CVOIS.Controllers
 {
@@ -33,15 +38,16 @@ namespace CVOIS.Controllers
             this._masterCvoServices = masterCvoServices;
             this._state = state;
         }
+
         public IActionResult SuperAdminDashboard()
         {
             try
             {
                 ViewBag.title = "SuperAdmin Dashboard";
-                string username = _contextAccessor.HttpContext.Session.GetString("Username");
+                string username = HttpContext.Session.GetString("Username");
                 if (string.IsNullOrEmpty(username))
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Login", "Home");
                 }
                 int result = _databaseDAL.TestDatabaseConnection();
                 if (result > 0)
@@ -69,11 +75,10 @@ namespace CVOIS.Controllers
             try
             {
                 ViewBag.title = "Ministry";
-                string username = _contextAccessor.HttpContext.Session.GetString("Username");
-             
+                string username = HttpContext.Session.GetString("Username");
                 if (string.IsNullOrEmpty(username))
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Login", "Home");
                 }
                 var manageFlag = string.IsNullOrEmpty(minCode) ? "manage" : "";
 
@@ -99,9 +104,9 @@ namespace CVOIS.Controllers
             {
                 ViewBag.title = "Ministry";
                 objModel.Ministry.CreatedBy = HttpContext.Session.GetString("Fullname");
-                objModel.Ministry.CreatedByIP = HttpContext.Connection.RemoteIpAddress?.ToString()?? "Unknown";
+                objModel.Ministry.CreatedByIP = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
                 objModel.Ministry.SessionID = HttpContext.Session.Id;
-
+                objModel.Ministry.actionCategory = "Ministry";
                 int isInserted = await _ministry.InsertMinistryAsync(objModel.Ministry);
                 if (isInserted > 0)
                 {
@@ -131,7 +136,7 @@ namespace CVOIS.Controllers
                 string username = HttpContext.Session.GetString("Username");
                 if (string.IsNullOrEmpty(username))
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Login", "Home");
                 }
                 var ministry = await _ministry.Get_Ministry_By_IdAsync(id);
                 if (ministry == null)
@@ -163,6 +168,7 @@ namespace CVOIS.Controllers
                 objmodel.Ministry.CreatedBy = HttpContext.Session.GetString("Fullname");
                 objmodel.Ministry.CreatedByIP = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
                 objmodel.Ministry.SessionID = HttpContext.Session.Id;
+                objmodel.Ministry.actionCategory = "Ministry";
 
                 int isInserted = await _ministry.UpdateMinistryAsync(objmodel.Ministry);
                 if (isInserted > 0)
@@ -196,8 +202,9 @@ namespace CVOIS.Controllers
                 string createdBy = HttpContext.Session.GetString("Fullname");
                 string createdByIP = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
                 string sessionID = HttpContext.Session.Id;
+                string actionCategory = "Ministry";
 
-                int result = await _ministry.DeleteMinistryAsync(id, createdBy, createdByIP, sessionID);
+                int result = await _ministry.DeleteMinistryAsync(id, createdBy, createdByIP, sessionID, actionCategory);
                 if (result > 0)
                 {
                     TempData["Delete_Ministry_Message"] = "Ministry deleted successfully";
@@ -215,6 +222,29 @@ namespace CVOIS.Controllers
             return RedirectToAction("Ministry");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> MinistryAuditTrail()
+        {
+            try
+            {
+                ViewBag.title = "Ministry Audit";
+                string username = HttpContext.Session.GetString("Username");
+                if (string.IsNullOrEmpty(username))
+                {
+                    return RedirectToAction("Login", "Home");
+                }
+                var model = new SuperAdminViewModel
+                {
+                    Ministry_AuditTrail_List = await _ministry.Get_MinistryAuditTrailAsync()
+                };
+                return View(model);
+            }
+            catch (Exception)
+            {
+                return View();
+            }
+        }
+
 
 
         //-----------------------------------------Department Section
@@ -227,7 +257,7 @@ namespace CVOIS.Controllers
                 string username = HttpContext.Session.GetString("Username");
                 if (string.IsNullOrEmpty(username))
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Login", "Home");
                 }
                 var model = new SuperAdminViewModel
                 {
@@ -253,6 +283,7 @@ namespace CVOIS.Controllers
                 objModel.Department.CreatedBy = HttpContext.Session.GetString("Fullname");
                 objModel.Department.CreatedByIP = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
                 objModel.Department.SessionID = HttpContext.Session.Id;
+                objModel.Department.actionCategory = "Department";
                 int isInserted = _department.InsertDepartment(objModel.Department);
                 if (isInserted > 0)
                 {
@@ -287,7 +318,7 @@ namespace CVOIS.Controllers
                 string username = HttpContext.Session.GetString("Username");
                 if (string.IsNullOrEmpty(username))
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Login", "Home");
                 }
                 var department = _department.Get_Department_By_Id(id);
                 if (department == null)
@@ -317,6 +348,7 @@ namespace CVOIS.Controllers
                 objModel.Department.CreatedBy = HttpContext.Session.GetString("Fullname");
                 objModel.Department.CreatedByIP = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
                 objModel.Department.SessionID = HttpContext.Session.Id;
+                objModel.Department.actionCategory = "Department";
                 int isInserted = _department.UpdateDepartment(objModel.Department);
                 if (isInserted > 0)
                 {
@@ -349,8 +381,8 @@ namespace CVOIS.Controllers
                 string createdBy = HttpContext.Session.GetString("Fullname");
                 string createdByIP = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
                 string sessionID = HttpContext.Session.Id;
-
-                int result = _department.DeleteDepartment(id, createdBy, createdByIP, sessionID);
+                string actionCategory = "Department";
+                int result = _department.DeleteDepartment(id, createdBy, createdByIP, sessionID, actionCategory);
                 if (result > 0)
                 {
                     TempData["Delete_Department_Message"] = "Department deleted successfully";
@@ -368,6 +400,29 @@ namespace CVOIS.Controllers
             return RedirectToAction("Department");
         }
 
+        [HttpGet]
+        public IActionResult DepartmentAuditTrail()
+        {
+            try
+            {
+                ViewBag.title = "Department Audit Trail";
+                string username = HttpContext.Session.GetString("Username");
+                if (string.IsNullOrEmpty(username))
+                {
+                    return RedirectToAction("Login", "Home");
+                }
+                var model = new SuperAdminViewModel
+                {
+                    Department_AuditTrail_List = _department.Get_DepartmentAuditTrail()
+                };
+                return View(model);
+            }
+            catch (Exception)
+            {
+                ViewBag.Error = "Something went wrong while loading the form.";
+                return View();
+            }
+        }
 
 
         //-----------------------------------------Organization Section
@@ -380,7 +435,7 @@ namespace CVOIS.Controllers
                 string username = HttpContext.Session.GetString("Username");
                 if (string.IsNullOrEmpty(username))
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Login", "Home");
                 }
                 var model = new SuperAdminViewModel
                 {
@@ -470,7 +525,7 @@ namespace CVOIS.Controllers
                 string username = HttpContext.Session.GetString("Username");
                 if (string.IsNullOrEmpty(username))
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Login", "Home");
                 }
                 var organization = _organization.Get_Organization_By_Id(id);
                 if (organization == null)
@@ -546,6 +601,29 @@ namespace CVOIS.Controllers
             return RedirectToAction("Organization");
         }
 
+        [HttpGet]
+        public IActionResult OrganizationAuditTrail()
+        {
+            try
+            {
+                ViewBag.title = "Organization Audit Trail";
+                string username = HttpContext.Session.GetString("Username");
+                if (string.IsNullOrEmpty(username))
+                {
+                    return RedirectToAction("Login", "Home");
+                }
+                var model = new SuperAdminViewModel
+                {
+                    Organization_AuditTrail_List = _organization.Get_OrganizationAuditTrail()
+                };
+                return View(model);
+            }
+            catch (Exception)
+            {
+                return View();
+            }
+        }
+
 
 
         //-----------------------------------------Level Section
@@ -558,7 +636,7 @@ namespace CVOIS.Controllers
                 string username = HttpContext.Session.GetString("Username");
                 if (string.IsNullOrEmpty(username))
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Login", "Home");
                 }
                 var model = new SuperAdminViewModel
                 {
@@ -583,7 +661,7 @@ namespace CVOIS.Controllers
                 objModel.Org_Level.CreatedBy = HttpContext.Session.GetString("Fullname");
                 objModel.Org_Level.CreatedByIP = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
                 objModel.Org_Level.SessionID = HttpContext.Session.Id;
-
+                objModel.Org_Level.actionCategory = "Org Level";
                 int isInserted = _level.InsertLevel(objModel.Org_Level);
                 if (isInserted > 0)
                 {
@@ -613,7 +691,7 @@ namespace CVOIS.Controllers
                 string username = HttpContext.Session.GetString("Username");
                 if (string.IsNullOrEmpty(username))
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Login", "Home");
                 }
                 var level = _level.Get_Level_By_Id(id);
                 if (level == null)
@@ -643,7 +721,7 @@ namespace CVOIS.Controllers
                 objmodel.Org_Level.CreatedBy = HttpContext.Session.GetString("Fullname");
                 objmodel.Org_Level.CreatedByIP = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
                 objmodel.Org_Level.SessionID = HttpContext.Session.Id;
-
+                objmodel.Org_Level.actionCategory = "Org Level";
                 int isInserted = _level.UpdateLevel(objmodel.Org_Level);
                 if (isInserted > 0)
                 {
@@ -672,7 +750,8 @@ namespace CVOIS.Controllers
                 string createdBy = HttpContext.Session.GetString("Fullname");
                 string createdByIP = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
                 string sessionID = HttpContext.Session.Id;
-                int result = _level.DeleteLevel(id, createdBy, createdByIP, sessionID);
+                string actionCategory = "Org Level";
+                int result = _level.DeleteLevel(id, createdBy, createdByIP, sessionID, actionCategory);
                 if (result > 0)
                 {
                     TempData["Delete_Level_Message"] = "Level deleted successfully.";
@@ -690,6 +769,30 @@ namespace CVOIS.Controllers
             return RedirectToAction("Level"); // Go back to the list page
         }
 
+        [HttpGet]
+        public IActionResult LevelAuditTrail()
+        {
+            try
+            {
+                ViewBag.title = "Org Level Audit Trail";
+                string username = HttpContext.Session.GetString("Username");
+                if (string.IsNullOrEmpty(username))
+                {
+                    return RedirectToAction("Login", "Home");
+                }
+                var model = new SuperAdminViewModel
+                {
+                    Org_Level_AuditTrail_List = _level.Get_LevelAuditTrail()
+                };
+                return View(model);
+            }
+            catch (Exception)
+            {
+                ViewBag.Error = "Something went wrong while loading the page.";
+                return View();
+            }
+        }
+
 
 
         //-----------------------------------------Appointing Authority Section
@@ -702,7 +805,7 @@ namespace CVOIS.Controllers
                 string username = HttpContext.Session.GetString("Username");
                 if (string.IsNullOrEmpty(username))
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Login", "Home");
                 }
                 var model = new SuperAdminViewModel
                 {
@@ -727,7 +830,7 @@ namespace CVOIS.Controllers
                 objModel.AppointingAuthority.CreatedBy = HttpContext.Session.GetString("Fullname");
                 objModel.AppointingAuthority.CreatedByIP = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
                 objModel.AppointingAuthority.SessionID = HttpContext.Session.Id;
-
+                objModel.AppointingAuthority.actionCategory = "Appointing Authority";
                 int isInserted = _appointingauthority.InsertAppointingAuthority(objModel.AppointingAuthority);
                 if (isInserted > 0)
                 {
@@ -757,7 +860,7 @@ namespace CVOIS.Controllers
                 string username = HttpContext.Session.GetString("Username");
                 if (string.IsNullOrEmpty(username))
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Login", "Home");
                 }
                 var app_auth = _appointingauthority.Get_AppointingAuthority_By_Id(id);
                 if (app_auth == null)
@@ -784,11 +887,11 @@ namespace CVOIS.Controllers
         {
             try
             {
-                ViewBag.title = "Level";
+                ViewBag.title = "Appointing Authority";
                 objmodel.AppointingAuthority.CreatedBy = HttpContext.Session.GetString("Fullname");
                 objmodel.AppointingAuthority.CreatedByIP = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
                 objmodel.AppointingAuthority.SessionID = HttpContext.Session.Id;
-
+                objmodel.AppointingAuthority.actionCategory = "Appointing Authority";
                 int isInserted = _appointingauthority.UpdateAppointingAuthority(objmodel.AppointingAuthority);
                 if (isInserted > 0)
                 {
@@ -817,7 +920,8 @@ namespace CVOIS.Controllers
                 string createdBy = HttpContext.Session.GetString("Fullname");
                 string createdByIP = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
                 string sessionID = HttpContext.Session.Id;
-                int result = _appointingauthority.DeleteAppointingAuthority(id, createdBy, createdByIP, sessionID);
+                string actionCategory = "Appointing Authority";
+                int result = _appointingauthority.DeleteAppointingAuthority(id, createdBy, createdByIP, sessionID, actionCategory);
                 if (result > 0)
                 {
                     TempData["Delete_Appointing_Authority_Message"] = "Appointing Authority deleted successfully.";
@@ -835,6 +939,30 @@ namespace CVOIS.Controllers
             return RedirectToAction("AppointingAuthority");
         }
 
+        [HttpGet]
+        public IActionResult AppointingAuthorityAuditTrail()
+        {
+            try
+            {
+                ViewBag.title = "Appointing Authority Audit Trail";
+                string username = HttpContext.Session.GetString("Username");
+                if (string.IsNullOrEmpty(username))
+                {
+                    return RedirectToAction("Login", "Home");
+                }
+                var model = new SuperAdminViewModel
+                {
+                    AppointingAuthority_AuditTrail_List = _appointingauthority.Get_AppointingAuthorityAuditTrail()
+                };
+                return View(model);
+            }
+            catch (Exception)
+            {
+                ViewBag.Error = "Something went wrong while loading the page.";
+                return View();
+            }
+        }
+
 
 
         //-----------------------------------------Master Service Section
@@ -847,7 +975,7 @@ namespace CVOIS.Controllers
                 string username = HttpContext.Session.GetString("Username");
                 if (string.IsNullOrEmpty(username))
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Login", "Home");
                 }
                 var model = new SuperAdminViewModel
                 {
@@ -871,7 +999,7 @@ namespace CVOIS.Controllers
                 objModel.MasterCVOServices.CreatedBy = HttpContext.Session.GetString("Fullname");
                 objModel.MasterCVOServices.CreatedByIP = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
                 objModel.MasterCVOServices.SessionID = HttpContext.Session.Id;
-
+                objModel.MasterCVOServices.actionCategory = "Master Cvo Services";
                 int isInserted = _masterCvoServices.InsertMasterCvoServices(objModel.MasterCVOServices);
                 if (isInserted > 0)
                 {
@@ -901,7 +1029,7 @@ namespace CVOIS.Controllers
                 string username = HttpContext.Session.GetString("Username");
                 if (string.IsNullOrEmpty(username))
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Login", "Home");
                 }
                 var masterservice = _masterCvoServices.Get_MasterCvoServices_By_Id(id);
                 if (masterservice == null)
@@ -932,7 +1060,7 @@ namespace CVOIS.Controllers
                 objModel.MasterCVOServices.CreatedBy = HttpContext.Session.GetString("Fullname");
                 objModel.MasterCVOServices.CreatedByIP = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
                 objModel.MasterCVOServices.SessionID = HttpContext.Session.Id;
-
+                objModel.MasterCVOServices.actionCategory = "Master Cvo Services";
                 int isInserted = _masterCvoServices.UpdateMasterCvoServices(objModel.MasterCVOServices);
                 if (isInserted > 0)
                 {
@@ -961,7 +1089,8 @@ namespace CVOIS.Controllers
                 string createdBy = HttpContext.Session.GetString("Fullname");
                 string createdByIP = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
                 string sessionID = HttpContext.Session.Id;
-                int result = _masterCvoServices.DeleteMasterCvoServices(id, createdBy, createdByIP, sessionID);
+                string actionCategory = "Master Cvo Services";
+                int result = _masterCvoServices.DeleteMasterCvoServices(id, createdBy, createdByIP, sessionID, actionCategory);
                 if (result > 0)
                 {
                     TempData["Delete_MasterCvoServices_Message"] = "Master Cvo Services deleted successfully.";
@@ -979,6 +1108,30 @@ namespace CVOIS.Controllers
             return RedirectToAction("MasterCvoServices");
         }
 
+        [HttpGet]
+        public IActionResult MasterCvoServicesAuditTrail()
+        {
+            try
+            {
+                ViewBag.title = "Master Cvo Services AuditTrail";
+                string username = HttpContext.Session.GetString("Username");
+                if (string.IsNullOrEmpty(username))
+                {
+                    return RedirectToAction("Login", "Home");
+                }
+                var model = new SuperAdminViewModel
+                {
+                    MasterCVOServices_AuditTrail_List = _masterCvoServices.Get_MasterCvoServicesAuditTrail()
+                };
+                return View(model);
+            }
+            catch (Exception)
+            {
+                ViewBag.Error = "Something went wrong while loading the form.";
+                return View();
+            }
+        }
+
 
 
         //-----------------------------------------State Section
@@ -991,7 +1144,7 @@ namespace CVOIS.Controllers
                 string username = HttpContext.Session.GetString("Username");
                 if (string.IsNullOrEmpty(username))
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Login", "Home");
                 }
 
                 var model = new SuperAdminViewModel
@@ -1018,7 +1171,7 @@ namespace CVOIS.Controllers
                 objModel.State.CreatedBy = HttpContext.Session.GetString("Fullname");
                 objModel.State.CreatedByIP = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
                 objModel.State.SessionID = HttpContext.Session.Id;
-
+                objModel.State.actionCategory = "State";
                 int isInserted = await _state.InsertStateAsync(objModel.State);
 
                 if (isInserted > 0)
@@ -1050,7 +1203,7 @@ namespace CVOIS.Controllers
                 string username = HttpContext.Session.GetString("Username");
                 if (string.IsNullOrEmpty(username))
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Login", "Home");
                 }
 
                 var state = await _state.Get_State_By_IdAsync(id);
@@ -1073,7 +1226,7 @@ namespace CVOIS.Controllers
                 return View("Level"); // Consider changing "Level" to "State" if it's a typo
             }
         }
-      
+
         [HttpPost]
         public async Task<IActionResult> EditState(SuperAdminViewModel objmodel)
         {
@@ -1084,7 +1237,7 @@ namespace CVOIS.Controllers
                 objmodel.State.CreatedBy = HttpContext.Session.GetString("Fullname");
                 objmodel.State.CreatedByIP = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
                 objmodel.State.SessionID = HttpContext.Session.Id;
-
+                objmodel.State.actionCategory = "State";
                 int isInserted = await _state.UpdateStateAsync(objmodel.State);
 
                 if (isInserted > 0)
@@ -1114,8 +1267,8 @@ namespace CVOIS.Controllers
                 string createdBy = HttpContext.Session.GetString("Fullname");
                 string createdByIP = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
                 string sessionID = HttpContext.Session.Id;
-
-                int result = await _state.DeleteStateAsync(id, createdBy, createdByIP, sessionID);
+                string actionCategory = "State";
+                int result = await _state.DeleteStateAsync(id, createdBy, createdByIP, sessionID, actionCategory);
 
                 if (result > 0)
                 {
@@ -1132,6 +1285,32 @@ namespace CVOIS.Controllers
             }
 
             return RedirectToAction("State");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> StateAuditTrail()
+        {
+            try
+            {
+                ViewBag.title = "State Audit Trail";
+                string username = HttpContext.Session.GetString("Username");
+                if (string.IsNullOrEmpty(username))
+                {
+                    return RedirectToAction("Login", "Home");
+                }
+
+                var model = new SuperAdminViewModel
+                {
+                    State_AuditTrail_List = await _state.Get_StateAuditTrailAsync()
+                };
+
+                return View(model);
+            }
+            catch (Exception)
+            {
+                ViewBag.Error = "Something went wrong while loading the form.";
+                return View();
+            }
         }
     }
 }

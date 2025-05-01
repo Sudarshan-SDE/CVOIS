@@ -2,6 +2,7 @@
 using CVOIS.Models.Admin;
 using CVOIS.Models.Connection;
 using CVOIS.Models.SuperAdmin;
+using CVOIS.Models.SuperAdmin.AuditTrail;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
@@ -217,7 +218,56 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
             }
             return result;
         }
+
+        public List<OrganizationAuditTrailModel> Get_OrganizationAuditTrail()
+        {
+            List<OrganizationAuditTrailModel> objList = new List<OrganizationAuditTrailModel>();
+            try
+            {
+                string query = "usp_Get_List_Organisation";
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        con.Open();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                OrganizationAuditTrailModel obj = new OrganizationAuditTrailModel
+                                {
+                                    //row_num = Convert.ToInt32(reader["row_num"]),
+                                    //ORG_ID = Convert.ToInt32(reader["ORG_ID"]),
+                                    //Ministry_Name = reader["Ministry_Name"].ToString(),
+                                    //DeptName = reader["DeptName"].ToString(),
+                                    //ORGNAME = reader["ORGNAME"].ToString(),
+                                    //org_address = reader["org_address"].ToString(),
+                                    //pincode = reader["pincode"].ToString(),
+                                    //phoneno = reader["phoneno"].ToString(),
+                                    //org_category = reader["org_category"].ToString(),
+                                    //org_status = reader["org_status"].ToString()
+                                };
+                                objList.Add(obj);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("SQL Error: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("General Error: " + ex.Message);
+            }
+            return objList;
+        }
         //EndMain Crud Operation of Organization
+
+
+
+
 
 
         //Other DropDownList

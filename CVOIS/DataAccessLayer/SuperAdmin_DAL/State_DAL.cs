@@ -1,6 +1,7 @@
 ﻿using CVOIS.Interfaces.ISuperAdmin;
 using CVOIS.Models.Connection;
 using CVOIS.Models.SuperAdmin;
+using CVOIS.Models.SuperAdmin.AuditTrail;
 using CVOIS.Models.Viewers;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
@@ -69,6 +70,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                         cmd.Parameters.AddWithValue("@createdBy", statemodel.CreatedBy ?? string.Empty);
                         cmd.Parameters.AddWithValue("@createdByIP", statemodel.CreatedByIP ?? string.Empty);
                         cmd.Parameters.AddWithValue("@sessionID", statemodel.SessionID ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@actionCategory", statemodel.actionCategory?? string.Empty);
 
                         await con.OpenAsync();
                         var result = await cmd.ExecuteScalarAsync();
@@ -140,7 +142,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                         cmd.Parameters.AddWithValue("@createdBy", statemodel.CreatedBy ?? string.Empty);
                         cmd.Parameters.AddWithValue("@createdByIP", statemodel.CreatedByIP ?? string.Empty);
                         cmd.Parameters.AddWithValue("@sessionID", statemodel.SessionID ?? string.Empty);
-
+                        cmd.Parameters.AddWithValue("@actionCategory", statemodel.actionCategory ?? string.Empty);
                         await con.OpenAsync();
                         var result = await cmd.ExecuteScalarAsync();
 
@@ -158,7 +160,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                 throw new Exception("Error while updating State", ex);
             }
         }
-        public async Task<int> DeleteStateAsync(string id, string createdBy, string createdByIP, string sessionID)
+        public async Task<int> DeleteStateAsync(string id, string createdBy, string createdByIP, string sessionID, string actionCategory)
         {
             int result = 0;
             try
@@ -173,7 +175,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                         cmd.Parameters.AddWithValue("@createdBy", createdBy ?? string.Empty);
                         cmd.Parameters.AddWithValue("@createdByIP", createdByIP ?? string.Empty);
                         cmd.Parameters.AddWithValue("@sessionID", sessionID ?? string.Empty);
-
+                        cmd.Parameters.AddWithValue("@actionCategory", actionCategory ?? string.Empty);
                         await con.OpenAsync();
                         result = await cmd.ExecuteNonQueryAsync();
                     }
@@ -184,6 +186,47 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                 Console.WriteLine("SQL Error: " + ex.Message);
             }
             return result;
+        }
+        public async Task<List<StateAuditTrailModel>> Get_StateAuditTrailAsync()
+        {
+            List<StateAuditTrailModel> objList = new List<StateAuditTrailModel>();
+            try
+            {
+                string query = "usp_Get_AuditLog_State";
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.CommandType = CommandType.Text;
+                    await con.OpenAsync();
+
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            StateAuditTrailModel obj = new StateAuditTrailModel
+                            {
+                                auditID = Convert.ToInt32(reader["auditID"]),
+                                auditDetails = reader["auditDetails"].ToString(),
+                                createdBy = reader["createdBy"].ToString(),
+                                createdOn = reader["createdOn"].ToString(),
+                                createdByIP = reader["createdByIP"].ToString(),
+                                sessionID = reader["sessionID"].ToString(),
+                                actionCategory = reader["actionCategory"].ToString()
+                            };
+                            objList.Add(obj);
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("SQL Error: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("General Error: " + ex.Message);
+            }
+            return objList;
         }
     }
 }

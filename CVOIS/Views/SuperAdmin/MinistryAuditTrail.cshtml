@@ -1,0 +1,77 @@
+﻿@model CVOIS.Models.SuperAdmin.SuperAdminViewModel
+
+@{
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+    var username = Context.Session.GetString("Username");
+}
+<style>
+    .dt-buttons .btn {
+        margin-right: 5px;
+    }
+</style>
+@if (Model.Ministry_AuditTrail_List != null && Model.Ministry_AuditTrail_List.Any())
+{
+    <div id="ministryAuditTable" class="table-wrapper table-responsive">
+        <table id="ministryAuditDataTable" class="table table-bordered table-striped">
+            <thead class="table-header ">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.MinistryAuditTrail.auditID)</th>
+                    <th>@Html.DisplayNameFor(model => model.MinistryAuditTrail.createdBy)</th>
+                    <th>@Html.DisplayNameFor(model => model.MinistryAuditTrail.createdOn)</th>
+                    <th>@Html.DisplayNameFor(model => model.MinistryAuditTrail.createdByIP)</th>
+                    <th>@Html.DisplayNameFor(model => model.MinistryAuditTrail.sessionID)</th>
+                    <th>@Html.DisplayNameFor(model => model.MinistryAuditTrail.actionCategory)</th>
+                    <th>@Html.DisplayNameFor(model => model.MinistryAuditTrail.auditDetails)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Ministry_AuditTrail_List)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.auditID)</td>
+                        <td>@Html.DisplayFor(modelItem => item.createdBy)</td>
+                        <td>@Html.DisplayFor(modelItem => item.createdOn)</td>
+                        <td>@Html.DisplayFor(modelItem => item.createdByIP)</td>
+                        <td>@Html.DisplayFor(modelItem => item.sessionID)</td>
+                        <td>@Html.DisplayFor(modelItem => item.actionCategory)</td>
+                        <td>@Html.DisplayFor(modelItem => item.auditDetails)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger">No Audit records found.</div>
+}
+
+
+@* Data table *@
+<script>
+    $(document).ready(function () {
+        $('#ministryAuditDataTable').DataTable({
+            responsive: true,
+            paging: true,
+            searching: true,
+            ordering: true,
+            // dom: '<"d-flex justify-content-between align-items-center mb-3"<"dt-buttons"B><"dataTables_filter"f>>rtip',
+            dom: "<'row align-items-center mb-2'<'col-md-4'B><'col-md-4 text-center'<'ministry-audit-title'>><'col-md-4 text-end'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
+            buttons: [
+                { extend: 'copy', className: 'btn btn-sm btn-primary', text: 'Copy' },
+                { extend: 'csv', className: 'btn btn-sm btn-info', text: 'CSV' },
+                { extend: 'excel', className: 'btn btn-sm btn-success', text: 'Excel' },
+                { extend: 'pdf', className: 'btn btn-sm btn-danger', text: 'PDF' },
+                { extend: 'print', className: 'btn btn-sm btn-warning', text: 'Print' }
+            ],
+            language: {
+                emptyTable: "No audit data available"
+            }
+        });
+
+        // Inject Ministry List heading
+        $('.ministry-audit-title').html('<h3 class="m-0 fw-bold">Ministry Audit List</h3>');
+    });
+</script>

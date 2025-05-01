@@ -11,6 +11,12 @@ using Microsoft.Data.SqlClient;
 using CVOIS.Interfaces;
 using CVOIS.Interfaces.ISuperAdmin;
 using CVOIS.Models.SuperAdmin;
+using CVOIS.DataAccessLayer;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace CVOIS.Controllers
 {
@@ -24,19 +30,18 @@ namespace CVOIS.Controllers
 
         public HomeController(cvois_context context, CaptchaService captchaService, IUser user, IHttpContextAccessor httpContextAccessor)
         {
-            _context = context;
-            _captchaService = captchaService;
-            _user = user;
-            _httpContextAccessor = httpContextAccessor;
+            this._context = context;
+            this._captchaService = captchaService;
+            this._user = user;
+            this._httpContextAccessor = httpContextAccessor;
         }
 
-        public IActionResult Index()
+        [Route("Login")]
+        public IActionResult Login()
         {
             TempData.Peek("ErrorMessage");
             return View();
         }
-
-        [HttpPost]
         public IActionResult UserLogin(UserLoginModel Model)
         {
             try
@@ -44,7 +49,7 @@ namespace CVOIS.Controllers
                 if (!ModelState.IsValid)
                 {
                     TempData["IndexError"] = "Unexpected Error";
-                    return Redirect("Index");
+                    return Redirect("Login");
                 }
                 else
                 {
@@ -55,7 +60,7 @@ namespace CVOIS.Controllers
                     {
                         TempData["ErrorMessage"] = "Invalid Captcha!";
                         TempData.Keep("ErrorMessage");
-                        return Redirect("Index");
+                        return Redirect("Login");
                     }
                     else
                     {
@@ -64,7 +69,7 @@ namespace CVOIS.Controllers
                         {
                             var pass = _Userid.Password;
                             var Role = _Userid.Role;
-                            var UserId= _Userid.Id;
+                            var UserId = _Userid.Id;
 
                             if (pass == Model.Password)
                             {
@@ -78,16 +83,11 @@ namespace CVOIS.Controllers
 
                                 switch (_Userid.Role.ToUpper())
                                 {
-                                    case "ADMIN":
-                                        return Redirect("~/Admin/AdminDashboard");
-                                    case "VIEWER":
-                                        return Redirect("~/Viewer/ViewerDashboard");
-                                    case "SUPERADMIN":
-                                        return Redirect("~/SuperAdmin/SuperAdminDashboard");
-                                    case "USER":
-                                        return RedirectToAction("UserDashboard");
-                                    default:
-                                        return RedirectToAction("AccessDenied");
+                                    case "ADMIN": return Redirect("~/Admin/AdminDashboard");
+                                    case "VIEWER": return Redirect("~/Viewer/ViewerDashboard");
+                                    case "SUPERADMIN": return Redirect("~/SuperAdmin/SuperAdminDashboard");
+                                    case "USER": return RedirectToAction("UserDashboard");
+                                    default: return RedirectToAction("AccessDenied");
                                 }
                             }
                             else
@@ -100,19 +100,19 @@ namespace CVOIS.Controllers
                                         .ExecuteUpdate(setters => setters.SetProperty(e => e.ISLOCKEDCNT, iscount));
 
                                     TempData["ErrorMessage"] = "Invalid Password";
-                                    return Redirect("Index");
+                                    return Redirect("Login");
                                 }
                                 catch (Exception ex)
                                 {
                                     TempData["ErrorMessage"] = "Invalid Password";
-                                    return Redirect("Index");
+                                    return Redirect("Login");
                                 }
                             }
                         }
                         else
                         {
                             TempData["ErrorMessage"] = "Invalid User Name";
-                            return Redirect("Index");
+                            return Redirect("Login");
                         }
                     }
                 }
@@ -124,7 +124,9 @@ namespace CVOIS.Controllers
             return View();
         }
 
+
         [HttpGet]
+        [Route("ForgotPassword")]
         public IActionResult ForgotPassword()
         {
             return View();
@@ -142,6 +144,7 @@ namespace CVOIS.Controllers
 
 
         [HttpGet]
+        [Route("ResetPassword")]
         public IActionResult ResetPassword(string id)
         {
             ViewBag.title = "ResetPassword";
@@ -193,8 +196,9 @@ namespace CVOIS.Controllers
 
         public IActionResult Logout()
         {
+            HttpContext.SignOutAsync("MyCookieAuth");
             HttpContext.Session.Clear();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Home");
         }
 
 

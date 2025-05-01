@@ -1,6 +1,7 @@
 ﻿using CVOIS.Interfaces.ISuperAdmin;
 using CVOIS.Models.Connection;
 using CVOIS.Models.SuperAdmin;
+using CVOIS.Models.SuperAdmin.AuditTrail;
 using CVOIS.Models.Viewers;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
@@ -33,7 +34,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                     {
                         AppointingAuthorityModel obj = new AppointingAuthorityModel
                         {
-                            row_num= Convert.ToInt32(row["row_num"]),
+                            row_num = Convert.ToInt32(row["row_num"]),
                             sno = Convert.ToInt32(row["sno"]),
                             AppointingAuthority_Code = row["AppointingAuthority_Code"].ToString(),
                             APPOINTING_AUTHORITY = row["APPOINTING_AUTHORITY"].ToString()
@@ -69,6 +70,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                         cmd.Parameters.AddWithValue("@createdBy", appointingauthorityModel.CreatedBy ?? string.Empty);
                         cmd.Parameters.AddWithValue("@createdByIP", appointingauthorityModel.CreatedByIP ?? string.Empty);
                         cmd.Parameters.AddWithValue("@sessionID", appointingauthorityModel.SessionID ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@actionCategory", appointingauthorityModel.actionCategory ?? string.Empty);
                         con.Open();
                         var result = cmd.ExecuteScalar();
 
@@ -110,7 +112,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                         {
                             sno = Convert.ToInt32(reader["sno"]),
                             AppointingAuthority_Code = reader["AppointingAuthority_Code"].ToString(),
-                            APPOINTING_AUTHORITY= reader["APPOINTING_AUTHORITY"].ToString()
+                            APPOINTING_AUTHORITY = reader["APPOINTING_AUTHORITY"].ToString()
                         };
                     }
                 }
@@ -139,6 +141,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                         cmd.Parameters.AddWithValue("@createdBy", appointingauthorityModel.CreatedBy ?? string.Empty);
                         cmd.Parameters.AddWithValue("@createdByIP", appointingauthorityModel.CreatedByIP ?? string.Empty);
                         cmd.Parameters.AddWithValue("@sessionID", appointingauthorityModel.SessionID ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@actionCategory", appointingauthorityModel.actionCategory ?? string.Empty);
                         con.Open();
                         var result = cmd.ExecuteScalar();
 
@@ -157,7 +160,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
             }
         }
 
-        public int DeleteAppointingAuthority(int id, string createdBy, string createdByIP, string sessionID)
+        public int DeleteAppointingAuthority(int id, string createdBy, string createdByIP, string sessionID, string actionCategory)
         {
             int result = 0;
             try
@@ -173,6 +176,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                         cmd.Parameters.AddWithValue("@createdBy", createdBy ?? string.Empty);
                         cmd.Parameters.AddWithValue("@createdByIP", createdByIP ?? string.Empty);
                         cmd.Parameters.AddWithValue("@sessionID", sessionID ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@actionCategory", actionCategory ?? string.Empty);
                         con.Open();
                         result = cmd.ExecuteNonQuery();
                     }
@@ -185,6 +189,43 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
             return result;
         }
 
-       
+        public List<AppointingAuthorityAuditTrailModel> Get_AppointingAuthorityAuditTrail()
+        {
+            List<AppointingAuthorityAuditTrailModel> objList = new List<AppointingAuthorityAuditTrailModel>();
+            try
+            {
+                string query = "usp_Get_AuditLog_AppointingAuthority";
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    SqlDataAdapter sda = new SqlDataAdapter(query, con);
+                    sda.SelectCommand.CommandType = CommandType.Text;
+                    DataSet ds = new DataSet();
+                    sda.Fill(ds);
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+                        AppointingAuthorityAuditTrailModel obj = new AppointingAuthorityAuditTrailModel
+                        {
+                            auditID = Convert.ToInt32(row["auditID"]),
+                            auditDetails = row["auditDetails"].ToString(),
+                            createdBy = row["createdBy"].ToString(),
+                            createdOn = row["createdOn"].ToString(),
+                            createdByIP = row["createdByIP"].ToString(),
+                            sessionID = row["sessionID"].ToString(),
+                            actionCategory = row["actionCategory"].ToString()
+                        };
+                        objList.Add(obj);
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("SQL Error: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("General Error: " + ex.Message);
+            }
+            return objList;
+        }
     }
 }

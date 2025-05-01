@@ -1,4 +1,5 @@
 ﻿using CVOIS.Models.SuperAdmin;
+using CVOIS.Models.SuperAdmin.AuditTrail;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CVOIS.Interfaces.ISuperAdmin
@@ -8,8 +9,8 @@ namespace CVOIS.Interfaces.ISuperAdmin
         Task<List<StateModel>> Get_StateListAsync();
         Task<int> InsertStateAsync(StateModel model);
         Task<int> UpdateStateAsync(StateModel model);
-        Task<int> DeleteStateAsync(string id, string createdBy, string createdByIP, string sessionID);
+        Task<int> DeleteStateAsync(string id, string createdBy, string createdByIP, string sessionID, string actionCategory);
         Task<StateModel> Get_State_By_IdAsync(string id);
-
+        Task<List<StateAuditTrailModel>> Get_StateAuditTrailAsync();
     }
 }

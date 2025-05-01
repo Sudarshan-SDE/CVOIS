@@ -3,6 +3,7 @@ using CVOIS.Interfaces.ISuperAdmin;
 using CVOIS.Models.Admin;
 using CVOIS.Models.Connection;
 using CVOIS.Models.SuperAdmin;
+using CVOIS.Models.SuperAdmin.AuditTrail;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -117,6 +118,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                         cmd.Parameters.AddWithValue("@createdBy", ministryModel.CreatedBy ?? string.Empty);
                         cmd.Parameters.AddWithValue("@createdByIP", ministryModel.CreatedByIP ?? string.Empty);
                         cmd.Parameters.AddWithValue("@sessionID", ministryModel.SessionID ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@actionCategory", ministryModel.actionCategory ?? string.Empty);
 
                         await con.OpenAsync();
                         var result = await cmd.ExecuteScalarAsync();
@@ -195,6 +197,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                         cmd.Parameters.AddWithValue("@createdBy", ministryModel.CreatedBy ?? string.Empty);
                         cmd.Parameters.AddWithValue("@createdByIP", ministryModel.CreatedByIP ?? string.Empty);
                         cmd.Parameters.AddWithValue("@sessionID", ministryModel.SessionID ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@actionCategory", ministryModel.actionCategory ?? string.Empty);
 
                         await con.OpenAsync();
                         var result = await cmd.ExecuteScalarAsync();
@@ -213,7 +216,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                 throw new Exception("Error while updating ministry", ex);
             }
         }
-        public async Task<int> DeleteMinistryAsync(int id, string createdBy, string createdByIP, string sessionID)
+        public async Task<int> DeleteMinistryAsync(int id, string createdBy, string createdByIP, string sessionID, string actionCategory)
         {
             int result = 0;
             try
@@ -229,6 +232,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                         cmd.Parameters.AddWithValue("@createdBy", createdBy ?? string.Empty);
                         cmd.Parameters.AddWithValue("@createdByIP", createdByIP ?? string.Empty);
                         cmd.Parameters.AddWithValue("@sessionID", sessionID ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@actionCategory", actionCategory ?? string.Empty);
 
                         await con.OpenAsync();
                         result = await cmd.ExecuteNonQueryAsync();
@@ -243,215 +247,48 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
         }
 
 
-        //public List<MinistryModel> Get_Ministries(string minCode, string manage)
-        //{
-        //    List<MinistryModel> objList = new List<MinistryModel>();
-        //    try
-        //    {
-        //        using (SqlConnection con = new SqlConnection(_connectionString))
-        //        {
-        //            using (SqlCommand cmd = new SqlCommand("usp_Get_List_Ministry", con))
-        //            {
-        //                cmd.CommandType = CommandType.StoredProcedure;
-        //                cmd.Parameters.AddWithValue("@minCode", minCode ?? string.Empty);
-        //                cmd.Parameters.AddWithValue("@manage", manage ?? string.Empty);
-        //                SqlDataAdapter sda = new SqlDataAdapter(cmd);
-        //                DataSet ds = new DataSet();
-        //                sda.Fill(ds);
-        //                foreach (DataRow row in ds.Tables[0].Rows)
-        //                {
-        //                    MinistryModel obj = new MinistryModel
-        //                    {
-        //                        Min_id = Convert.ToInt32(row["Min_id"]),
-        //                        Mincode = row["MinCode"].ToString(),
-        //                        Ministry_Name = row["Ministry_Name"].ToString(),
-        //                        Min_Status = row["Min_Status"].ToString(),
-        //                        Ministry_Type = row["MinistryType"].ToString()
-        //                    };
-        //                    objList.Add(obj);
-        //                }
-        //            }
-        //        }
-        //    }
-        //    catch (SqlException ex)
-        //    {
-        //        Console.WriteLine("SQL Error: " + ex.Message);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine("General Error: " + ex.Message);
-        //    }
-        //    return objList;
-        //}
+        public async Task<List<MinistryAuditTrailModel>> Get_MinistryAuditTrailAsync()
+        {
+            List<MinistryAuditTrailModel> objList = new List<MinistryAuditTrailModel>();
+            try
+            {
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand("usp_Get_AuditLog_Ministry", con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
 
+                        await con.OpenAsync();
+                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                MinistryAuditTrailModel obj = new MinistryAuditTrailModel
+                                {
+                                    auditID = Convert.ToInt32(reader["auditID"]),
+                                    auditDetails = reader["auditDetails"].ToString(),
+                                    createdBy = reader["createdBy"].ToString(),
+                                    createdOn= reader["createdOn"].ToString(),
+                                    createdByIP= reader["createdByIP"].ToString(),
+                                    actionCategory= reader["actionCategory"].ToString(),
+                                    sessionID = reader["sessionID"].ToString()
+                                };
+                                objList.Add(obj);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("SQL Error: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("General Error: " + ex.Message);
+            }
 
-
-        //public List<SelectListItem> GetMinistryType()
-        //{
-        //    List<SelectListItem> list = new List<SelectListItem>();
-        //    try
-        //    {
-        //        //string query = "select * from tbl_MinistryType";                            //db query to fetch Ministry Type Table
-        //        string query = "usp_Get_MinistryType_List";                                   //Store Procedure 
-        //        using (SqlConnection con = new SqlConnection(_connectionString))
-        //        {
-        //            SqlDataAdapter sda = new SqlDataAdapter(query, con);
-        //            sda.SelectCommand.CommandType = CommandType.Text;
-        //            DataSet ds = new DataSet();
-        //            sda.Fill(ds);
-        //            foreach (DataRow row in ds.Tables[0].Rows)
-        //            {
-        //                list.Add(new SelectListItem
-        //                {
-        //                    Value = row["ministryTypeCode"].ToString(),
-        //                    Text = row["ministryType"].ToString()
-        //                });
-        //            }
-        //        }
-        //    }
-        //    catch (SqlException ex)
-        //    {
-        //        Console.WriteLine("SQL Error: " + ex.Message);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine("General Error: " + ex.Message);
-        //    }
-        //    return list;
-        //}
-
-
-
-        //public int InsertMinistry(MinistryModel ministryModel)
-        //{
-        //    try
-        //    {
-        //        using (SqlConnection con = new SqlConnection(_connectionString))
-        //        {
-        //            const string query = "usp_Ministry_Insert";
-        //            using (SqlCommand cmd = new SqlCommand(query, con))
-        //            {
-        //                cmd.CommandType = CommandType.StoredProcedure;
-        //                cmd.Parameters.AddWithValue("@Ministry_Name", ministryModel.Ministry_Name);
-        //                cmd.Parameters.AddWithValue("@Min_Status", ministryModel.Min_Status);
-        //                cmd.Parameters.AddWithValue("@MinistryType", ministryModel.Ministry_Type);
-        //                con.Open();
-        //                var result = cmd.ExecuteScalar();
-
-        //                if (result != null && result.ToString() == "Duplicate Entry")
-        //                {
-        //                    return -1; // Indicate a duplicate entry
-        //                }
-        //                return 1;
-        //                //return cmd.ExecuteNonQuery();
-        //            }
-        //        }
-        //    }
-        //    catch (SqlException ex)
-        //    {
-        //        throw new Exception("A database error occurred while inserting ministry.", ex);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception("An error occurred while inserting ministry.", ex);
-        //    }
-        //}
-
-
-
-        //public MinistryModel Get_Ministry_By_Id(int id)
-        //{
-        //    MinistryModel ministry = null;
-        //    try
-        //    {
-        //        using (SqlConnection con = new SqlConnection(_connectionString))
-        //        {
-        //            //string query = "SELECT * FROM tbl_Ministry WHERE Min_id = @Min_id";            //db query to fetch Ministry Table
-        //            string query = "usp_Get_Ministry_By_Id";                                         //Store Procedure 
-        //            SqlCommand cmd = new SqlCommand(query, con);
-        //            cmd.CommandType = CommandType.StoredProcedure;
-        //            cmd.Parameters.AddWithValue("@Min_id", id);
-        //            con.Open();
-        //            SqlDataReader reader = cmd.ExecuteReader();
-        //            if (reader.Read())
-        //            {
-        //                ministry = new MinistryModel
-        //                {
-        //                    Min_id = Convert.ToInt32(reader["Min_id"]),
-        //                    Mincode = reader["MinCode"].ToString(),
-        //                    Ministry_Name = reader["Ministry_Name"].ToString(),
-        //                    Min_Status = reader["Min_Status"].ToString(),
-        //                    Ministry_Type = reader["MinistryType"].ToString()
-        //                };
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine("Error fetching ministry by ID: " + ex.Message);
-        //    }
-        //    return ministry;
-        //}
-
-
-
-        //public int UpdateMinistry(MinistryModel model)
-        //{
-        //    try
-        //    {
-        //        using (SqlConnection con = new SqlConnection(_connectionString))
-        //        {
-        //            string query = "usp_Ministry_Update";
-        //            using (SqlCommand cmd = new SqlCommand(query, con))
-        //            {
-        //                cmd.CommandType = CommandType.StoredProcedure;
-        //                cmd.Parameters.AddWithValue("@Min_id", model.Min_id);
-        //                cmd.Parameters.AddWithValue("@Mincode", model.Mincode);
-        //                cmd.Parameters.AddWithValue("@Ministry_Name", model.Ministry_Name);
-        //                cmd.Parameters.AddWithValue("@Min_Status", model.Min_Status);
-        //                cmd.Parameters.AddWithValue("@MinistryType", model.Ministry_Type);
-        //                con.Open();
-        //                var result = cmd.ExecuteScalar();
-
-        //                if (result != null && result.ToString() == "Duplicate Entry")
-        //                {
-        //                    return -1; // Indicate a duplicate entry
-        //                }
-        //                return 1;
-        //                //return cmd.ExecuteNonQuery();
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception("Error while updating ministry", ex);
-        //    }
-        //}
-
-
-
-        //public int DeleteMinistry(int id)
-        //{
-        //    int result = 0;
-        //    try
-        //    {
-        //        using (SqlConnection con = new SqlConnection(_connectionString))
-        //        {
-        //            string query = "usp_Ministry_Delete";
-        //            using (SqlCommand cmd = new SqlCommand(query, con))
-        //            {
-        //                cmd.CommandType = CommandType.StoredProcedure;
-        //                cmd.Parameters.AddWithValue("@Min_id", id);
-        //                con.Open();
-        //                result = cmd.ExecuteNonQuery();
-        //            }
-        //        }
-        //    }
-        //    catch (SqlException ex)
-        //    {
-        //        Console.WriteLine("SQL Error: " + ex.Message);
-        //    }
-        //    return result;
-        //}
+            return objList;
+        }
     }
 }

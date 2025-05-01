@@ -1,4 +1,5 @@
 ﻿using CVOIS.Models.SuperAdmin;
+using CVOIS.Models.SuperAdmin.AuditTrail;
 
 namespace CVOIS.Interfaces.ISuperAdmin
 {
@@ -10,8 +11,10 @@ namespace CVOIS.Interfaces.ISuperAdmin
 
         int UpdateMasterCvoServices(MasterCvoServicesModel model);
 
-        int DeleteMasterCvoServices(int id, string createdBy, string createdByIP, string sessionID);
+        int DeleteMasterCvoServices(int id, string createdBy, string createdByIP, string sessionID, string actionCategory);
 
         MasterCvoServicesModel Get_MasterCvoServices_By_Id(int id);
+
+        List<MasterCVOServicesAuditTrailModel> Get_MasterCvoServicesAuditTrail();
     }
 }

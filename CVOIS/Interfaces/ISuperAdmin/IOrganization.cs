@@ -1,4 +1,5 @@
 ﻿using CVOIS.Models.SuperAdmin;
+using CVOIS.Models.SuperAdmin.AuditTrail;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CVOIS.Interfaces.ISuperAdmin
@@ -10,6 +11,7 @@ namespace CVOIS.Interfaces.ISuperAdmin
         OrganizationModel Get_Organization_By_Id(int id);
         int UpdateOrganization(OrganizationModel model);
         int DeleteOrganization(int id);
+        List<OrganizationAuditTrailModel> Get_OrganizationAuditTrail();
 
 
         //other dropdown lists 

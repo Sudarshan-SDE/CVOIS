@@ -2,19 +2,9 @@
 
 @{
     Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
-    // var username = Context.Session.GetString("Username");
+    var username = Context.Session.GetString("Username");
 }
 
-
-@* department modal open button *@
-@* <div class="d-flex justify-content-between align-items-center mb-3">
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#departmentModal">
-        <i class="fa fa-plus"></i> Add Department
-    </button>
-    <h3>Department List</h3>
-    <div class="d-flex align-items-center gap-2 ms-auto">
-    </div>
-</div> *@
 
 @* Department Modal  *@
 <div class="modal fade" id="departmentModal" tabindex="-1" role="dialog" aria-labelledby="departmentModalLabel" aria-hidden="true">

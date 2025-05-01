@@ -1,6 +1,7 @@
 ﻿using CVOIS.Interfaces.ISuperAdmin;
 using CVOIS.Models.Connection;
 using CVOIS.Models.SuperAdmin;
+using CVOIS.Models.SuperAdmin.AuditTrail;
 using CVOIS.Models.Viewers;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
@@ -68,6 +69,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                         cmd.Parameters.AddWithValue("@createdBy", MasterCvoServicesmodel.CreatedBy ?? string.Empty);
                         cmd.Parameters.AddWithValue("@createdByIP", MasterCvoServicesmodel.CreatedByIP ?? string.Empty);
                         cmd.Parameters.AddWithValue("@sessionID", MasterCvoServicesmodel.SessionID ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@actionCategory", MasterCvoServicesmodel.actionCategory?? string.Empty);
                         con.Open();
                         var result = cmd.ExecuteScalar();
 
@@ -138,6 +140,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                         cmd.Parameters.AddWithValue("@createdBy", MasterCvoServicesmodel.CreatedBy ?? string.Empty);
                         cmd.Parameters.AddWithValue("@createdByIP", MasterCvoServicesmodel.CreatedByIP ?? string.Empty);
                         cmd.Parameters.AddWithValue("@sessionID", MasterCvoServicesmodel.SessionID ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@actionCategory", MasterCvoServicesmodel.actionCategory ?? string.Empty);
                         con.Open();
                         var result = cmd.ExecuteScalar();
 
@@ -156,7 +159,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
             }
         }
 
-        public int DeleteMasterCvoServices(int id, string createdBy, string createdByIP, string sessionID)
+        public int DeleteMasterCvoServices(int id, string createdBy, string createdByIP, string sessionID, string actionCategory)
         {
             int result = 0;
             try
@@ -172,6 +175,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                         cmd.Parameters.AddWithValue("@createdBy", createdBy ?? string.Empty);
                         cmd.Parameters.AddWithValue("@createdByIP", createdByIP ?? string.Empty);
                         cmd.Parameters.AddWithValue("@sessionID", sessionID ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@actionCategory", actionCategory ?? string.Empty);
                         con.Open();
                         result = cmd.ExecuteNonQuery();
                     }
@@ -182,6 +186,45 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                 Console.WriteLine("SQL Error: " + ex.Message);
             }
             return result;
+        }
+
+        public List<MasterCVOServicesAuditTrailModel> Get_MasterCvoServicesAuditTrail()
+        {
+            List<MasterCVOServicesAuditTrailModel> objList = new List<MasterCVOServicesAuditTrailModel>();
+            try
+            {
+                string query = "usp_Get_AuditLog_MasterCvoService";
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    SqlDataAdapter sda = new SqlDataAdapter(query, con);
+                    sda.SelectCommand.CommandType = CommandType.Text;
+                    DataSet ds = new DataSet();
+                    sda.Fill(ds);
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+                        MasterCVOServicesAuditTrailModel obj = new MasterCVOServicesAuditTrailModel
+                        {
+                            auditID = Convert.ToInt32(row["auditID"]),
+                            auditDetails = row["auditDetails"].ToString(),
+                            createdBy = row["createdBy"].ToString(),
+                            createdOn = row["createdOn"].ToString(),
+                            createdByIP = row["createdByIP"].ToString(),
+                            sessionID = row["sessionID"].ToString(),
+                            actionCategory = row["actionCategory"].ToString()
+                        };
+                        objList.Add(obj);
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("SQL Error: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("General Error: " + ex.Message);
+            }
+            return objList;
         }
 
     }

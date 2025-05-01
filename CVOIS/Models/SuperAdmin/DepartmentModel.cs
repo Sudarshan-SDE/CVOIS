@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.CodeAnalysis.Elfie.Diagnostics;
+using System.ComponentModel.DataAnnotations;
 
 namespace CVOIS.Models.SuperAdmin
 {
@@ -30,6 +31,7 @@ namespace CVOIS.Models.SuperAdmin
         public string CreatedBy { get; set; }
         public string CreatedByIP { get; set; }
         public string SessionID { get; set; }
+        public string actionCategory { get; set; }
 
     }
 }

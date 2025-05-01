@@ -1,9 +1,9 @@
-﻿    @model CVOIS.Models.SuperAdmin.SuperAdminViewModel
+﻿@model CVOIS.Models.SuperAdmin.SuperAdminViewModel
+@using Microsoft.AspNetCore.Http
 
 @{
     Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
-
-
+    var username = Context.Session.GetString("Username");
 }
 
 @* Ministry Modal  *@

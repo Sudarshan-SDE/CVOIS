@@ -44,9 +44,10 @@ else
     <div class="alert alert-danger">No Appointing Authority records found.</div>
 }
 
+<script src="~/js/datatable_superadmin_code.js"></script>
 
-@* Data table *@
-<script>
+@* Data Table *@
+@* <script>
     $(document).ready(function () {
         $('#appointingAuthorityDataTable').DataTable({
             dom: "<'row align-items-center mb-2'<'col-md-5 dt-buttons-container d-flex align-items-center'B><'col-md-3 text-center'<'appointing-title'>><'col-md-4 text-end'f>>" +
@@ -61,7 +62,7 @@ else
                         columns: ':not(:last-child)'
                     }
                 },
-                {   
+                {
                     extend: 'pdfHtml5',
                     text: '<i class="fa fa-file-pdf-o"></i> Export to PDF',
                     className: 'btn btn-sm btn-danger me-2',
@@ -107,9 +108,12 @@ else
 
         // Add button before export buttons
         $('.dt-buttons').prepend(`
-                <button type="button" class="btn btn-sm btn-primary me-2" data-toggle="modal" data-target="#appointingauthorityModal">
-                    <i class="fa fa-plus"></i> Add Appointing Authority
-                </button>
+            <button type="button" class="btn btn-sm btn-primary me-2" data-toggle="modal" data-target="#appointingauthorityModal">
+                <i class="fa fa-plus"></i> Add Appointing Authority
+            </button>
             `);
     });
-</script>
+</script> *@
+
+
+

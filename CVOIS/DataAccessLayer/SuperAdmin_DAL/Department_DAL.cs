@@ -1,6 +1,8 @@
 ﻿using CVOIS.Interfaces.ISuperAdmin;
+using CVOIS.Models.Admin;
 using CVOIS.Models.Connection;
 using CVOIS.Models.SuperAdmin;
+using CVOIS.Models.SuperAdmin.AuditTrail;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
@@ -11,6 +13,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
     public class Department_DAL : IDepartment
     {
         private readonly string _connectionString;
+        private object reader;
 
         public Department_DAL(IOptions<ConnectionString> connectionString)
         {
@@ -103,6 +106,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                         cmd.Parameters.AddWithValue("@createdBy", departmentModel.CreatedBy ?? string.Empty);
                         cmd.Parameters.AddWithValue("@createdByIP", departmentModel.CreatedByIP ?? string.Empty);
                         cmd.Parameters.AddWithValue("@sessionID", departmentModel.SessionID ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@actionCategory", departmentModel.actionCategory ?? string.Empty);
                         con.Open();
                         var result = cmd.ExecuteScalar();
 
@@ -177,6 +181,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                         cmd.Parameters.AddWithValue("@createdBy", model.CreatedBy ?? string.Empty);
                         cmd.Parameters.AddWithValue("@createdByIP", model.CreatedByIP ?? string.Empty);
                         cmd.Parameters.AddWithValue("@sessionID", model.SessionID ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@actionCategory", model.actionCategory ?? string.Empty);
                         con.Open();
                         var result = cmd.ExecuteScalar();
 
@@ -195,7 +200,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
             }
         }
 
-        public int DeleteDepartment(int id, string createdBy, string createdByIP, string sessionID)
+        public int DeleteDepartment(int id, string createdBy, string createdByIP, string sessionID, string actionCategory)
         {
             int result = 0;
             try
@@ -211,6 +216,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                         cmd.Parameters.AddWithValue("@createdBy", createdBy ?? string.Empty);
                         cmd.Parameters.AddWithValue("@createdByIP", createdByIP ?? string.Empty);
                         cmd.Parameters.AddWithValue("@sessionID", sessionID ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@actionCategory", actionCategory ?? string.Empty);
 
                         con.Open();
                         result = cmd.ExecuteNonQuery();
@@ -223,5 +229,46 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
             }
             return result;
         }
+
+        public List<DepartmentAuditTrailModel> Get_DepartmentAuditTrail()
+        {
+            List<DepartmentAuditTrailModel> objList = new List<DepartmentAuditTrailModel>();
+            try
+            {
+                string query = "usp_Get_AuditLog_Department";
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    SqlDataAdapter sda = new SqlDataAdapter(query, con);
+                    sda.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    DataSet ds = new DataSet();
+                    sda.Fill(ds);
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+                        DepartmentAuditTrailModel obj = new DepartmentAuditTrailModel
+                        {
+                            auditID = Convert.ToInt32(row["auditID"]),
+                            auditDetails = row["auditDetails"].ToString(),
+                            createdBy = row["createdBy"].ToString(),
+                            createdOn = row["createdOn"].ToString(),
+                            createdByIP = row["createdByIP"].ToString(),
+                            actionCategory = row["actionCategory"].ToString(),
+                            sessionID = row["sessionID"].ToString()
+                        };
+                        objList.Add(obj);
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("SQL Error: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("General Error: " + ex.Message);
+            }
+            return objList;
+        }
+
+
     }
 }

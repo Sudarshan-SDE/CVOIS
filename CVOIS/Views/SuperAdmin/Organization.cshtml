@@ -4,7 +4,13 @@
     Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
     var username = Context.Session.GetString("Username");
 }
+<style>
+    .modal-body {
+        max-height: 70vh;
+        overflow-y: auto;
+    }
 
+</style>
 
 <!-- Modal -->
 <div class="modal fade" id="organizationModal" tabindex="-1" role="dialog" aria-labelledby="organizationModalLabel" aria-hidden="true">
@@ -20,7 +26,7 @@
 
                 <div class="modal-body">
                     <div class="row">
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-12 col-sm-6 col-md-4 px-2">
                             <label asp-for="Organization.MINCODE" class="control-label"></label>
                             <select id="Organization.MINCODE" name="Organization.MINCODE" class="form-control">
                                 <option value="">-Select Ministry-</option>
@@ -41,7 +47,7 @@
                             </select>
                             <span id="DEPTCODEError" class="text-danger"></span>
 
-                        </div> 
+                        </div>
 
                         <div class="form-group col-md-4">
                             <label asp-for="Organization.ORGNAME" class="control-label"></label>
@@ -171,7 +177,7 @@
 
                 <div class="modal-footer">
                     <button type="button" id="btnSaveOrganization" class="btn btn-success" onclick="SaveOrganization()">Submit</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="resetOrganizationForm()">Close</button>
                 </div>
             </form>
         </div>
@@ -190,225 +196,139 @@
 @* Save Organization Data *@
 <script>
     function SaveOrganization() {
-        let Organization_MINCODE = document.getElementById("Organization.MINCODE").value.trim();
-        let MINCODEError = document.getElementById("MINCODEError");
-        let departmentDropdown = document.getElementById("ddlDeptCode").value.trim();
-        let DEPTCODEError = document.getElementById("DEPTCODEError");
-        let ORGNAME = document.getElementById("ORGNAME").value.trim();
-        let ORGNAMEError = document.getElementById("ORGNAMEError");
-
-        let file_no = document.getElementById("file_no").value.trim();
-        let file_noError = document.getElementById("file_noError");
-        let APPOINTING_AUTHORITY = document.getElementById("APPOINTING_AUTHORITY").value.trim();
-        let APPOINTING_AUTHORITYError = document.getElementById("APPOINTING_AUTHORITYError");
-        let org_level = document.getElementById("org_level").value.trim();
-        let org_levelError = document.getElementById("org_levelError");
-
-        let section = document.getElementById("section").value.trim();
-        let sectionError = document.getElementById("sectionError");
-        let org_status = document.getElementById("org_status").value.trim();
-        let org_statusError = document.getElementById("org_statusError");
-        let org_country = document.getElementById("org_country").value.trim();
-        let org_countryError = document.getElementById("org_countryError");
-
-
-        let org_address = document.getElementById("org_address").value.trim();
-        let org_addressError = document.getElementById("org_addressError");
-        let org_state = document.getElementById("org_state").value.trim();
-        let org_stateError = document.getElementById("org_stateError");
-        let org_city = document.getElementById("ddldistrictCode").value.trim();
-        let org_cityError = document.getElementById("org_cityError");
-
-        let pincode = document.getElementById("pincode").value.trim();
-        let pincodeError = document.getElementById("pincodeError");
-        let phoneno = document.getElementById("phoneno").value.trim();
-        let phonenoError = document.getElementById("phonenoError");
-        let fax = document.getElementById("fax").value.trim();
-        let faxError = document.getElementById("faxError");
-
-        let org_category = document.getElementById("org_category").value.trim();
-        let org_categoryError = document.getElementById("org_categoryError");
-        let email = document.getElementById("EMAIL_ID").value.trim();
-        let emailError = document.getElementById("emailError");
         let isValid = true;
+        document.querySelectorAll(".text-danger").forEach(e => e.innerText = '');
 
+        function setError(id, message) {
+            document.getElementById(id).innerText = message;
+            isValid = false;
+        }
 
-        $("#organizationForm input, #organizationForm select").each(function () {
-            if ($(this).val().trim() === "") {
-                isValid = false;
-                return false;
+        // Required field validations
+        if (document.getElementById("Organization.MINCODE").value === "") {
+            setError("MINCODEError", "Ministry is required");
+        }
+        if (document.getElementById("ddlDeptCode").value === "") {
+            setError("DEPTCODEError", "Department is required");
+        }
+        if (document.getElementById("ORGNAME").value.trim() === "") {
+            setError("ORGNAMEError", "Organization name is required");
+        }
+        if (document.getElementById("file_no").value.trim() === "") {
+            setError("file_noError", "File No. is required");
+        }
+        if (document.getElementById("APPOINTING_AUTHORITY").value === "") {
+            setError("APPOINTING_AUTHORITYError", "Appointing Authority is required");
+        }
+        if (document.getElementById("org_level").value === "") {
+            setError("org_levelError", "Organization level is required");
+        }
+        if (document.getElementById("section").value.trim() === "") {
+            setError("sectionError", "Section is required");
+        }
+        if (document.getElementById("org_status").value === "") {
+            setError("org_statusError", "Status is required");
+        }
+        if (document.getElementById("org_country").value === "") {
+            setError("org_countryError", "Country is required");
+        }
+        if (document.getElementById("org_address").value.trim() === "") {
+            setError("org_addressError", "Address is required");
+        }
+        if (document.getElementById("org_state").value === "") {
+            setError("org_stateError", "State is required");
+        }
+        if (document.getElementById("ddldistrictCode").value === "") {
+            setError("org_cityError", "District is required");
+        }
+        if (document.getElementById("pincode").value.trim() === "") {
+            setError("pincodeError", "Pincode is required");
+        }
+        if (document.getElementById("phoneno").value.trim() === "") {
+            setError("phonenoError", "Phone number is required");
+        } else {
+            const phone = document.getElementById("phoneno").value.trim();
+            if (!/^\d{10}$/.test(phone)) {
+                setError("phonenoError", "Phone number must be 10 digits");
             }
-        });
-
-        if (Organization_MINCODE === "") {
-            MINCODEError.textContent = "Please enter a Ministry.";
-            return false;
-        } else {
-            MINCODEError.textContent = "";
         }
-        if (departmentDropdown === "") {
-            DEPTCODEError.textContent = "Please enter a Department.";
-            return false;
-        } else {
-            DEPTCODEError.textContent = "";
+        if (document.getElementById("fax").value === "") {
+            setError("faxError", "Fax is required");
         }
-        if (ORGNAME === "") {
-            ORGNAMEError.textContent = "Please enter a Org name.";
-            return false;
-        } else {
-            ORGNAMEError.textContent = "";
+        if (document.getElementById("org_category").value === "") {
+            setError("org_categoryError", "Category is required");
         }
-
-        if (file_no === "") {
-            file_noError.textContent = "Please enter a File.";
-            return false;
+        if (document.getElementById("EMAIL_ID").value.trim() === "") {
+            setError("emailError", "Email is required");
         } else {
-            file_noError.textContent = "";
-        }
-        if (APPOINTING_AUTHORITY === "") {
-            APPOINTING_AUTHORITYError.textContent = "Please enter a Appointing Authority.";
-            return false;
-        } else {
-            APPOINTING_AUTHORITYError.textContent = "";
-        }
-        if (org_level === "") {
-            org_levelError.textContent = "Please enter a Level.";
-            return false;
-        } else {
-            org_levelError.textContent = "";
-        }
-
-        if (section === "") {
-            sectionError.textContent = "Please enter a Section.";
-            return false;
-        } else {
-            sectionError.textContent = "";
-        }
-        if (org_status === "") {
-            org_statusError.textContent = "Please enter a Status.";
-            return false;
-        } else {
-            org_statusError.textContent = "";
-        }
-        if (org_country === "") {
-            org_countryError.textContent = "Please enter a Coutnry.";
-            return false;
-        } else {
-            org_countryError.textContent = "";
-        }
-
-        if (org_address === "") {
-            org_addressError.textContent = "Please enter a Address.";
-            return false;
-        } else {
-            org_addressError.textContent = "";
-        }
-        if (org_state === "") {
-            org_stateError.textContent = "Please enter a State.";
-            return false;
-        } else {
-            org_stateError.textContent = "";
-        }
-        if (org_city === "") {
-            org_cityError.textContent = "Please enter a City.";
-            return false;
-        } else {
-            org_cityError.textContent = "";
-        }
-
-        if (pincode === "") {
-            pincodeError.textContent = "Please enter a Pincode.";
-            return false;
-        } else {
-            pincodeError.textContent = "";
-        }
-        if (phoneno === "") {
-            phonenoError.textContent = "Please enter a Phoneno.";
-            return false;
-        } else {
-            phonenoError.textContent = "";
-        }
-        if (fax === "") {
-            faxError.textContent = "Please enter a valid fax.";
-            return false;
-        } else {
-            faxError.textContent = "";
-        }
-
-        if (org_category === "") {
-            org_categoryError.textContent = "Please enter a Catogory.";
-            return false;
-        } else {
-            org_categoryError.textContent = "";
-        }
-
-        const emailPattern = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
-        if (!emailPattern.test(email)) {
-            emailError.textContent = "Please enter a valid email address.";
-            return;
-        } else {
-            emailError.textContent = "";
-        }
-
-        Swal.fire({
-            title: "Do you want to save the record?",
-            icon: "question",
-            showDenyButton: true,
-            showCancelButton: true,
-            confirmButtonText: "Save",
-            denyButtonText: `Don't save`
-        }).then((result) => {
-            if (result.isConfirmed) {
-
-                $("#btnSaveOrganization").prop("disabled", true).text("Saving...");
-
-                $.ajax({
-                    type: 'POST',
-                    url: '/SuperAdmin/Organization',
-                    data: $("#organizationForm").serialize(),
-                    success: function (response) {
-                        if (response.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success!',
-                                text: 'Organization added successfully.',
-                                confirmButtonColor: '#3085d6'
-                            }).then(() => {
-                                $('#organizationModal').modal('hide');
-                                $('#organizationForm')[0].reset();
-                                location.reload();
-                            });
-                        }
-                        else if (response.duplicate_Org_message) {
-                            Swal.fire({
-                                icon: 'warning',
-                                title: response.duplicate_Org_message,
-                                confirmButtonColor: '#d33'
-                            });
-                        }
-                        else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: response.error_Org_message,
-                                confirmButtonColor: '#d33'
-                            });
-                        }
-                    },
-                    error: function () {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops!',
-                            text: 'Something went wrong. Please try again.',
-                            confirmButtonColor: '#d33'
-                        });
-                    },
-                    complete: function () {
-                        $("#btnSaveOrganization").prop("disabled", false).text("Submit");
-                    }
-                });
-
+            const email = document.getElementById("EMAIL_ID").value.trim();
+            const emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+            if (!emailRegex.test(email)) {
+                setError("emailError", "Invalid email format");
             }
-        });
+        }
+
+        // If valid, submit the form
+        if (isValid) {
+            Swal.fire({
+                title: "Do you want to save the record?",
+                icon: "question",
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: "Save",
+                denyButtonText: `Don't save`
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let form = $('#organizationForm');
+                    $.ajax({
+                        type: "POST",
+                        url: form.attr('action'), // ASP.NET Core will resolve the correct route
+                        data: form.serialize(),
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success!',
+                                    text: 'Organization added successfully.',
+                                    confirmButtonColor: '#3085d6'
+                                }).then(() => {
+                                    $('#organizationModal').modal('hide');
+                                    $('#organizationForm')[0].reset();
+                                    location.reload();
+                                });
+                            }
+                            else if (response.duplicate_Org_message) {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: response.duplicate_Org_message,
+                                    confirmButtonColor: '#d33'
+                                });
+                            }
+                            else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: response.error_Org_message,
+                                    confirmButtonColor: '#d33'
+                                });
+                            }
+                        },
+                        error: function (xhr) {
+                            Swal.fire("Error", "Something went wrong. Please try again.", "error");
+                        }
+                    });
+                } else if (result.isDenied) {
+                    Swal.fire("Changes are not saved", "", "info");
+                }
+            });
+        }
+    }
+</script>
+
+<script>
+    function resetOrganizationForm() {
+        document.getElementById("organizationForm").reset();
+
+        document.querySelectorAll(".text-danger").forEach(e => e.innerText = '');
     }
 </script>
 

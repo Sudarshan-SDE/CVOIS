@@ -1,5 +1,6 @@
 ﻿using CVOIS.Models.SuperAdmin;
 using CVOIS.Models.SuperAdmin.AuditTrail;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CVOIS.Interfaces.ISuperAdmin
@@ -10,7 +11,7 @@ namespace CVOIS.Interfaces.ISuperAdmin
         int InsertOrganization(OrganizationModel model);
         OrganizationModel Get_Organization_By_Id(int id);
         int UpdateOrganization(OrganizationModel model);
-        int DeleteOrganization(int id);
+        int DeleteOrganization(int id , string createdBy, string createdByIP, string sessionID, string actionCategory);
         List<OrganizationAuditTrailModel> Get_OrganizationAuditTrail();
 
 

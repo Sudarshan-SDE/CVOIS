@@ -33,7 +33,13 @@ namespace CVOIS.Models.SuperAdmin
         //Organization
         public OrganizationModel Organization { get; set; }
         public List<OrganizationModel> Organization_List { get; set; }
+
+
+        public OrganizationAuditTrailModel OrganizationAuditTrail { get; set; }
         public List<OrganizationAuditTrailModel> Organization_AuditTrail_List { get; set; }
+        
+
+        
         public List<SelectListItem> AppointingAuthority_ddl_List { get; set; }
         public List<SelectListItem> OrgLevel_ddl_List { get; set; }
        

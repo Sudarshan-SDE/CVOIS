@@ -491,17 +491,16 @@ namespace CVOIS.Controllers
             try
             {
                 ViewBag.title = "Organization";
-
                 objModel.Organization.DEPTCODE = objModel.ddlDeptCode;
                 objModel.Organization.org_district = objModel.ddldistrictCode;
 
+                objModel.Organization.CreatedBy = HttpContext.Session.GetString("Fullname");
+                objModel.Organization.CreatedByIP = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
+                objModel.Organization.SessionID = HttpContext.Session.Id;
+                objModel.Organization.actionCategory = "Organization";
                 int isInserted = _organization.InsertOrganization(objModel.Organization);
                 if (isInserted > 0)
                 {
-                    var model = new SuperAdminViewModel
-                    {
-                        Organization = new OrganizationModel()
-                    };
                     return Json(new { success = true });
                 }
                 else
@@ -509,7 +508,6 @@ namespace CVOIS.Controllers
                     return Json(new { success = false });
                 }
             }
-
             catch (Exception)
             {
                 return Json(new { success = false, message = "An unexpected error occurred." });
@@ -557,6 +555,12 @@ namespace CVOIS.Controllers
             {
                 ViewBag.title = "Organization";
                 objmodel.Organization.UPDATE_DATE = DateTime.Now;
+
+                objmodel.Organization.CreatedBy = HttpContext.Session.GetString("Fullname");
+                objmodel.Organization.CreatedByIP = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
+                objmodel.Organization.SessionID = HttpContext.Session.Id;
+                objmodel.Organization.actionCategory = "Organization";
+
                 int isInserted = _organization.UpdateOrganization(objmodel.Organization);
                 if (isInserted > 0)
                 {
@@ -583,7 +587,11 @@ namespace CVOIS.Controllers
         {
             try
             {
-                int result = _organization.DeleteOrganization(id);
+                string createdBy = HttpContext.Session.GetString("Fullname");
+                string createdByIP = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
+                string sessionID = HttpContext.Session.Id;
+                string actionCategory = "Organization";
+                int result = _organization.DeleteOrganization(id, createdBy, createdByIP, sessionID, actionCategory);
                 if (result > 0)
                 {
                     TempData["Delete_Organization_Message"] = "Organization deleted successfully";

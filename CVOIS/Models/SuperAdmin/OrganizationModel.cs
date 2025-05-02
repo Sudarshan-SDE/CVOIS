@@ -95,5 +95,15 @@ namespace CVOIS.Models.SuperAdmin
 
         public string ddlDeptCode { get; set; }
         public string ddldistrictCode { get; set; }
+
+
+        public string CreatedBy { get; set; }
+        public string CreatedByIP { get; set; }
+        public string SessionID { get; set; }
+        public string actionCategory { get; set; }
+
+
+
+
     }
 }

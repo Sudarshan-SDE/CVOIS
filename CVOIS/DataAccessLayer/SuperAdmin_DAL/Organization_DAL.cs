@@ -92,6 +92,11 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                         cmd.Parameters.AddWithValue("@fax", organizationModel.fax);
                         cmd.Parameters.AddWithValue("@org_category", organizationModel.org_category);
                         cmd.Parameters.AddWithValue("@EMAIL_ID", organizationModel.EMAIL_ID);
+
+                        cmd.Parameters.AddWithValue("@createdBy", organizationModel.CreatedBy ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@createdByIP", organizationModel.CreatedByIP ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@sessionID", organizationModel.SessionID ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@actionCategory", organizationModel.actionCategory ?? string.Empty);
                         con.Open();
                         return cmd.ExecuteNonQuery();
                     }
@@ -184,6 +189,11 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                         cmd.Parameters.AddWithValue("@org_category", organizationModel.org_category);
                         cmd.Parameters.AddWithValue("@EMAIL_ID", organizationModel.EMAIL_ID);
                         cmd.Parameters.AddWithValue("@UPDATE_DATE", organizationModel.UPDATE_DATE);
+
+                        cmd.Parameters.AddWithValue("@createdBy", organizationModel.CreatedBy ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@createdByIP", organizationModel.CreatedByIP ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@sessionID", organizationModel.SessionID ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@actionCategory", organizationModel.actionCategory ?? string.Empty);
                         con.Open();
                         return cmd.ExecuteNonQuery();
                     }
@@ -195,7 +205,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
             }
         }
 
-        public int DeleteOrganization(int id)
+        public int DeleteOrganization(int id, string createdBy, string createdByIP, string sessionID, string actionCategory)
         {
             int result = 0;
             try
@@ -207,6 +217,11 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@ORG_ID", id);
+
+                        cmd.Parameters.AddWithValue("@createdBy", createdBy ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@createdByIP", createdByIP ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@sessionID", sessionID ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@actionCategory", actionCategory ?? string.Empty);
                         con.Open();
                         result = cmd.ExecuteNonQuery();
                     }
@@ -224,7 +239,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
             List<OrganizationAuditTrailModel> objList = new List<OrganizationAuditTrailModel>();
             try
             {
-                string query = "usp_Get_List_Organisation";
+                string query = "usp_Get_AuditLog_Organization";
                 using (SqlConnection con = new SqlConnection(_connectionString))
                 {
                     using (SqlCommand cmd = new SqlCommand(query, con))
@@ -236,16 +251,13 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                             {
                                 OrganizationAuditTrailModel obj = new OrganizationAuditTrailModel
                                 {
-                                    //row_num = Convert.ToInt32(reader["row_num"]),
-                                    //ORG_ID = Convert.ToInt32(reader["ORG_ID"]),
-                                    //Ministry_Name = reader["Ministry_Name"].ToString(),
-                                    //DeptName = reader["DeptName"].ToString(),
-                                    //ORGNAME = reader["ORGNAME"].ToString(),
-                                    //org_address = reader["org_address"].ToString(),
-                                    //pincode = reader["pincode"].ToString(),
-                                    //phoneno = reader["phoneno"].ToString(),
-                                    //org_category = reader["org_category"].ToString(),
-                                    //org_status = reader["org_status"].ToString()
+                                    auditID= Convert.ToInt32(reader["auditID"]),
+                                    auditDetails= reader["auditDetails"].ToString(),
+                                    createdBy = reader["createdBy"].ToString(),
+                                    createdOn = reader["createdOn"].ToString(),
+                                    createdByIP = reader["createdByIP"].ToString(),
+                                    sessionID = reader["sessionID"].ToString(),
+                                    actionCategory= reader["actionCategory"].ToString()
                                 };
                                 objList.Add(obj);
                             }

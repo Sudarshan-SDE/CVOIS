@@ -1,0 +1,76 @@
+﻿@model CVOIS.Models.SuperAdmin.SuperAdminViewModel
+
+@{
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+    var username = Context.Session.GetString("Username");
+}
+<style>
+    .dt-buttons .btn {
+        margin-right: 5px;
+    }
+</style>
+@if (Model.Organization_AuditTrail_List != null && Model.Organization_AuditTrail_List.Any())
+{
+    <div id="OrganizationAuditTable" class="table-wrapper table-responsive">
+        <table id="OrganizationAuditDataTable" class="table table-bordered table-striped">
+            <thead class="table-header ">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationAuditTrail.auditID)</th>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationAuditTrail.createdBy)</th>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationAuditTrail.createdOn)</th>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationAuditTrail.createdByIP)</th>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationAuditTrail.sessionID)</th>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationAuditTrail.actionCategory)</th>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationAuditTrail.auditDetails)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Organization_AuditTrail_List)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.auditID)</td>
+                        <td>@Html.DisplayFor(modelItem => item.createdBy)</td>
+                        <td>@Html.DisplayFor(modelItem => item.createdOn)</td>
+                        <td>@Html.DisplayFor(modelItem => item.createdByIP)</td>
+                        <td>@Html.DisplayFor(modelItem => item.sessionID)</td>
+                        <td>@Html.DisplayFor(modelItem => item.actionCategory)</td>
+                        <td>@Html.DisplayFor(modelItem => item.auditDetails)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger">No Audit records found.</div>
+}
+
+
+@* Data table *@
+<script>
+    $(document).ready(function () {
+        $('#OrganizationAuditDataTable').DataTable({
+            responsive: true,
+            paging: true,
+            searching: true,
+            ordering: true,
+            dom: "<'row align-items-center mb-2'<'col-md-4'B><'col-md-4 text-center'<'Organization-audit-title'>><'col-md-4 text-end'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
+            buttons: [
+                { extend: 'copy', className: 'btn btn-sm btn-primary', text: 'Copy' },
+                { extend: 'csv', className: 'btn btn-sm btn-info', text: 'CSV' },
+                { extend: 'excel', className: 'btn btn-sm btn-success', text: 'Excel' },
+                { extend: 'pdf', className: 'btn btn-sm btn-danger', text: 'PDF' },
+                { extend: 'print', className: 'btn btn-sm btn-warning', text: 'Print' }
+            ],
+            language: {
+                emptyTable: "No audit data available"
+            }
+        });
+
+        // Inject Organization List heading
+        $('.Organization-audit-title').html('<h3 class="m-0 fw-bold">Organization Audit List</h3>');
+    });
+</script>

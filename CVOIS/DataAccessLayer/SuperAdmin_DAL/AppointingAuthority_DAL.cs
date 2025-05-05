@@ -27,7 +27,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                 using (SqlConnection con = new SqlConnection(_connectionString))
                 {
                     SqlDataAdapter sda = new SqlDataAdapter(query, con);
-                    sda.SelectCommand.CommandType = CommandType.Text;
+                    sda.SelectCommand.CommandType = CommandType.StoredProcedure;
                     DataSet ds = new DataSet();
                     sda.Fill(ds);
                     foreach (DataRow row in ds.Tables[0].Rows)
@@ -198,7 +198,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                 using (SqlConnection con = new SqlConnection(_connectionString))
                 {
                     SqlDataAdapter sda = new SqlDataAdapter(query, con);
-                    sda.SelectCommand.CommandType = CommandType.Text;
+                    sda.SelectCommand.CommandType = CommandType.StoredProcedure;
                     DataSet ds = new DataSet();
                     sda.Fill(ds);
                     foreach (DataRow row in ds.Tables[0].Rows)

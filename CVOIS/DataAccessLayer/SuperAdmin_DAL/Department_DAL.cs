@@ -3,6 +3,8 @@ using CVOIS.Models.Admin;
 using CVOIS.Models.Connection;
 using CVOIS.Models.SuperAdmin;
 using CVOIS.Models.SuperAdmin.AuditTrail;
+using CVOIS.Models.SuperAdmin.DeleteAuditTrail;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
@@ -253,6 +255,51 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                             createdByIP = row["createdByIP"].ToString(),
                             actionCategory = row["actionCategory"].ToString(),
                             sessionID = row["sessionID"].ToString()
+                        };
+                        objList.Add(obj);
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("SQL Error: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("General Error: " + ex.Message);
+            }
+            return objList;
+        }
+
+        public List<DepartmentDeleteAuditTrailModel> Get_DepartmentDeleteAuditTrail()
+        {
+            List<DepartmentDeleteAuditTrailModel> objList = new List<DepartmentDeleteAuditTrailModel>();
+            try
+            {
+                string query = "select*from Audit_Deleted_Departments";
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    SqlDataAdapter sda = new SqlDataAdapter(query, con);
+                    sda.SelectCommand.CommandType = CommandType.Text;
+                    DataSet ds = new DataSet();
+                    sda.Fill(ds);
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+                        DepartmentDeleteAuditTrailModel obj = new DepartmentDeleteAuditTrailModel
+                        {
+                            AuditID = Convert.ToInt32(row["AuditID"]),
+
+                            Dept_Id = row["Dept_Id"].ToString(),
+                            Deptcode= row["Deptcode"].ToString(),
+                            Mincode= row["Mincode"].ToString(),
+                            DeptName= row["DeptName"].ToString(),
+                            Dept_status= row["Dept_status"].ToString(),
+
+                            createdBy = row["createdBy"].ToString(),
+                            createdByIP = row["createdByIP"].ToString(),
+
+                            SessionID = row["SessionID"].ToString(),
+                            DeletedOn= row["DeletedOn"].ToString()
                         };
                         objList.Add(obj);
                     }

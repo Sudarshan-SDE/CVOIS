@@ -11,12 +11,13 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using CVOIS.Models.SuperAdmin.AuditTrail;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CVOIS.Controllers
 {
     public class SuperAdminController : Controller
     {
-        private readonly IDatabaseDAL _databaseDAL;
+        private readonly IDatabaseDAL _database;
         private readonly IMinistry _ministry;
         private readonly IDepartment _department;
         private readonly IHttpContextAccessor _contextAccessor;
@@ -25,18 +26,20 @@ namespace CVOIS.Controllers
         private readonly IAppointingAuthority _appointingauthority;
         private readonly IMasterCvoServices _masterCvoServices;
         private readonly IState _state;
+        private readonly IMasterAuditTrail _masterAuditTrail;
 
-        public SuperAdminController(IMinistry ministry, IDepartment department, IOrganization organization, IDatabaseDAL databaseDAL, ILevel level, IAppointingAuthority appointingauthority, IMasterCvoServices masterCvoServices, IState state, IHttpContextAccessor contextAccessor)
+        public SuperAdminController(IMinistry ministry, IDepartment department, IOrganization organization, IDatabaseDAL database, ILevel level, IAppointingAuthority appointingauthority, IMasterCvoServices masterCvoServices, IState state, IHttpContextAccessor contextAccessor, IMasterAuditTrail masterAuditTrail)
         {
             this._ministry = ministry;
             this._department = department;
             this._organization = organization;
-            this._databaseDAL = databaseDAL;
+            this._database = database;
             this._level = level;
-            _contextAccessor = contextAccessor;
+            this._contextAccessor = contextAccessor;
             this._appointingauthority = appointingauthority;
             this._masterCvoServices = masterCvoServices;
             this._state = state;
+            this._masterAuditTrail = masterAuditTrail;
         }
 
         public IActionResult SuperAdminDashboard()
@@ -49,7 +52,7 @@ namespace CVOIS.Controllers
                 {
                     return RedirectToAction("Login", "Home");
                 }
-                int result = _databaseDAL.TestDatabaseConnection();
+                int result = _database.TestDatabaseConnection();
                 if (result > 0)
                 {
                     ViewBag.title = "SuperAdmin Dashboard";
@@ -200,7 +203,7 @@ namespace CVOIS.Controllers
             try
             {
                 string createdBy = HttpContext.Session.GetString("Fullname");
-                string createdByIP = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
+                string createdByIP = HttpContext.Connection.RemoteIpAddress?.ToString() ?? string.Empty;
                 string sessionID = HttpContext.Session.Id;
                 string actionCategory = "Ministry";
 
@@ -245,6 +248,29 @@ namespace CVOIS.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> DeleteMinistryAuditTrail()
+        {
+            try
+            {
+                ViewBag.title = "Delete Department Audit Trail";
+                string username = HttpContext.Session.GetString("Username");
+                if (string.IsNullOrEmpty(username))
+                {
+                    return RedirectToAction("Login", "Home");
+                }
+                var model = new SuperAdminViewModel
+                {
+                    Ministry_Delete_AuditTrail_List = await _ministry.Get_MinistryDeleteAuditTrailAsync()
+                };
+                return View(model);
+            }
+            catch (Exception)
+            {
+                ViewBag.Error = "Something went wrong while loading the form.";
+                return View();
+            }
+        }
 
 
         //-----------------------------------------Department Section
@@ -414,6 +440,30 @@ namespace CVOIS.Controllers
                 var model = new SuperAdminViewModel
                 {
                     Department_AuditTrail_List = _department.Get_DepartmentAuditTrail()
+                };
+                return View(model);
+            }
+            catch (Exception)
+            {
+                ViewBag.Error = "Something went wrong while loading the form.";
+                return View();
+            }
+        }
+
+        [HttpGet]
+        public IActionResult DeleteDepartmentAuditTrail()
+        {
+            try
+            {
+                ViewBag.title = "Delete Department Audit Trail";
+                string username = HttpContext.Session.GetString("Username");
+                if (string.IsNullOrEmpty(username))
+                {
+                    return RedirectToAction("Login", "Home");
+                }
+                var model = new SuperAdminViewModel
+                {
+                    Department_Delete_AuditTrail_List = _department.Get_DepartmentDeleteAuditTrail()
                 };
                 return View(model);
             }
@@ -1317,6 +1367,33 @@ namespace CVOIS.Controllers
             catch (Exception)
             {
                 ViewBag.Error = "Something went wrong while loading the form.";
+                return View();
+            }
+        }
+
+
+
+        //-----------------------------------------Audit Trail 
+        [HttpGet]
+        public IActionResult MasterAuditTrail()
+        {
+            try
+            {
+                ViewBag.title = "Master Audit Trail";
+                string username = HttpContext.Session.GetString("Username");
+                if (string.IsNullOrEmpty(username))
+                {
+                    return RedirectToAction("Login", "Home");
+                }
+                var model = new SuperAdminViewModel
+                {
+                    MasterAuditTrail_List = _masterAuditTrail.Get_MasterAuditTrail(),
+                };
+                return View(model);
+            }
+            catch (Exception)
+            {
+                ViewBag.Error = "Something went wrong while loading the master audit trail.";
                 return View();
             }
         }

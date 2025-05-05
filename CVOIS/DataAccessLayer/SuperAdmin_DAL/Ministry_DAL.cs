@@ -4,6 +4,7 @@ using CVOIS.Models.Admin;
 using CVOIS.Models.Connection;
 using CVOIS.Models.SuperAdmin;
 using CVOIS.Models.SuperAdmin.AuditTrail;
+using CVOIS.Models.SuperAdmin.DeleteAuditTrail;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -268,10 +269,60 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                                     auditID = Convert.ToInt32(reader["auditID"]),
                                     auditDetails = reader["auditDetails"].ToString(),
                                     createdBy = reader["createdBy"].ToString(),
-                                    createdOn= reader["createdOn"].ToString(),
-                                    createdByIP= reader["createdByIP"].ToString(),
-                                    actionCategory= reader["actionCategory"].ToString(),
+                                    createdOn = reader["createdOn"].ToString(),
+                                    createdByIP = reader["createdByIP"].ToString(),
+                                    actionCategory = reader["actionCategory"].ToString(),
                                     sessionID = reader["sessionID"].ToString()
+                                };
+                                objList.Add(obj);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("SQL Error: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("General Error: " + ex.Message);
+            }
+
+            return objList;
+        }
+
+        public async Task<List<MinistryDeleteAuditTrailModel>> Get_MinistryDeleteAuditTrailAsync()
+        {
+            List<MinistryDeleteAuditTrailModel> objList = new List<MinistryDeleteAuditTrailModel>();
+            try
+            {
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand("select*from Audit_Deleted_Ministry", con))
+                    {
+                        cmd.CommandType = CommandType.Text;
+
+                        await con.OpenAsync();
+                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                MinistryDeleteAuditTrailModel obj = new MinistryDeleteAuditTrailModel
+                                {
+                                    AuditID = Convert.ToInt32(reader["AuditID"]),
+
+                                    Min_Id = reader["Min_Id"].ToString(),
+                                    Mincode = reader["Mincode"].ToString(),
+                                    Ministry_Name = reader["Ministry_Name"].ToString(),
+                                    Min_Status = reader["Min_Status"].ToString(),
+                                    MinistryType = reader["MinistryType"].ToString(),
+
+                                    createdBy = reader["createdBy"].ToString(),
+                                    createdByIP = reader["createdByIP"].ToString(),
+
+                                    SessionID = reader["SessionID"].ToString(),
+                                    DeletedOn = reader["DeletedOn"].ToString()
                                 };
                                 objList.Add(obj);
                             }

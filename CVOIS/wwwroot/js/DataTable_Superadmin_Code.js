@@ -1,7 +1,7 @@
 ﻿$(document).ready(function () {
     // ===== Ministry =====
     const ministryTable = $('#ministryDataTable').DataTable({
-        dom: "<'row align-items-center mb-2'<'col-md-5'B><'col-md-3 text-center'<'ministry-title'>><'col-md-4 text-end'f>>" +
+        dom: "<'row mb-2' <'col-md-3' <'ministry-title'>> <'col-md-7'B> <'col-md-2 text-end'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
         buttons: [
@@ -13,6 +13,13 @@
                 className: 'btn btn-sm btn-warning me-2',
                 action: function () {
                     window.location.href = '/SuperAdmin/MinistryAuditTrail';
+                }
+            },
+            {
+                text: '<i class="fa fa-history"></i> Deleted Audit Trail',
+                className: 'btn btn-sm btn-warning me-2',
+                action: function () {
+                    window.location.href = '/SuperAdmin/DeleteMinistryAuditTrail';
                 }
             }
         ],
@@ -31,11 +38,13 @@
         </button>
     `);
 
+
     // ===== Department =====
     const departmentTable = $('#departmentDataTable').DataTable({
-        dom: "<'row align-items-center mb-2'<'col-md-6'B><'col-md-2 text-center'<'department-title'>><'col-md-4 text-end'f>>" +
+        dom: "<'row mb-2' <'col-md-3' <'department-title'>> <'col-md-7'B> <'col-md-2 text-end'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
+
         buttons: [
             { extend: 'excelHtml5', text: '<i class="fa fa-file-excel-o"></i> Export to Excel', className: 'btn btn-sm btn-success me-2', exportOptions: { columns: ':not(:last-child)' } },
             { extend: 'pdfHtml5', text: '<i class="fa fa-file-pdf-o"></i> Export to PDF', className: 'btn btn-sm btn-danger me-2', exportOptions: { columns: ':not(:last-child)' } },
@@ -45,6 +54,13 @@
                 className: 'btn btn-sm btn-warning me-2',
                 action: function () {
                     window.location.href = '/SuperAdmin/DepartmentAuditTrail';
+                }
+            },
+            {
+                text: '<i class="fa fa-history"></i> Deleted Audit Trail',
+                className: 'btn btn-sm btn-warning me-2',
+                action: function () {
+                    window.location.href = '/SuperAdmin/DeleteDepartmentAuditTrail';
                 }
             }
         ],
@@ -64,6 +80,8 @@
         </button>
     `);
 
+
+
     // ===== Organization =====
     const organizationTable = $('#organizationDataTable').DataTable({
         dom: "<'row align-items-center mb-2'<'col-md-6 dt-buttons-container d-flex align-items-center'B><'col-md-2 text-center'<'organization-title'>><'col-md-4 text-end'f>>" +
@@ -78,6 +96,13 @@
                 className: 'btn btn-sm btn-warning me-2',
                 action: function () {
                     window.location.href = '/SuperAdmin/OrganizationAuditTrail';
+                }
+            },
+            {
+                text: '<i class="fa fa-history"></i> Deleted Audit Trail',
+                className: 'btn btn-sm btn-warning me-2',
+                action: function () {
+                    window.location.href = '/SuperAdmin/DeleteOrganizationAuditTrail';
                 }
             }
         ],
@@ -112,6 +137,13 @@
                 action: function () {
                     window.location.href = '/SuperAdmin/LevelAuditTrail';
                 }
+            },
+            {
+                text: '<i class="fa fa-history"></i> Deleted Audit Trail',
+                className: 'btn btn-sm btn-warning me-2',
+                action: function () {
+                    window.location.href = '/SuperAdmin/DeleteLevelAuditTrail';
+                }
             }
         ],
         paging: true, searching: true, ordering: true, responsive: true, scrollX: true, autoWidth: false,
@@ -144,6 +176,13 @@
                 className: 'btn btn-sm btn-warning me-2',
                 action: function () {
                     window.location.href = '/SuperAdmin/AppointingAuthorityAuditTrail';
+                }
+            },
+            {
+                text: '<i class="fa fa-history"></i> Deleted Audit Trail',
+                className: 'btn btn-sm btn-warning me-2',
+                action: function () {
+                    window.location.href = '/SuperAdmin/DeleteAppointingAuthorityAuditTrail';
                 }
             }
         ],
@@ -179,6 +218,13 @@
                 action: function () {
                     window.location.href = '/SuperAdmin/MasterCvoServicesAuditTrail';
                 }
+            },
+            {
+                text: '<i class="fa fa-history"></i> Deleted Audit Trail',
+                className: 'btn btn-sm btn-warning me-2',
+                action: function () {
+                    window.location.href = '/SuperAdmin/DeleteMasterCvoServicesAuditTrail';
+                }
             }
         ],
         paging: true, searching: true, ordering: true, responsive: true, scrollX: true,
@@ -213,6 +259,13 @@
                 className: 'btn btn-sm btn-warning me-2',
                 action: function () {
                     window.location.href = '/SuperAdmin/StateAuditTrail';
+                }
+            },
+            {
+                text: '<i class="fa fa-history"></i> Deleted Audit Trail',
+                className: 'btn btn-sm btn-warning me-2',
+                action: function () {
+                    window.location.href = '/SuperAdmin/DeleteStateAuditTrail';
                 }
             }
         ],

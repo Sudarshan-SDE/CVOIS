@@ -1,5 +1,6 @@
 ﻿using CVOIS.Models.SuperAdmin;
 using CVOIS.Models.SuperAdmin.AuditTrail;
+using CVOIS.Models.SuperAdmin.DeleteAuditTrail;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CVOIS.Interfaces.ISuperAdmin
@@ -13,5 +14,6 @@ namespace CVOIS.Interfaces.ISuperAdmin
         DepartmentModel Get_Department_By_Id(int id);
         List<SelectListItem> GetMinistries(string minCode = "", string manage = "");
         List<DepartmentAuditTrailModel> Get_DepartmentAuditTrail();
+        List<DepartmentDeleteAuditTrailModel> Get_DepartmentDeleteAuditTrail();
     }
 }

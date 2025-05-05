@@ -33,6 +33,26 @@
         .content-header {
             padding: 9px 0.5rem;
         }
+
+        .hover-link:hover {
+            background-color: #20B2AA !important;
+            color: #fff !important;
+        }
+
+        .nav-treeview .nav-link:hover {
+            background-color: #ADD8E6 !important;
+            color: #000 !important;
+        }
+
+        .hover-link:hover i,
+        .hover-link:hover p {
+            color: #fff !important;
+        }
+
+        .nav-treeview .nav-link:hover i,
+        .nav-treeview .nav-link:hover p {
+            color: #000 !important;
+        }
     </style>
 </head>
 @{
@@ -85,13 +105,18 @@
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <li class="nav-item">
-                            <a href="@Url.Content("~/SuperAdmin/SuperAdminDashboard")" class="nav-link">
+                            <a href="@Url.Content("~/SuperAdmin/SuperAdminDashboard")" class="nav-link hover-link">
                                 <i class="nav-icon fas fa-home"></i><p>Home</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Content("~/SuperAdmin/MasterAuditTrail")" class="nav-link hover-link">
+                                <i class="nav-icon fas fa-user-clock"></i><p>Master Audit Trail</p>
                             </a>
                         </li>
 
                         <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
+                            <a href="#" class="nav-link hover-link">
                                 <i class="nav-icon fas fa-edit"></i>
                                 <p>Add/Update Records<i class="right fas fa-angle-left"></i></p>
                             </a>

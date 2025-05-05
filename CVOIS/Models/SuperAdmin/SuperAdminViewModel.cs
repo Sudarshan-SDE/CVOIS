@@ -1,5 +1,6 @@
 ﻿using CVOIS.Models.Admin;
 using CVOIS.Models.SuperAdmin.AuditTrail;
+using CVOIS.Models.SuperAdmin.DeleteAuditTrail;
 using CVOIS.Models.Viewers;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -12,21 +13,24 @@ namespace CVOIS.Models.SuperAdmin
         public List<MinistryModel> Ministry_List { get; set; }
         public List<SelectListItem> MinistryType_ddl_List { get; set; }
 
-
         public MinistryAuditTrailModel MinistryAuditTrail { get; set; }
         public List<MinistryAuditTrailModel> Ministry_AuditTrail_List { get; set; }
 
+        public MinistryDeleteAuditTrailModel MinistryDeleteAuditTrail { get; set; }
+        public List<MinistryDeleteAuditTrailModel> Ministry_Delete_AuditTrail_List { get; set; }
 
-
+        
+        
         //Department
         public DepartmentModel Department { get; set; }
         public List<DepartmentModel> Department_List { get; set; }
         public List<SelectListItem> Ministry_ddl_List { get; set; }
 
-
         public DepartmentAuditTrailModel DepartmentAuditTrail { get; set; }
         public List<DepartmentAuditTrailModel> Department_AuditTrail_List { get; set; }
-    
+
+        public DepartmentDeleteAuditTrailModel DepartmentDeleteAuditTrail { get; set; }
+        public List<DepartmentDeleteAuditTrailModel> Department_Delete_AuditTrail_List { get; set; }
 
 
 
@@ -101,6 +105,11 @@ namespace CVOIS.Models.SuperAdmin
         public StateAuditTrailModel StateAuditTrail { get; set; }
         public List<StateAuditTrailModel> State_AuditTrail_List { get; set; }
 
+
+
+        //Master Audit Trail
+        public MasterAuditTrailModel MasterAuditTrail { get; set; }
+        public List<MasterAuditTrailModel> MasterAuditTrail_List { get; set; }
     }
 
 

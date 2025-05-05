@@ -26,7 +26,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                 using (SqlConnection con = new SqlConnection(_connectionString))
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
-                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandType = CommandType.StoredProcedure;
                     await con.OpenAsync();
 
                     using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
@@ -196,7 +196,7 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                 using (SqlConnection con = new SqlConnection(_connectionString))
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
-                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandType = CommandType.StoredProcedure;
                     await con.OpenAsync();
 
                     using (SqlDataReader reader = await cmd.ExecuteReaderAsync())

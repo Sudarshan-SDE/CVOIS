@@ -26,6 +26,7 @@ namespace CVOIS.Services
             services.AddScoped<IMasterCvoServices, MasterCvoServices_DAL>();
             services.AddScoped<IState, State_DAL>();
             services.AddScoped<IUser, User_DAL>();
+            services.AddScoped<IMasterAuditTrail, MasterAuditTrail_DAL>();
         }
     }
 }

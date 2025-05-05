@@ -1,6 +1,7 @@
 ﻿using CVOIS.Models.Admin;
 using CVOIS.Models.SuperAdmin;
 using CVOIS.Models.SuperAdmin.AuditTrail;
+using CVOIS.Models.SuperAdmin.DeleteAuditTrail;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CVOIS.Interfaces.ISuperAdmin
@@ -14,5 +15,6 @@ namespace CVOIS.Interfaces.ISuperAdmin
         Task<int> UpdateMinistryAsync(MinistryModel model);
         Task<int> DeleteMinistryAsync(int id, string createdBy, string createdByIP, string sessionID, string actionCategory);
         Task<List<MinistryAuditTrailModel>> Get_MinistryAuditTrailAsync();
+        Task<List<MinistryDeleteAuditTrailModel>> Get_MinistryDeleteAuditTrailAsync();
     }
 }

@@ -682,6 +682,30 @@ namespace CVOIS.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult DeleteOrganizationAuditTrail()
+        {
+            try
+            {
+                ViewBag.title = "Delete Organization Audit Trail";
+                string username = HttpContext.Session.GetString("Username");
+                if (string.IsNullOrEmpty(username))
+                {
+                    return RedirectToAction("Login", "Home");
+                }
+                var model = new SuperAdminViewModel
+                {
+                    Organization_Delete_AuditTrail_List = _organization.Get_OrganizationDeleteAuditTrail()
+                };
+                return View(model);
+            }
+            catch (Exception)
+            {
+                ViewBag.Error = "Something went wrong while loading the form.";
+                return View();
+            }
+        }
+
 
 
         //-----------------------------------------Level Section

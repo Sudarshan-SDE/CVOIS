@@ -41,9 +41,11 @@ namespace CVOIS.Models.SuperAdmin
 
         public OrganizationAuditTrailModel OrganizationAuditTrail { get; set; }
         public List<OrganizationAuditTrailModel> Organization_AuditTrail_List { get; set; }
-        
 
-        
+
+        public OrganizationDeleteAuditTrailModel OrganizationDeleteAuditTrail { get; set; }
+        public List<OrganizationDeleteAuditTrailModel> Organization_Delete_AuditTrail_List { get; set; }
+
         public List<SelectListItem> AppointingAuthority_ddl_List { get; set; }
         public List<SelectListItem> OrgLevel_ddl_List { get; set; }
        

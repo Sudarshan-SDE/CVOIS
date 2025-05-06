@@ -1,28 +1,27 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CVOIS.Models.SuperAdmin
+namespace CVOIS.Models.SuperAdmin.DeleteAuditTrail
 {
-    public class OrganizationModel
+    public class OrganizationDeleteAuditTrailModel
     {
         [Key]
+        [Display(Name = "S No.")]
+        public int AuditID { get; set; }
+
+
         [Display(Name = "Org ID")]
         public int ORG_ID { get; set; }
-        public int row_num { get; set; }
 
         [Display(Name = "Org Code")]
         public string ORGCODE { get; set; }
-
-        [Display(Name = "Ministry Name")]
-        public string MINCODE { get; set; }
-
-        [Display(Name = "Department Name")]
-        public string? DeptName { get; set; }
 
         [Display(Name = "Department Name")]
         public string? DEPTCODE { get; set; }
 
         [Display(Name = "Ministry Name")]
-        public string Ministry_Name { get; set; }
+        public string MINCODE { get; set; }
+
+
 
         [Display(Name = "Org Name")]
         public string ORGNAME { get; set; }
@@ -32,9 +31,11 @@ namespace CVOIS.Models.SuperAdmin
 
         [Display(Name = "Appointing Authority")]
         public string APPOINTING_AUTHORITY { get; set; }
-
+        
         [Display(Name = "Org Level")]
         public string org_level { get; set; }
+
+
 
         [Display(Name = "Section")]
         public int? section { get; set; }
@@ -48,6 +49,8 @@ namespace CVOIS.Models.SuperAdmin
         [Display(Name = "Address")]
         public string org_address { get; set; }
 
+
+
         [Display(Name = "State")]
         public string org_state { get; set; }
 
@@ -60,6 +63,7 @@ namespace CVOIS.Models.SuperAdmin
         [Display(Name = "Phone No")]
         public string phoneno { get; set; }
 
+
         [Display(Name = "Fax")]
         public string fax { get; set; }
 
@@ -71,25 +75,16 @@ namespace CVOIS.Models.SuperAdmin
 
 
 
-        [Display(Name = "Created Date")]
-        [DataType(DataType.Date)]
-        public DateTime created_date { get; set; }
+        [Display(Name = "Create By")]
+        public string createdBy { get; set; }
 
-        [Display(Name = "Update Date")]
-        [DataType(DataType.Date)]
-        public DateTime UPDATE_DATE { get; set; }
+        [Display(Name = "createdBy IP")]
+        public string createdByIP { get; set; }
 
-        public string ddlDeptCode { get; set; }
-        public string ddldistrictCode { get; set; }
-
-
-        public string CreatedBy { get; set; }
-        public string CreatedByIP { get; set; }
+        [Display(Name = "Session ID")]
         public string SessionID { get; set; }
-        public string actionCategory { get; set; }
 
-
-
-
+        [Display(Name = "Deleted On")]
+        public string DeletedOn { get; set; }
     }
 }

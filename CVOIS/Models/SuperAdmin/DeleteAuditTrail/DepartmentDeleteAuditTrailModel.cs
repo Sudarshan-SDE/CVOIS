@@ -23,6 +23,8 @@ namespace CVOIS.Models.SuperAdmin.DeleteAuditTrail
         [Display(Name = "Dept Status")]
         public string Dept_status { get; set; }
 
+
+
         [Display(Name = "Session ID")]
         public string SessionID { get; set; }
 

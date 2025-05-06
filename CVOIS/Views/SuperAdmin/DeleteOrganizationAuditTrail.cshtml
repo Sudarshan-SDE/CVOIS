@@ -1,0 +1,123 @@
+﻿@model CVOIS.Models.SuperAdmin.SuperAdminViewModel
+
+@{
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+    var username = Context.Session.GetString("Username");
+}
+<style>
+    .dt-buttons .btn {
+        margin-right: 5px;
+    }
+</style>
+@if (Model.Organization_Delete_AuditTrail_List != null && Model.Organization_Delete_AuditTrail_List.Any())
+{
+    <div id="OrganizationAuditTable" class="table-wrapper table-responsive">
+        <table id="OrganizationDeleteAuditDataTable" class="table table-bordered table-striped">
+            <thead class="table-header ">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationDeleteAuditTrail.AuditID)</th>
+                    <th>Actions</th>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationDeleteAuditTrail.ORG_ID)</th>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationDeleteAuditTrail.ORGCODE)</th>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationDeleteAuditTrail.MINCODE)</th>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationDeleteAuditTrail.DEPTCODE)</th>
+
+                    <th>@Html.DisplayNameFor(model => model.OrganizationDeleteAuditTrail.ORGNAME)</th>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationDeleteAuditTrail.file_no)</th>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationDeleteAuditTrail.APPOINTING_AUTHORITY)</th>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationDeleteAuditTrail.org_level)</th>
+
+                    <th>@Html.DisplayNameFor(model => model.OrganizationDeleteAuditTrail.section)</th>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationDeleteAuditTrail.org_status)</th>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationDeleteAuditTrail.org_country)</th>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationDeleteAuditTrail.org_address)</th>
+
+                    <th>@Html.DisplayNameFor(model => model.OrganizationDeleteAuditTrail.org_state)</th>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationDeleteAuditTrail.org_district)</th>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationDeleteAuditTrail.pincode)</th>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationDeleteAuditTrail.phoneno)</th>
+
+                    <th>@Html.DisplayNameFor(model => model.OrganizationDeleteAuditTrail.fax)</th>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationDeleteAuditTrail.org_category)</th>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationDeleteAuditTrail.EMAIL_ID)</th>
+
+                    <th>@Html.DisplayNameFor(model => model.OrganizationDeleteAuditTrail.createdBy)</th>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationDeleteAuditTrail.createdByIP)</th>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationDeleteAuditTrail.SessionID)</th>
+                    <th>@Html.DisplayNameFor(model => model.OrganizationDeleteAuditTrail.DeletedOn)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Organization_Delete_AuditTrail_List)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.AuditID)</td>
+                        <td>
+                            <form asp-action="RestoreDeleteOrganization" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@item.ORG_ID" />
+                                <button type="submit" class="btn btn-success btn-sm" title="Restore">
+                                    <i class="fa fa-undo"></i> Restore
+                                </button>
+                            </form>
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.ORG_ID)</td>
+                        <td>@Html.DisplayFor(modelItem => item.ORGCODE)</td>
+                        <td>@Html.DisplayFor(modelItem => item.MINCODE)</td>
+                        <td>@Html.DisplayFor(modelItem => item.DEPTCODE)</td>
+                        <td>@Html.DisplayFor(modelItem => item.ORGNAME)</td>
+                        <td>@Html.DisplayFor(modelItem => item.file_no)</td>
+                        <td>@Html.DisplayFor(modelItem => item.APPOINTING_AUTHORITY)</td>
+                        <td>@Html.DisplayFor(modelItem => item.org_level)</td>
+                        <td>@Html.DisplayFor(modelItem => item.section)</td>
+                        <td>@Html.DisplayFor(modelItem => item.org_status)</td>
+                        <td>@Html.DisplayFor(modelItem => item.org_country)</td>
+                        <td>@Html.DisplayFor(modelItem => item.org_address)</td>
+                        <td>@Html.DisplayFor(modelItem => item.org_state)</td>
+                        <td>@Html.DisplayFor(modelItem => item.org_district)</td>
+                        <td>@Html.DisplayFor(modelItem => item.pincode)</td>
+                        <td>@Html.DisplayFor(modelItem => item.phoneno)</td>
+                        <td>@Html.DisplayFor(modelItem => item.fax)</td>
+                        <td>@Html.DisplayFor(modelItem => item.org_category)</td>
+                        <td>@Html.DisplayFor(modelItem => item.EMAIL_ID)</td>
+                        <td>@Html.DisplayFor(modelItem => item.createdBy)</td>
+                        <td>@Html.DisplayFor(modelItem => item.createdByIP)</td>
+                        <td>@Html.DisplayFor(modelItem => item.SessionID)</td>
+                        <td>@Html.DisplayFor(modelItem => item.DeletedOn)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger">No Audit records found.</div>
+}
+
+@* Data table *@
+<script>
+    $(document).ready(function () {
+        $('#OrganizationDeleteAuditDataTable').DataTable({
+            responsive: true,
+            paging: true,
+            searching: true,
+            ordering: true,
+            dom: "<'row align-items-center mb-2'<'col-md-4'B><'col-md-4 text-center'<'Organization-delete-audit-title'>><'col-md-4 text-end'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
+            buttons: [
+                { extend: 'copy', className: 'btn btn-sm btn-primary', text: 'Copy' },
+                { extend: 'csv', className: 'btn btn-sm btn-info', text: 'CSV' },
+                { extend: 'excel', className: 'btn btn-sm btn-success', text: 'Excel' },
+                { extend: 'pdf', className: 'btn btn-sm btn-danger', text: 'PDF' },
+                { extend: 'print', className: 'btn btn-sm btn-warning', text: 'Print' }
+            ],
+            language: {
+                emptyTable: "No audit data available"
+            }
+        });
+
+        // Inject Organization Delete List heading
+        $('.Organization-delete-audit-title').html('<h3 class="m-0 fw-bold">Appointing Authority Delete Audit List</h3>');
+    });
+</script>

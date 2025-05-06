@@ -13,9 +13,10 @@
 {
     <div id="AppointingAuthorityAuditTable" class="table-wrapper table-responsive">
         <table id="AppointingAuthorityDeleteAuditDataTable" class="table table-bordered table-striped">
-            <thead class="table-header ">
+            <thead class="table-header">
                 <tr>
                     <th>@Html.DisplayNameFor(model => model.MasterCVOServicesDeleteAuditTrail.AuditID)</th>
+                    <th>Actions</th>
                     <th>@Html.DisplayNameFor(model => model.MasterCVOServicesDeleteAuditTrail.MasterCvoServices_Id)</th>
                     <th>@Html.DisplayNameFor(model => model.MasterCVOServicesDeleteAuditTrail.MasterCvoServices_Code)</th>
                     <th>@Html.DisplayNameFor(model => model.MasterCVOServicesDeleteAuditTrail.MasterCvoServices_Name)</th>
@@ -30,6 +31,14 @@
                 {
                     <tr>
                         <td>@Html.DisplayFor(modelItem => item.AuditID)</td>
+                        <td>
+                            <form asp-action="RestoreDeleteMasterCVOServices" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@item.MasterCvoServices_Id" />
+                                <button type="submit" class="btn btn-success btn-sm" title="Restore">
+                                    <i class="fa fa-undo"></i> Restore
+                                </button>
+                            </form>
+                        </td>
                         <td>@Html.DisplayFor(modelItem => item.MasterCvoServices_Id)</td>
                         <td>@Html.DisplayFor(modelItem => item.MasterCvoServices_Code)</td>
                         <td>@Html.DisplayFor(modelItem => item.MasterCvoServices_Name)</td>

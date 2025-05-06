@@ -16,6 +16,7 @@
             <thead class="table-header ">
                 <tr>
                     <th>@Html.DisplayNameFor(model => model.StateDeleteAuditTrail.AuditID)</th>
+                    <th>Actions</th>
                     <th>@Html.DisplayNameFor(model => model.StateDeleteAuditTrail.state_id)</th>
                     <th>@Html.DisplayNameFor(model => model.StateDeleteAuditTrail.state_name)</th>
                     <th>@Html.DisplayNameFor(model => model.StateDeleteAuditTrail.createdBy)</th>
@@ -29,6 +30,14 @@
                 {
                     <tr>
                         <td>@Html.DisplayFor(modelItem => item.AuditID)</td>
+                        <td>
+                            <form asp-action="RestoreDeleteState" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@item.state_id" />
+                                <button type="submit" class="btn btn-success btn-sm" title="Restore">
+                                    <i class="fa fa-undo"></i> Restore
+                                </button>
+                            </form>
+                        </td>
                         <td>@Html.DisplayFor(modelItem => item.state_id)</td>
                         <td>@Html.DisplayFor(modelItem => item.state_name)</td>
                         <td>@Html.DisplayFor(modelItem => item.createdBy)</td>

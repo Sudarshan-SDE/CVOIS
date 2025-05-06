@@ -3,6 +3,7 @@ using CVOIS.Models.Admin;
 using CVOIS.Models.Connection;
 using CVOIS.Models.SuperAdmin;
 using CVOIS.Models.SuperAdmin.AuditTrail;
+using CVOIS.Models.SuperAdmin.DeleteAuditTrail;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
@@ -275,6 +276,66 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
             }
             return objList;
         }
+
+
+        public List<OrganizationDeleteAuditTrailModel> Get_OrganizationDeleteAuditTrail()
+        {
+            List<OrganizationDeleteAuditTrailModel> objList = new List<OrganizationDeleteAuditTrailModel>();
+            try
+            {
+                string query = "SELECT * FROM Audit_Deleted_Organization";
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    SqlDataAdapter sda = new SqlDataAdapter(query, con);
+                    sda.SelectCommand.CommandType = CommandType.Text;
+                    DataSet ds = new DataSet();
+                    sda.Fill(ds);
+
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+                        OrganizationDeleteAuditTrailModel obj = new OrganizationDeleteAuditTrailModel
+                        {
+                            AuditID = Convert.ToInt32(row["AuditID"]),
+                            ORG_ID = Convert.ToInt32(row["ORG_ID"]),
+                            ORGCODE = row["ORGCODE"].ToString(),
+                            DEPTCODE = row["DEPTCODE"].ToString(),
+                            MINCODE = row["MINCODE"].ToString(),
+                            ORGNAME = row["ORGNAME"].ToString(),
+                            file_no = row["file_no"].ToString(),
+                            APPOINTING_AUTHORITY = row["APPOINTING_AUTHORITY"].ToString(),
+                            org_level = row["org_level"].ToString(),
+                            section = Convert.ToInt32(row["section"]),
+                            org_status = row["org_status"].ToString(),
+                            org_country = row["org_country"].ToString(),
+                            org_address = row["org_address"].ToString(),
+                            org_state = row["org_state"].ToString(),
+                            org_district = row["org_city"].ToString(),
+                            pincode = row["pincode"].ToString(),
+                            phoneno = row["phoneno"].ToString(),
+                            fax = row["fax"].ToString(),
+                            org_category = row["org_category"].ToString(),
+                            EMAIL_ID = row["EMAIL_ID"].ToString(),
+                            createdBy = row["createdBy"].ToString(),
+                            createdByIP = row["createdByIP"].ToString(),
+                            SessionID = row["SessionID"].ToString(),
+                            DeletedOn = Convert.ToDateTime(row["DeletedOn"]).ToString("yyyy-MM-dd HH:mm:ss")
+                        };
+
+                        objList.Add(obj);
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("SQL Error: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("General Error: " + ex.Message);
+            }
+            return objList;
+        }
+
         //EndMain Crud Operation of Organization
 
 

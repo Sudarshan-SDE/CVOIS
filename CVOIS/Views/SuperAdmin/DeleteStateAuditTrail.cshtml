@@ -1,0 +1,75 @@
+﻿@model CVOIS.Models.SuperAdmin.SuperAdminViewModel
+
+@{
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+    var username = Context.Session.GetString("Username");
+}
+<style>
+    .dt-buttons .btn {
+        margin-right: 5px;
+    }
+</style>
+@if (Model.State_Delete_AuditTrail_List != null && Model.State_Delete_AuditTrail_List.Any())
+{
+    <div id="StateAuditTable" class="table-wrapper table-responsive">
+        <table id="StateDeleteAuditDataTable" class="table table-bordered table-striped">
+            <thead class="table-header ">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.StateDeleteAuditTrail.AuditID)</th>
+                    <th>@Html.DisplayNameFor(model => model.StateDeleteAuditTrail.state_id)</th>
+                    <th>@Html.DisplayNameFor(model => model.StateDeleteAuditTrail.state_name)</th>
+                    <th>@Html.DisplayNameFor(model => model.StateDeleteAuditTrail.createdBy)</th>
+                    <th>@Html.DisplayNameFor(model => model.StateDeleteAuditTrail.createdByIP)</th>
+                    <th>@Html.DisplayNameFor(model => model.StateDeleteAuditTrail.SessionID)</th>
+                    <th>@Html.DisplayNameFor(model => model.StateDeleteAuditTrail.DeletedOn)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.State_Delete_AuditTrail_List)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.AuditID)</td>
+                        <td>@Html.DisplayFor(modelItem => item.state_id)</td>
+                        <td>@Html.DisplayFor(modelItem => item.state_name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.createdBy)</td>
+                        <td>@Html.DisplayFor(modelItem => item.createdByIP)</td>
+                        <td>@Html.DisplayFor(modelItem => item.SessionID)</td>
+                        <td>@Html.DisplayFor(modelItem => item.DeletedOn)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger">No Audit records found.</div>
+}
+
+@* Data table *@
+<script>
+    $(document).ready(function () {
+        $('#StateDeleteAuditDataTable').DataTable({
+            responsive: true,
+            paging: true,
+            searching: true,
+            ordering: true,
+            dom: "<'row align-items-center mb-2'<'col-md-4'B><'col-md-4 text-center'<'State-delete-audit-title'>><'col-md-4 text-end'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
+            buttons: [
+                { extend: 'copy', className: 'btn btn-sm btn-primary', text: 'Copy' },
+                { extend: 'csv', className: 'btn btn-sm btn-info', text: 'CSV' },
+                { extend: 'excel', className: 'btn btn-sm btn-success', text: 'Excel' },
+                { extend: 'pdf', className: 'btn btn-sm btn-danger', text: 'PDF' },
+                { extend: 'print', className: 'btn btn-sm btn-warning', text: 'Print' }
+            ],
+            language: {
+                emptyTable: "No audit data available"
+            }
+        });
+
+        // Inject State Delete List heading
+        $('.State-delete-audit-title').html('<h3 class="m-0 fw-bold">Appointing Authority Delete Audit List</h3>');
+    });
+</script>

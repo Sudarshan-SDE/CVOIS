@@ -1,5 +1,6 @@
 ﻿using CVOIS.Models.SuperAdmin;
 using CVOIS.Models.SuperAdmin.AuditTrail;
+using CVOIS.Models.SuperAdmin.DeleteAuditTrail;
 
 namespace CVOIS.Interfaces.ISuperAdmin
 {
@@ -17,6 +18,8 @@ namespace CVOIS.Interfaces.ISuperAdmin
         AppointingAuthorityModel Get_AppointingAuthority_By_Id(int id);
 
         List<AppointingAuthorityAuditTrailModel> Get_AppointingAuthorityAuditTrail();
+
+        List<AppointingAuthorityDeleteAuditTrailModel> Get_AppointingAuthorityDeleteAuditTrail();
 
     }
 }

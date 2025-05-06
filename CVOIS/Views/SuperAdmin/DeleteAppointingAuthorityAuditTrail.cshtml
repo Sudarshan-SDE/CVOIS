@@ -1,0 +1,77 @@
+﻿@model CVOIS.Models.SuperAdmin.SuperAdminViewModel
+
+@{
+    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+    var username = Context.Session.GetString("Username");
+}
+<style>
+    .dt-buttons .btn {
+        margin-right: 5px;
+    }
+</style>
+@if (Model.AppointingAuthority_Delete_AuditTrail_List != null && Model.AppointingAuthority_Delete_AuditTrail_List.Any())
+{
+    <div id="AppointingAuthorityAuditTable" class="table-wrapper table-responsive">
+        <table id="AppointingAuthorityDeleteAuditDataTable" class="table table-bordered table-striped">
+            <thead class="table-header ">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.AppointingAuthorityDeleteAuditTrail.AuditID)</th>
+                    <th>@Html.DisplayNameFor(model => model.AppointingAuthorityDeleteAuditTrail.AppointingAuthority_Id)</th>
+                    <th>@Html.DisplayNameFor(model => model.AppointingAuthorityDeleteAuditTrail.AppointingAuthority_Code)</th>
+                    <th>@Html.DisplayNameFor(model => model.AppointingAuthorityDeleteAuditTrail.AppointingAuthority_Name)</th>
+                    <th>@Html.DisplayNameFor(model => model.AppointingAuthorityDeleteAuditTrail.createdBy)</th>
+                    <th>@Html.DisplayNameFor(model => model.AppointingAuthorityDeleteAuditTrail.createdByIP)</th>
+                    <th>@Html.DisplayNameFor(model => model.AppointingAuthorityDeleteAuditTrail.SessionID)</th>
+                    <th>@Html.DisplayNameFor(model => model.AppointingAuthorityDeleteAuditTrail.DeletedOn)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.AppointingAuthority_Delete_AuditTrail_List)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.AuditID)</td>
+                        <td>@Html.DisplayFor(modelItem => item.AppointingAuthority_Id)</td>
+                        <td>@Html.DisplayFor(modelItem => item.AppointingAuthority_Code)</td>
+                        <td>@Html.DisplayFor(modelItem => item.AppointingAuthority_Name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.createdBy)</td>
+                        <td>@Html.DisplayFor(modelItem => item.createdByIP)</td>
+                        <td>@Html.DisplayFor(modelItem => item.SessionID)</td>
+                        <td>@Html.DisplayFor(modelItem => item.DeletedOn)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger">No Audit records found.</div>
+}
+
+@* Data table *@
+<script>
+    $(document).ready(function () {
+        $('#AppointingAuthorityDeleteAuditDataTable').DataTable({
+            responsive: true,
+            paging: true,
+            searching: true,
+            ordering: true,
+            dom: "<'row align-items-center mb-2'<'col-md-4'B><'col-md-4 text-center'<'AppointingAuthority-delete-audit-title'>><'col-md-4 text-end'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
+            buttons: [
+                { extend: 'copy', className: 'btn btn-sm btn-primary', text: 'Copy' },
+                { extend: 'csv', className: 'btn btn-sm btn-info', text: 'CSV' },
+                { extend: 'excel', className: 'btn btn-sm btn-success', text: 'Excel' },
+                { extend: 'pdf', className: 'btn btn-sm btn-danger', text: 'PDF' },
+                { extend: 'print', className: 'btn btn-sm btn-warning', text: 'Print' }
+            ],
+            language: {
+                emptyTable: "No audit data available"
+            }
+        });
+
+        // Inject AppointingAuthority Delete List heading
+        $('.AppointingAuthority-delete-audit-title').html('<h3 class="m-0 fw-bold">Appointing Authority Delete Audit List</h3>');
+    });
+</script>

@@ -2,6 +2,7 @@
 using CVOIS.Models.Connection;
 using CVOIS.Models.SuperAdmin;
 using CVOIS.Models.SuperAdmin.AuditTrail;
+using CVOIS.Models.SuperAdmin.DeleteAuditTrail;
 using CVOIS.Models.Viewers;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
@@ -215,6 +216,44 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                             };
                             objList.Add(obj);
                         }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("SQL Error: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("General Error: " + ex.Message);
+            }
+            return objList;
+        }
+        public async Task<List<StateDeleteAuditTrailModel>> Get_StateDeleteAuditTrailAsync()
+        {
+            List<StateDeleteAuditTrailModel> objList = new List<StateDeleteAuditTrailModel>();
+            try
+            {
+                string query = "select*from  Audit_Deleted_State";
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    SqlDataAdapter sda = new SqlDataAdapter(query, con);
+                    sda.SelectCommand.CommandType = CommandType.Text;
+                    DataSet ds = new DataSet();
+                    sda.Fill(ds);
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+                        StateDeleteAuditTrailModel obj = new StateDeleteAuditTrailModel
+                        {
+                            AuditID = Convert.ToInt32(row["AuditID"]),
+                            state_id = row["state_id"].ToString(),
+                            state_name = row["state_name"].ToString(),
+                            createdBy = row["createdBy"].ToString(),
+                            createdByIP = row["createdByIP"].ToString(),
+                            SessionID = row["SessionID"].ToString(),
+                            DeletedOn = row["DeletedOn"].ToString()
+                        };
+                        objList.Add(obj);
                     }
                 }
             }

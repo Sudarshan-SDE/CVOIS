@@ -2,6 +2,7 @@
 using CVOIS.Models.Connection;
 using CVOIS.Models.SuperAdmin;
 using CVOIS.Models.SuperAdmin.AuditTrail;
+using CVOIS.Models.SuperAdmin.DeleteAuditTrail;
 using CVOIS.Models.Viewers;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
@@ -211,6 +212,47 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
                             createdByIP = row["createdByIP"].ToString(),
                             sessionID = row["sessionID"].ToString(),
                             actionCategory = row["actionCategory"].ToString()
+                        };
+                        objList.Add(obj);
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("SQL Error: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("General Error: " + ex.Message);
+            }
+            return objList;
+        }
+
+
+        public List<MasterCVOServicesDeleteAuditTrailModel> Get_MasterCvoServicesDeleteAuditTrail()
+        {
+            List<MasterCVOServicesDeleteAuditTrailModel> objList = new List<MasterCVOServicesDeleteAuditTrailModel>();
+            try
+            {
+                string query = "select*from Audit_Deleted_MasterCvoServices";
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    SqlDataAdapter sda = new SqlDataAdapter(query, con);
+                    sda.SelectCommand.CommandType = CommandType.Text;
+                    DataSet ds = new DataSet();
+                    sda.Fill(ds);
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+                        MasterCVOServicesDeleteAuditTrailModel obj = new MasterCVOServicesDeleteAuditTrailModel
+                        {
+                            AuditID = Convert.ToInt32(row["AuditID"]),
+                            MasterCvoServices_Id = Convert.ToInt32(row["MasterCvoServices_Id"]),
+                            MasterCvoServices_Code= row["MasterCvoServices_Code"].ToString(),
+                            MasterCvoServices_Name= row["MasterCvoServices_Name"].ToString(),
+                            createdBy = row["createdBy"].ToString(),
+                            createdByIP = row["createdByIP"].ToString(),
+                            SessionID = row["SessionID"].ToString(),
+                            DeletedOn = row["DeletedOn"].ToString()
                         };
                         objList.Add(obj);
                     }

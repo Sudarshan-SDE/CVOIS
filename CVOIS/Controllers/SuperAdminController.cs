@@ -851,6 +851,30 @@ namespace CVOIS.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult DeleteLevelAuditTrail()
+        {
+            try
+            {
+                ViewBag.title = "Delete Level Audit Trail";
+                string username = HttpContext.Session.GetString("Username");
+                if (string.IsNullOrEmpty(username))
+                {
+                    return RedirectToAction("Login", "Home");
+                }
+                var model = new SuperAdminViewModel
+                {
+                    OrgLevel_Delete_AuditTrail_List = _level.Get_LevelDeleteAuditTrail()
+                };
+                return View(model);
+            }
+            catch (Exception)
+            {
+                ViewBag.Error = "Something went wrong while loading the form.";
+                return View();
+            }
+        }
+
 
 
         //-----------------------------------------Appointing Authority Section
@@ -1021,7 +1045,29 @@ namespace CVOIS.Controllers
             }
         }
 
-
+        [HttpGet]
+        public IActionResult DeleteAppointingAuthorityAuditTrail()
+        {
+            try
+            {
+                ViewBag.title = "Delete Appointing AuthorityAudit Trail";
+                string username = HttpContext.Session.GetString("Username");
+                if (string.IsNullOrEmpty(username))
+                {
+                    return RedirectToAction("Login", "Home");
+                }
+                var model = new SuperAdminViewModel
+                {
+                    AppointingAuthority_Delete_AuditTrail_List = _appointingauthority.Get_AppointingAuthorityDeleteAuditTrail()
+                };
+                return View(model);
+            }
+            catch (Exception)
+            {
+                ViewBag.Error = "Something went wrong while loading the form.";
+                return View();
+            }
+        }
 
         //-----------------------------------------Master Service Section
         [HttpGet]
@@ -1190,6 +1236,29 @@ namespace CVOIS.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult DeleteMasterCvoServicesAuditTrail()
+        {
+            try
+            {
+                ViewBag.title = "Delete Master Cvo Services Trail";
+                string username = HttpContext.Session.GetString("Username");
+                if (string.IsNullOrEmpty(username))
+                {
+                    return RedirectToAction("Login", "Home");
+                }
+                var model = new SuperAdminViewModel
+                {
+                    MasterCVOServices_Delete_AuditTrail_List = _masterCvoServices.Get_MasterCvoServicesDeleteAuditTrail()
+                };
+                return View(model);
+            }
+            catch (Exception)
+            {
+                ViewBag.Error = "Something went wrong while loading the form.";
+                return View();
+            }
+        }
 
 
         //-----------------------------------------State Section
@@ -1371,7 +1440,29 @@ namespace CVOIS.Controllers
             }
         }
 
-
+        [HttpGet]
+        public async Task<IActionResult> DeleteStateAuditTrail()
+        {
+            try
+            {
+                ViewBag.title = "Delete State Trail";
+                string username = HttpContext.Session.GetString("Username");
+                if (string.IsNullOrEmpty(username))
+                {
+                    return RedirectToAction("Login", "Home");
+                }
+                var model = new SuperAdminViewModel
+                {
+                    State_Delete_AuditTrail_List = await _state.Get_StateDeleteAuditTrailAsync()
+                };
+                return View(model);
+            }
+            catch (Exception)
+            {
+                ViewBag.Error = "Something went wrong while loading the form.";
+                return View();
+            }
+        }
 
         //-----------------------------------------Audit Trail 
         [HttpGet]

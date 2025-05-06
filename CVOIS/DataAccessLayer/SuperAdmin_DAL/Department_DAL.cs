@@ -15,7 +15,6 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
     public class Department_DAL : IDepartment
     {
         private readonly string _connectionString;
-        private object reader;
 
         public Department_DAL(IOptions<ConnectionString> connectionString)
         {
@@ -315,7 +314,5 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
             }
             return objList;
         }
-
-
     }
 }

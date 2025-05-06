@@ -2,6 +2,7 @@
 using CVOIS.Models.Connection;
 using CVOIS.Models.SuperAdmin;
 using CVOIS.Models.SuperAdmin.AuditTrail;
+using CVOIS.Models.SuperAdmin.DeleteAuditTrail;
 using CVOIS.Models.Viewers;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
@@ -226,5 +227,49 @@ namespace CVOIS.DataAccessLayer.SuperAdmin_DAL
             }
             return objList;
         }
+
+
+        public List<OrgLevelDeleteAuditTrailModel> Get_LevelDeleteAuditTrail()
+        {
+            List<OrgLevelDeleteAuditTrailModel> objList = new List<OrgLevelDeleteAuditTrailModel>();
+            try
+            {
+                string query = "select*from Audit_Deleted_Org_Level";
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    SqlDataAdapter sda = new SqlDataAdapter(query, con);
+                    sda.SelectCommand.CommandType = CommandType.Text;
+                    DataSet ds = new DataSet();
+                    sda.Fill(ds);
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+                        OrgLevelDeleteAuditTrailModel obj = new OrgLevelDeleteAuditTrailModel
+                        {
+                            AuditID = Convert.ToInt32(row["AuditID"]),
+                            OrgLevel_Id = Convert.ToInt32(row["OrgLevel_Id"]),
+
+                            OrgLevel_Code= row["OrgLevel_Code"].ToString(),
+                            OrgLevel_Name= row["OrgLevel_Name"].ToString(),
+                            
+                            createdBy = row["createdBy"].ToString(),
+                            createdByIP = row["createdByIP"].ToString(),
+
+                            SessionID = row["SessionID"].ToString(),
+                            DeletedOn = row["DeletedOn"].ToString()
+                        };
+                        objList.Add(obj);
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("SQL Error: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("General Error: " + ex.Message);
+            }
+            return objList;
+        }   
     }
 }

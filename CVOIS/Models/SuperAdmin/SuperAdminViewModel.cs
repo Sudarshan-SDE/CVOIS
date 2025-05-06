@@ -66,7 +66,6 @@ namespace CVOIS.Models.SuperAdmin
 
 
 
-
         //Level
         public OrgLevelModel Org_Level { get; set; }
         public List<OrgLevelModel> Org_Level_List { get; set; }
@@ -75,14 +74,21 @@ namespace CVOIS.Models.SuperAdmin
         public List<OrgLevelAuditTrailModel> Org_Level_AuditTrail_List { get; set; }
 
 
+        public OrgLevelDeleteAuditTrailModel OrgLevelDeleteAuditTrail { get; set; }
+        public List<OrgLevelDeleteAuditTrailModel> OrgLevel_Delete_AuditTrail_List { get; set; }
 
-        //Appointing AUthority
+
+
+        //Appointing Authority
         public AppointingAuthorityModel AppointingAuthority { get; set; }
         public List<AppointingAuthorityModel> AppointingAuthority_List { get; set; }
 
         public AppointingAuthorityAuditTrailModel AppointingAuthorityAuditTrail { get; set; }
         public List<AppointingAuthorityAuditTrailModel> AppointingAuthority_AuditTrail_List { get; set; }
 
+
+        public AppointingAuthorityDeleteAuditTrailModel AppointingAuthorityDeleteAuditTrail { get; set; }
+        public List<AppointingAuthorityDeleteAuditTrailModel> AppointingAuthority_Delete_AuditTrail_List { get; set; }
 
 
 
@@ -94,7 +100,8 @@ namespace CVOIS.Models.SuperAdmin
         public MasterCVOServicesAuditTrailModel MasterCVOServicesAuditTrail { get; set; }
         public List<MasterCVOServicesAuditTrailModel> MasterCVOServices_AuditTrail_List { get; set; }
 
-
+        public MasterCVOServicesDeleteAuditTrailModel MasterCVOServicesDeleteAuditTrail { get; set; }
+        public List<MasterCVOServicesDeleteAuditTrailModel> MasterCVOServices_Delete_AuditTrail_List { get; set; }
 
 
         //State
@@ -104,6 +111,10 @@ namespace CVOIS.Models.SuperAdmin
 
         public StateAuditTrailModel StateAuditTrail { get; set; }
         public List<StateAuditTrailModel> State_AuditTrail_List { get; set; }
+
+
+        public StateDeleteAuditTrailModel StateDeleteAuditTrail { get; set; }
+        public List<StateDeleteAuditTrailModel> State_Delete_AuditTrail_List { get; set; }
 
 
 

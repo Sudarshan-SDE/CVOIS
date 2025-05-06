@@ -84,7 +84,7 @@
 
     // ===== Organization =====
     const organizationTable = $('#organizationDataTable').DataTable({
-        dom: "<'row align-items-center mb-2'<'col-md-6 dt-buttons-container d-flex align-items-center'B><'col-md-2 text-center'<'organization-title'>><'col-md-4 text-end'f>>" +
+        dom: "<'row mb-2' <'col-md-3' <'organization-title'>> <'col-md-7'B> <'col-md-2 text-end'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
         buttons: [
@@ -124,7 +124,7 @@
 
     // ===== Org Level =====
     const orgLevelTable = $('#orgLevelDataTable').DataTable({
-        dom: "<'row align-items-center mb-2'<'col-md-5 dt-buttons-container d-flex align-items-center'B><'col-md-3 text-center'<'orglevel-title'>><'col-md-4 text-end'f>>" +
+        dom: "<'row mb-2' <'col-md-3' <'orgLevel-title'>> <'col-md-7'B> <'col-md-2 text-end'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
         buttons: [
@@ -155,7 +155,7 @@
             infoEmpty: "No entries available", paginate: { previous: "<", next: ">" }
         }
     });
-    $('.orglevel-title').html('<h3 class="m-0 fw-bold">Org Level List</h3>');
+    $('.orgLevel-title').html('<h3 class="m-0 fw-bold">Org Level List</h3>');
     $('#orgLevelDataTable_wrapper .dt-buttons').prepend(`
         <button type="button" class="btn btn-sm btn-primary me-2" data-toggle="modal" data-target="#levelModal">
             <i class="fa fa-plus"></i> Add Org Level
@@ -164,7 +164,7 @@
 
     // ===== Appointing Authority =====
     const appointingTable = $('#appointingAuthorityDataTable').DataTable({
-        dom: "<'row align-items-center mb-2'<'col-md-6 dt-buttons-container d-flex align-items-center'B><'col-md-3 text-center'<'appointing-title'>><'col-md-3 text-end'f>>" +
+        dom: "<'row mb-2' <'col-md-3' <'appointingAuthority-title'>> <'col-md-7'B> <'col-md-2 text-end'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
         buttons: [
@@ -195,7 +195,7 @@
             infoEmpty: "No entries available", paginate: { previous: "<", next: ">" }
         }
     });
-    $('.appointing-title').html('<h3 class="m-0 fw-bold">Appointing Authority List</h3>');
+    $('.appointingAuthority-title').html('<h3 class="m-0 fw-bold">Appointing Authority List</h3>');
     $('#appointingAuthorityDataTable_wrapper .dt-buttons').prepend(`
         <button type="button" class="btn btn-sm btn-primary me-2" data-toggle="modal" data-target="#appointingauthorityModal">
             <i class="fa fa-plus"></i> Add Appointing Authority
@@ -205,7 +205,7 @@
 
     // === Master CVO Services ===
     const cvoServicesTable = $('#masterCVOServicesDataTable').DataTable({
-        dom: "<'row align-items-center mb-2'<'col-md-6 dt-buttons-container d-flex align-items-center'B><'col-md-3 text-center'<'cvo-services-title'>><'col-md-3 text-end'f>>" +
+        dom: "<'row mb-2' <'col-md-3' <'masterCVOServices-title'>> <'col-md-7'B> <'col-md-2 text-end'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
         buttons: [
@@ -237,7 +237,7 @@
             infoEmpty: "No entries available", paginate: { previous: "<", next: ">" }
         }
     });
-    $('.cvo-services-title').html('<h3 class="m-0 fw-bold">Master Services List</h3>');
+    $('.masterCVOServices-title').html('<h3 class="m-0 fw-bold">Master Services List</h3>');
     $('#masterCVOServicesDataTable_wrapper .dt-buttons').prepend(`
         <button type="button" class="btn btn-sm btn-primary me-2" data-toggle="modal" data-target="#mastercvoservicesModal">
             <i class="fa fa-plus"></i> Add Master Services
@@ -247,7 +247,7 @@
 
     // === State Table ===
     const stateTable = $('#stateDataTable').DataTable({
-        dom: "<'row align-items-center mb-2'<'col-md-5 dt-buttons-container d-flex align-items-center'B><'col-md-2 text-center'<'state-title'>><'col-md-5 text-end'f>>" +
+        dom: "<'row mb-2' <'col-md-3' <'state-title'>> <'col-md-7'B> <'col-md-2 text-end'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
         buttons: [
